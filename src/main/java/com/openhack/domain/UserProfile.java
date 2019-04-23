@@ -1,6 +1,8 @@
 
 package com.openhack.domain;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -8,11 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.openhack.domain.Organization;
-import com.openhack.domain.Address;
 
 @Entity
 @Table(name = "USERPROFILE")
@@ -74,10 +74,21 @@ public class UserProfile {
 	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID")
 	private Organization pendingMembership;
 	
+	@ManyToMany(mappedBy="sponsors")
+	private List<Hackathon> hackathons;
+	
 	/**
 	 * Instantiates a new employee.
 	 */
 	public UserProfile() {}
+
+	public List<Hackathon> getHackathons() {
+		return hackathons;
+	}
+
+	public void setHackathons(List<Hackathon> hackathons) {
+		this.hackathons = hackathons;
+	}
 
 	public long getId() {
 		return id;

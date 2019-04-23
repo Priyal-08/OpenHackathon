@@ -1,6 +1,7 @@
 package com.openhack.domain;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -48,7 +50,9 @@ public class Organization {
 	@OneToMany(mappedBy="pendingMembership")
 	private List<UserProfile> pendingMembers;
 	
-	
+	/** The organization owner. */
+	@ManyToMany(mappedBy="sponsors")
+	private List<Hackathon> hackathons;
     
     /**
      * Instantiates a new organization.
@@ -98,6 +102,14 @@ public class Organization {
 //	public void setId(long id) {
 //		this.id = id;
 //	}
+
+	public List<Hackathon> getHackathons() {
+		return hackathons;
+	}
+
+	public void setHackathons(List<Hackathon> hackathons) {
+		this.hackathons = hackathons;
+	}
 
 	public String getName() {
 		return name;
