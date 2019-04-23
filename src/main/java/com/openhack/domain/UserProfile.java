@@ -1,9 +1,6 @@
 
 package com.openhack.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,10 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.openhack.domain.Organization;
@@ -74,6 +68,11 @@ public class UserProfile {
 	@ManyToOne(targetEntity=Organization.class, optional=true)
 	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID")
 	private Organization organization;
+	
+	/** The organization. */
+	@ManyToOne(targetEntity=Organization.class, optional=true)
+	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID")
+	private Organization pendingMembership;
 	
 	/**
 	 * Instantiates a new employee.
@@ -150,6 +149,14 @@ public class UserProfile {
 
 	public void setOrganization(Organization organization) {
 		this.organization = organization;
+	}
+	
+	public Organization getPendingMembership() {
+		return pendingMembership;
+	}
+
+	public void setPendingMembership(Organization pendingMembership) {
+		this.pendingMembership = pendingMembership;
 	}
 	
 
