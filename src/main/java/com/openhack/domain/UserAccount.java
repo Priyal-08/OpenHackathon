@@ -14,7 +14,6 @@ public class UserAccount {
 
 	/** The username. */
 	@Id
-	/** The organization. */
 	@OneToOne(targetEntity=UserProfile.class)
 	@JoinColumn(name = "USERNAME",referencedColumnName="SCREENNAME")
 	private UserProfile user;
