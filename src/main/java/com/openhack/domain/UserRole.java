@@ -3,9 +3,7 @@ package com.openhack.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import com.openhack.domain.Hackathon;
@@ -13,16 +11,15 @@ import com.openhack.domain.UserProfile;
 
 
 @Entity
+@IdClass(UserRoleId.class)
 @Table(name = "USERROLE")
 public class UserRole {
 	/** The username. */
-	@OneToOne(targetEntity=UserProfile.class)
-	@JoinColumn(name = "USERNAME",referencedColumnName="SCREENNAME")
+	@Id
 	private UserProfile user;
 
 	/** The hackathon. */
-	@ManyToOne(targetEntity=Hackathon.class)
-	@JoinColumn(name = "HACKATHON_ID",referencedColumnName="ID")
+	@Id
 	private Hackathon hackathon;
 	
 	/** The role. */

@@ -10,13 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-/**
- * @author akshayj
- *
- */
+
 @Entity
 @Table(name = "HACKATHON")
 public class Hackathon {
@@ -27,24 +23,24 @@ public class Hackathon {
     private long id;
 	
 	/** The organization name. */
-	@Column(name = "EVENTNAME", unique=true)
+	@Column(name = "EVENT_NAME", unique=true)
     private String eventName;
 	
 	/** The hackathon start date. */
-	@Column(name = "STARTDATE", unique=true)
+	@Column(name = "START_DATE")
     private String startDate;
 	
 	/** The hackathon end date. */
-	@Column(name = "ENDDATE", unique=true)
+	@Column(name = "END_DATE")
     private String endDate;
 	
 	/** The hackathon description. */
-	@Column(name = "DESCRIPTION", unique=true)
+	@Column(name = "DESCRIPTION")
     private String description;
 	
 	/** The hackathon fees. */
-	@Column(name = "FEES", unique=true)
-    private int fees;
+	@Column(name = "FEES")
+    private long fees;
 	
 	/** The list of hackathon judges. */
 	@ManyToMany
@@ -146,11 +142,11 @@ public class Hackathon {
 		this.description = description;
 	}
 
-	public int getFees() {
+	public long getFees() {
 		return fees;
 	}
 
-	public void setFees(int fees) {
+	public void setFees(long fees) {
 		this.fees = fees;
 	}
 

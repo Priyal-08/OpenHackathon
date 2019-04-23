@@ -10,19 +10,19 @@ import javax.persistence.Embeddable;
 public class Address {
 
 	/** The street. */
-	@Column(nullable=true)
+	@Column(name = "STREET", nullable=true)
 	private String street; // e.g., 100 Main ST
 	
 	/** The city. */
-	@Column(nullable=true)
+	@Column(name = "CITY", nullable=true)
 	private String city;
 	
 	/** The state. */
-	@Column(nullable=true)
+	@Column(name = "STATE", nullable=true)
 	private String state;
 	
 	/** The zip. */
-	@Column(nullable=true)
+	@Column(name = "ZIP", nullable=true)
 	private String zip;
 	
 	/**

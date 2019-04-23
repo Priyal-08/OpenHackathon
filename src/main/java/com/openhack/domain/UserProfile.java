@@ -1,6 +1,7 @@
 
 package com.openhack.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -16,7 +17,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "USERPROFILE")
-public class UserProfile {
+public class UserProfile implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public UserProfile(long id, String name, String email, String title, Address address, String potraitURL,
 			String aboutMe, String screenName, Organization organization) {
 		this.id = id;
@@ -53,11 +59,11 @@ public class UserProfile {
 	private Address address;
 	
 	/** The Potrait URL. */
-	@Column(name = "POTRAITURL")
+	@Column(name = "POTRAIT_URL")
 	private String potraitURL;
 
 	/** The AboutMe */
-	@Column(name = "ABOUTME")
+	@Column(name = "ABOUT_ME")
 	private String aboutMe;
 
 	/** The Screenname */
@@ -71,10 +77,10 @@ public class UserProfile {
 	
 	/** The organization. */
 	@ManyToOne(targetEntity=Organization.class, optional=true)
-	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID")
+	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID", insertable = false, updatable = false)
 	private Organization pendingMembership;
 	
-	@ManyToMany(mappedBy="sponsors")
+	@ManyToMany(mappedBy="judges")
 	private List<Hackathon> hackathons;
 	
 	/**
