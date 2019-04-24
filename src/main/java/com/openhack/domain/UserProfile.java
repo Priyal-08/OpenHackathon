@@ -1,7 +1,6 @@
 
 package com.openhack.domain;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,15 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "USERPROFILE")
-public class UserProfile implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+public class UserProfile{
 	public UserProfile(long id, String name, String email, String title, Address address, String potraitURL,
 			String aboutMe, String screenName, Organization organization) {
 		this.id = id;
@@ -47,7 +42,8 @@ public class UserProfile implements Serializable{
 	private String name;
 	
 	/** The email. */
-	@Column(name = "EMAIL", unique = true)
+	//TODO: add unique constraint
+	@Column(name = "EMAIL")
 	private String email;
 	
 	/** The title. */
@@ -67,7 +63,10 @@ public class UserProfile implements Serializable{
 	private String aboutMe;
 
 	/** The Screenname */
-	@Column(name = "SCREENNAME", unique = true)
+	
+	//TODO: add unique constraint
+	@Min(3)
+	@Column(name = "SCREENNAME")
 	private String screenName;
 	
 	/** The organization. */

@@ -32,7 +32,8 @@ public class Team {
 	private UserProfile teamLead;
 	
 	/** The team name. */
-	@Column(name = "NAME", unique=true)
+	//TODO: add unique constraint
+	@Column(name = "NAME")
     private String name;
 	
 	/** The team members. */

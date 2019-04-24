@@ -18,10 +18,15 @@ public class UserAccount implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The username. */
+//	/** The username. */
+//	@Id
+//	@OneToOne(targetEntity=UserProfile.class)
+//	@JoinColumn(name = "USERNAME",referencedColumnName="SCREENNAME")
+//	private UserProfile user;
+	
 	@Id
 	@OneToOne(targetEntity=UserProfile.class)
-	@JoinColumn(name = "USERNAME",referencedColumnName="SCREENNAME")
+	@JoinColumn(name = "USERID",referencedColumnName="ID")
 	private UserProfile user;
 
 	/** The password. */

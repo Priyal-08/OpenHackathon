@@ -26,7 +26,8 @@ public class Organization {
     private long id;
 	
 	/** The organization name. */
-	@Column(name = "NAME", unique=true)
+	//TODO: add unique constraint
+	@Column(name = "NAME")
     private String name;
 	
 	/** The organization owner. */

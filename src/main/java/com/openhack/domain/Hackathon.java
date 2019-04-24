@@ -23,7 +23,8 @@ public class Hackathon {
     private long id;
 	
 	/** The organization name. */
-	@Column(name = "EVENT_NAME", unique=true)
+	// TODO : add unique constraint
+	@Column(name = "EVENT_NAME")
     private String eventName;
 	
 	/** The hackathon start date. */
@@ -51,11 +52,11 @@ public class Hackathon {
 	private List<UserProfile> judges;
 	
 	/** The minimum team size */
-	@Column(name = "MINTEAMSIZE", unique=true)
+	@Column(name = "MINTEAMSIZE")
     private int minTeamSize;
 	
 	/** The maximum team size */
-	@Column(name = "MAXTEAMSIZE", unique=true)
+	@Column(name = "MAXTEAMSIZE")
     private int maxTeamSize;
 	
 	/** The list of hackathon sponsors */	
@@ -67,7 +68,7 @@ public class Hackathon {
 	 private List<Organization> sponsors;
 	
 	/** The sponsor discount */
-	@Column(name = "DISCOUNT", unique=false)
+	@Column(name = "DISCOUNT")
     private float discount;
 
 	
