@@ -1,5 +1,7 @@
 package com.openhack.dao;
 
+import java.util.List;
+
 import com.openhack.domain.UserProfile;
 
 /**
@@ -23,5 +25,7 @@ public interface UserDao{
 	 * @return the employee
 	 */
 	public UserProfile findByUsername(String username);
+	
+	List<UserProfile> findByIds(List<Long> ids);
 	
 }

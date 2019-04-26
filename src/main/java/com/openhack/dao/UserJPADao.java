@@ -2,10 +2,12 @@ package com.openhack.dao;
 
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
@@ -37,5 +39,12 @@ public class UserJPADao implements UserDao {
 	public UserProfile findByUsername(String username) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public List<UserProfile> findByIds(List<Long> ids){
+		TypedQuery<UserProfile> query = entityManager.createQuery("from userprofile where id in :ids", UserProfile.class);
+		query.setParameter("ids", ids);
+		if (query.getResultList().isEmpty()) return null;
+		return query.getResultList();
 	}
 }

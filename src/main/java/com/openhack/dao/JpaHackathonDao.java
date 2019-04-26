@@ -1,0 +1,42 @@
+package com.openhack.dao;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import javax.persistence.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.openhack.domain.Hackathon;
+
+/**
+ * The Class JpaHackathonDao.
+ */
+@Repository
+public class JpaHackathonDao implements HackathonDao {
+
+	/** The entity manager. */
+	@PersistenceContext
+    private EntityManager entityManager;
+	
+	/* (non-Javadoc)
+	 * @see com.lab2.dao.HackathonDao#store(com.openhacka.domain.Hackathon)
+	 */
+	@Transactional
+    @Override
+	public Hackathon store(Hackathon hackathon) {
+		return entityManager.merge(hackathon);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.lab2.dao.HackathonDao#findByEventName(java.lang.String)
+	 */
+	@Transactional
+    @Override
+	public Hackathon findByEventName(String eventName) {
+		Query query = entityManager.createNativeQuery("SELECT * FROM hackathon e WHERE e.eventName LIKE :eventName", Hackathon.class);
+		query.setParameter("eventName", eventName);
+		if (query.getResultList().isEmpty()) return null;
+		return (Hackathon)query.getResultList().get(0);
+	}
+}

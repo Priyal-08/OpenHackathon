@@ -1,5 +1,6 @@
 package com.openhack.domain;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -29,11 +30,11 @@ public class Hackathon {
 	
 	/** The hackathon start date. */
 	@Column(name = "START_DATE")
-    private String startDate;
+    private Date startDate;
 	
 	/** The hackathon end date. */
 	@Column(name = "END_DATE")
-    private String endDate;
+    private Date endDate;
 	
 	/** The hackathon description. */
 	@Column(name = "DESCRIPTION")
@@ -70,6 +71,14 @@ public class Hackathon {
 	/** The sponsor discount */
 	@Column(name = "DISCOUNT")
     private float discount;
+	
+	/* The hackathon status 
+	 * 1 - Open
+	 * 2 - Closed
+	 * 3 - Final
+	 */
+	@Column(name = "STATUS")
+	private int status;
 
 	
 	/**
@@ -87,7 +96,7 @@ public class Hackathon {
 	 * @param sponsors - the hackathon sponsors
 	 * @param discount - the hackathon sponsor discount
 	 */
-	public Hackathon(long id, String eventName, String startDate, String endDate, String description, int fees,
+	public Hackathon(long id, String eventName, Date startDate, Date endDate, String description, long fees,
 			List<UserProfile> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount) {
 		super();
 		this.id = id;
@@ -101,6 +110,23 @@ public class Hackathon {
 		this.maxTeamSize = maxTeamSize;
 		this.sponsors = sponsors;
 		this.discount = discount;
+		this.status = 1;
+	}
+	
+	public Hackathon(String eventName, Date startDate, Date endDate, String description, long fees,
+			List<UserProfile> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount) {
+		super();
+		this.eventName = eventName;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.description = description;
+		this.fees = fees;
+		this.judges = judges;
+		this.minTeamSize = minTeamSize;
+		this.maxTeamSize = maxTeamSize;
+		this.sponsors = sponsors;
+		this.discount = discount;
+		this.status = 1;
 	}
 
 	public long getId() {
@@ -119,19 +145,19 @@ public class Hackathon {
 		this.eventName = eventName;
 	}
 
-	public String getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(String startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public String getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(String endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -191,7 +217,11 @@ public class Hackathon {
 		this.discount = discount;
 	}
 	
-	
-	
-	
+	public long getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
 }

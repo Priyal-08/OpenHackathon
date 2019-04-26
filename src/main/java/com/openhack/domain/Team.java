@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * The Class Team.
@@ -43,6 +45,8 @@ public class Team {
 	@Column(name = "PAYMENT_DONE")
 	private boolean paymentDone;
 	
+	@Min(0)
+	@Max(10)
 	@Column(name = "SCORE")
 	private long score;
 	
