@@ -48,4 +48,13 @@ public class JpaHackathonDao implements HackathonDao {
 		if (query.getResultList().isEmpty()) return null;
 		return (Hackathon)query.getResultList().get(0);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.lab2.dao.HackathonDao#delete(com.openhacka.domain.Hackathon)
+	 */
+	@Transactional
+	@Override
+	public void delete(Hackathon hackathon) {
+		entityManager.remove(hackathon);
+	}
 }

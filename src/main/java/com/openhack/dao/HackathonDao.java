@@ -30,4 +30,11 @@ public interface HackathonDao {
 	 * @return the Hackathon
 	 */
 	public Hackathon findByEventName(String eventName);
+	
+	/*
+	 * Get hackathon entity by event name.
+	 *
+	 * @param hackathon: the hackathon
+	 */
+	public void delete(Hackathon hackathon);
 }
