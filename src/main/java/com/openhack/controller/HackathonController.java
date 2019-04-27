@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,10 +36,10 @@ public class HackathonController {
 	 * @param judges:  event judges
 	 * @param sponsors: event sponsors
 	 * @param discount: event discount
-	 * @return ResponseEntity: newly created event object on success/ error message on error
+	 * @return ResponseEntity: newly created hackathon object on success/ error message on error
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> createEmployer(
+	public ResponseEntity<?> createHackathon(
 			@RequestParam("eventName") String eventName,
             @RequestParam(value="description", required=false) String description,
             @RequestParam(value="startDate") String startDate,
@@ -51,5 +52,17 @@ public class HackathonController {
             @RequestParam(value="discount", required=false) long discount) {
 		return hackathonService.createHackathon(eventName, description, startDate, endDate, fees,
 				minTeamSize, maxTeamSize, judges, sponsors, discount);
+	}
+	
+	/**
+	 * Gets the hackathon.
+	 *
+	 * @param id: the hackathon id
+	 * @return ResponseEntity: the hackathon object on success/ error message on error
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getHackathon(
+			@PathVariable("id") long id) {
+		return hackathonService.getHackathon(id);
 	}
 }

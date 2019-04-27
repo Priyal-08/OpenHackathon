@@ -20,6 +20,7 @@ import com.openhack.domain.Organization;
 import com.openhack.domain.UserProfile;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
+import com.openhack.exception.NotFoundException;
 
 @Service
 public class HackathonService {
@@ -77,12 +78,39 @@ public class HackathonService {
 				hackathon = new Hackathon(eventName, startDate, endDate, description, fees,
 						judgesList, minTeamSize, maxTeamSize, sponsorsList, discount);
 				hackathonDao.store(hackathon);
-				response = new HackathonResponse();
+				response = new HackathonResponse();  // TODO: create hackathon response
 				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 			}
 		}
 		catch(DuplicateException e) {
 			errorResponse = new ErrorResponse("Conflict", "409", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	/**
+	 * Gets the hackathon.
+	 *
+	 * @param id: the hackathon id
+	 * @return ResponseEntity: the hackathon object on success/ error message on error
+	 */
+	@Transactional
+	public ResponseEntity<?> getHackathon(long id) {
+		try {
+			Hackathon hackathon = hackathonDao.findById(id);
+			// If the hackathon with given id does not exist, return NotFound.
+			if(hackathon==null)
+				throw new NotFoundException("Hackathon", "Id", id);
+			response = new HackathonResponse(); // TODO: create hackathon response
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {

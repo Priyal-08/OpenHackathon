@@ -29,6 +29,15 @@ public class JpaHackathonDao implements HackathonDao {
 	}
 	
 	/* (non-Javadoc)
+	 * @see com.lab2.dao.HackathonDao#findById(long)
+	 */
+	@Transactional
+	@Override
+	public Hackathon findById(long id) {
+		return entityManager.find(Hackathon.class, id);
+	}
+	
+	/* (non-Javadoc)
 	 * @see com.lab2.dao.HackathonDao#findByEventName(java.lang.String)
 	 */
 	@Transactional
