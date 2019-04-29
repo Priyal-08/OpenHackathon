@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +34,15 @@ public class JpaHackathonDao implements HackathonDao {
 	/* (non-Javadoc)
 	 * @see com.lab2.dao.HackathonDao#findAll()
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
 	public List<Hackathon> findAll() {
-		 TypedQuery<Hackathon> query =
-				 entityManager.createQuery("SELECT h FROM hackathon h", Hackathon.class);
-		//Query query = entityManager.createNativeQuery("SELECT * FROM hackathon", Hackathon.class);
-		//if (query.getResultList().isEmpty()) return null;
-		return query.getResultList();
+		 //TypedQuery<Hackathon> query =
+		Query query =
+				 entityManager.createNativeQuery("SELECT * FROM hackathon", Hackathon.class);
+		 //if (query.getResultList().isEmpty()) return null;
+		 return query.getResultList();
 	}
 	
 	/* (non-Javadoc)
