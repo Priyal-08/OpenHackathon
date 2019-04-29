@@ -1,5 +1,7 @@
 package com.openhack.dao;
 
+import java.util.List;
+
 import com.openhack.domain.Hackathon;
 
 /**
@@ -14,6 +16,13 @@ public interface HackathonDao {
 	 * @return the employer
 	 */
 	public Hackathon store(Hackathon hackathon);
+	
+	/*
+	 * Get all hackathons.
+	 *
+	 @return list of Hackathon
+	 */
+	public List<Hackathon> findAll();
 	
 	/*
 	 * Get hackathon entity by hackathon id.

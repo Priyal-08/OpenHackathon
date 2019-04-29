@@ -3,6 +3,7 @@ package com.openhack.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -92,6 +93,27 @@ public class HackathonService {
 		catch(DuplicateException e) {
 			errorResponse = new ErrorResponse("Conflict", "409", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	/**
+	 * Gets all hackathons.
+	 *
+	 * @return ResponseEntity: list of hackathon objects on success/ error message on error
+	 */
+	@Transactional
+	public ResponseEntity<?> getHackathons() {
+		try {
+			List<Hackathon> hackathons = hackathonDao.findAll();
+			
+			//TODO: proper hackathon response mapping
+			List<HackathonResponse> hackathonResponse = hackathons.stream().map(hackathon->new HackathonResponse()).collect(Collectors.toList()); 
+			
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hackathonResponse);
 		}
 		catch(Exception e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());

@@ -55,6 +55,16 @@ public class HackathonController {
 	}
 	
 	/**
+	 * Gets all hackathons.
+	 *
+	 * @return ResponseEntity: list of hackathon objects on success/ error message on error
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<?> getHackathons(){
+		return hackathonService.getHackathons();
+	}
+	
+	/**
 	 * Gets the hackathon.
 	 *
 	 * @param id: the hackathon id
