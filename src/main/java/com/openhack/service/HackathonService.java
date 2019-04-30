@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.HackathonResponse;
 import com.openhack.dao.HackathonDao;
@@ -82,7 +83,19 @@ public class HackathonService {
 			hackathon = new Hackathon(eventName, startDate, endDate, description, fees,
 					judgesList, minTeamSize, maxTeamSize, sponsorsList, discount);
 			hackathonDao.store(hackathon);
-			response = new HackathonResponse();  // TODO: create hackathon response
+			response = new HackathonResponse(
+					hackathon.getId(), 
+					hackathon.getEventName(),
+					hackathon.getStartDate(),
+					hackathon.getEndDate(),
+					hackathon.getDescription(),
+					hackathon.getFees(),
+					hackathon.getJudges(),
+					hackathon.getMinTeamSize(),
+					hackathon.getMaxTeamSize(),
+					hackathon.getSponsors(),
+					hackathon.getDiscount(),
+					hackathon.getStatus());
 			
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
@@ -111,7 +124,19 @@ public class HackathonService {
 			List<Hackathon> hackathons = hackathonDao.findAll();
 			
 			//TODO: proper hackathon response mapping
-			List<HackathonResponse> hackathonResponse = hackathons.stream().map(hackathon->new HackathonResponse()).collect(Collectors.toList()); 
+			List<HackathonResponse> hackathonResponse = hackathons.stream().map(hackathon->new HackathonResponse(
+					hackathon.getId(), 
+					hackathon.getEventName(),
+					hackathon.getStartDate(),
+					hackathon.getEndDate(),
+					hackathon.getDescription(),
+					hackathon.getFees(),
+					hackathon.getJudges(),
+					hackathon.getMinTeamSize(),
+					hackathon.getMaxTeamSize(),
+					hackathon.getSponsors(),
+					hackathon.getDiscount(),
+					hackathon.getStatus())).collect(Collectors.toList()); 
 			
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hackathonResponse);
 		}
@@ -135,7 +160,19 @@ public class HackathonService {
 			// If the hackathon with given id does not exist, return NotFound.
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", id);
-			response = new HackathonResponse(); // TODO: create hackathon response
+			response = new HackathonResponse(
+					hackathon.getId(), 
+					hackathon.getEventName(),
+					hackathon.getStartDate(),
+					hackathon.getEndDate(),
+					hackathon.getDescription(),
+					hackathon.getFees(),
+					hackathon.getJudges(),
+					hackathon.getMinTeamSize(),
+					hackathon.getMaxTeamSize(),
+					hackathon.getSponsors(),
+					hackathon.getDiscount(),
+					hackathon.getStatus());
 			
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
@@ -199,7 +236,19 @@ public class HackathonService {
 			hackathon = new Hackathon(id, eventName, startDate, endDate, description, fees,
 					judgesList, minTeamSize, maxTeamSize, sponsorsList, discount);
 			hackathonDao.store(hackathon);
-			response = new HackathonResponse();  // TODO: create hackathon response
+			response = new HackathonResponse(
+					hackathon.getId(), 
+					hackathon.getEventName(),
+					hackathon.getStartDate(),
+					hackathon.getEndDate(),
+					hackathon.getDescription(),
+					hackathon.getFees(),
+					hackathon.getJudges(),
+					hackathon.getMinTeamSize(),
+					hackathon.getMaxTeamSize(),
+					hackathon.getSponsors(),
+					hackathon.getDiscount(),
+					hackathon.getStatus());
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(InvalidArgumentException e) {
@@ -284,9 +333,8 @@ public class HackathonService {
 			
 			// Delete the hackathon
 			hackathonDao.delete(hackathon);
-			response = new HackathonResponse();  // TODO: create hackathon response
 			
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new EmptyResponse());
 		}
 		catch(InvalidArgumentException e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());

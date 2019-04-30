@@ -80,6 +80,7 @@ public class Hackathon {
 	@Column(name = "STATUS")
 	private int status;
 
+	public Hackathon() {}
 	
 	/**
 	 * Initializes hackathon object
@@ -217,7 +218,7 @@ public class Hackathon {
 		this.discount = discount;
 	}
 	
-	public long getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
