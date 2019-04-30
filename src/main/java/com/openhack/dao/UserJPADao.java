@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.domain.UserProfile;
 
@@ -46,5 +47,14 @@ public class UserJPADao implements UserDao {
 		query.setParameter("ids", ids);
 		if (query.getResultList().isEmpty()) return null;
 		return query.getResultList();
+	}
+
+	/* (non-Javadoc)
+     * @see com.lab2.dao.UserDao#findById(long)
+     */
+	@Override
+	@Transactional
+	public UserProfile findById(long id) {
+		return entityManager.find(UserProfile.class, id);
 	}
 }

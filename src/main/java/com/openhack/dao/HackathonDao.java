@@ -27,7 +27,7 @@ public interface HackathonDao {
 	/*
 	 * Get hackathon entity by hackathon id.
 	 *
-	 * @param hackathon: the hackathon
+	 * @param id: the hackathon id
 	 * @return the Hackathon
 	 */
 	public Hackathon findById(long id);
@@ -35,7 +35,7 @@ public interface HackathonDao {
 	/*
 	 * Get hackathon entity by event name.
 	 *
-	 * @param hackathon: the hackathon
+	 * @param eventName: the eventName
 	 * @return the Hackathon
 	 */
 	public Hackathon findByEventName(String eventName);

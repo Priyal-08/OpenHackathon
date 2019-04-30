@@ -28,4 +28,12 @@ public interface UserDao{
 	
 	List<UserProfile> findByIds(List<Long> ids);
 	
+	/*
+	 * Get user by user id.
+	 *
+	 * @param id: the user id
+	 * @return the user
+	 */
+	public UserProfile findById(long id);
+	
 }
