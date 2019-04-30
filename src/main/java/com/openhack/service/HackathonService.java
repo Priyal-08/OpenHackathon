@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.HackathonResponse;
+import com.openhack.contract.Judge;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.UserDao;
@@ -90,6 +91,7 @@ public class HackathonService {
 			hackathon = new Hackathon(eventName, startDate, endDate, description, fees,
 					judgesList, minTeamSize, maxTeamSize, sponsorsList, discount);
 			hackathon = hackathonDao.store(hackathon);
+			
 			response = new HackathonResponse(
 					hackathon.getId(), 
 					hackathon.getEventName(),
@@ -97,7 +99,9 @@ public class HackathonService {
 					hackathon.getEndDate(),
 					hackathon.getDescription(),
 					hackathon.getFees(),
-					hackathon.getJudges(),
+					hackathon.getJudges().stream().map(judge->new Judge(
+							judge.getId(), 
+							judge.getName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),
@@ -130,7 +134,6 @@ public class HackathonService {
 		try {
 			List<Hackathon> hackathons = hackathonDao.findAll();
 			
-			//TODO: proper hackathon response mapping
 			List<HackathonResponse> hackathonResponse = hackathons.stream().map(hackathon->new HackathonResponse(
 					hackathon.getId(), 
 					hackathon.getEventName(),
@@ -138,7 +141,9 @@ public class HackathonService {
 					hackathon.getEndDate(),
 					hackathon.getDescription(),
 					hackathon.getFees(),
-					hackathon.getJudges(),
+					hackathon.getJudges().stream().map(judge->new Judge(
+							judge.getId(), 
+							judge.getName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),
@@ -174,7 +179,9 @@ public class HackathonService {
 					hackathon.getEndDate(),
 					hackathon.getDescription(),
 					hackathon.getFees(),
-					hackathon.getJudges(),
+					hackathon.getJudges().stream().map(judge->new Judge(
+							judge.getId(), 
+							judge.getName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),
@@ -254,7 +261,9 @@ public class HackathonService {
 					hackathon.getEndDate(),
 					hackathon.getDescription(),
 					hackathon.getFees(),
-					hackathon.getJudges(),
+					hackathon.getJudges().stream().map(judge->new Judge(
+							judge.getId(), 
+							judge.getName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),

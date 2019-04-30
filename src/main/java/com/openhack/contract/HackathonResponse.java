@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.openhack.domain.Organization;
-import com.openhack.domain.UserProfile;
 
 //Hackathon response class 
 @Component
@@ -24,7 +23,7 @@ public class HackathonResponse {
 	
 	private long fees;
 	
-	private List<UserProfile> judges;
+	private List<Judge> judges;
 	
 	private int minTeamSize;
 	
@@ -86,11 +85,11 @@ public class HackathonResponse {
 		this.fees = fees;
 	}
 
-	public List<UserProfile> getJudges() {
+	public List<Judge> getJudges() {
 		return judges;
 	}
 
-	public void setJudges(List<UserProfile> judges) {
+	public void setJudges(List<Judge> judges) {
 		this.judges = judges;
 	}
 
@@ -135,7 +134,7 @@ public class HackathonResponse {
 	}
 
 	public HackathonResponse(long id, String eventName, Date startDate, Date endDate, String description, long fees,
-			List<UserProfile> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount,
+			List<Judge> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount,
 			int status) {
 		super();
 		this.id = id;
