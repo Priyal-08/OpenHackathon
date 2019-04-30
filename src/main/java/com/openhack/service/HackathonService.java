@@ -1,6 +1,7 @@
 package com.openhack.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,20 +70,26 @@ public class HackathonService {
 			Date endDate = formatter.parse(eDate);
 			
 			// If the event name is null, return BadRequest.
-			if(eventName == null || today.compareTo(startDate) >0 || today.compareTo(endDate)<0) {
+			if(eventName == null || today.compareTo(startDate) >0 || startDate.compareTo(endDate)>0) {
 				throw new InvalidArgumentException("eventName/startDate/endDate");
 			}
 			
+			
 			// Event name should be unique so if an event with given name already exist, return BadRequest.
 			hackathon = hackathonDao.findByEventName(eventName);
-			if(hackathon!=null)
-				throw new DuplicateException("Hackathon", "eventName", eventName);
 			
-			List<Organization> sponsorsList = organizationDao.findByIds(sponsors);
-			List<UserProfile> judgesList = userDao.findByIds(judges);
+			if(hackathon!=null) {
+				throw new DuplicateException("Hackathon", "eventName", eventName);
+			}
+			List<Organization> sponsorsList = new ArrayList<Organization>();
+			if(sponsors!=null && sponsors.size()>0)
+				sponsorsList = organizationDao.findByIds(sponsors);
+			List<UserProfile> judgesList = new ArrayList<UserProfile>();
+			if(judges!=null && judges.size()>0)
+				judgesList = userDao.findByIds(judges);
 			hackathon = new Hackathon(eventName, startDate, endDate, description, fees,
 					judgesList, minTeamSize, maxTeamSize, sponsorsList, discount);
-			hackathonDao.store(hackathon);
+			hackathon = hackathonDao.store(hackathon);
 			response = new HackathonResponse(
 					hackathon.getId(), 
 					hackathon.getEventName(),
@@ -213,7 +220,7 @@ public class HackathonService {
 			Date startDate = formatter.parse(sDate);
 			Date endDate = formatter.parse(eDate);
 			// If the event name is null, return BadRequest.
-			if(eventName == null || today.compareTo(startDate) >0 || today.compareTo(endDate)<0) {
+			if(eventName == null || today.compareTo(startDate) >0 || startDate.compareTo(endDate)>0) {
 				throw new InvalidArgumentException("eventName/startDate/endDate");
 			} 
 			
@@ -228,11 +235,15 @@ public class HackathonService {
 			
 			// Event name should be unique so if an event with given name already exist, return BadRequest.
 			hackathon = hackathonDao.findByEventName(eventName);
-			if((hackathon!=null && hackathon.getId() == id))
+			if((hackathon!=null && hackathon.getId() != id))
 				throw new DuplicateException("Hackathon", "eventName", eventName);
 			
-			List<Organization> sponsorsList = organizationDao.findByIds(sponsors);
-			List<UserProfile> judgesList = userDao.findByIds(judges);
+			List<Organization> sponsorsList = new ArrayList<Organization>();
+			if(sponsors!=null && sponsors.size()>0)
+				sponsorsList = organizationDao.findByIds(sponsors);
+			List<UserProfile> judgesList = new ArrayList<UserProfile>();
+			if(judges!=null && judges.size()>0)
+				judgesList = userDao.findByIds(judges);
 			hackathon = new Hackathon(id, eventName, startDate, endDate, description, fees,
 					judgesList, minTeamSize, maxTeamSize, sponsorsList, discount);
 			hackathonDao.store(hackathon);

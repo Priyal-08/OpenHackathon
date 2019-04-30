@@ -60,7 +60,7 @@ public class JpaHackathonDao implements HackathonDao {
 	@Transactional
     @Override
 	public Hackathon findByEventName(String eventName) {
-		Query query = entityManager.createNativeQuery("SELECT * FROM hackathon e WHERE e.eventName LIKE :eventName", Hackathon.class);
+		Query query = entityManager.createNativeQuery("SELECT * FROM hackathon e WHERE e.event_name LIKE :eventName", Hackathon.class);
 		query.setParameter("eventName", eventName);
 		if (query.getResultList().isEmpty()) return null;
 		return (Hackathon)query.getResultList().get(0);
