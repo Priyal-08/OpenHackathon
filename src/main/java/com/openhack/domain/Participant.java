@@ -39,6 +39,9 @@ public class Participant {
 	@JoinColumn(name = "PAYMENT_ID",referencedColumnName="ID")
 	private Payment payment;
 	
+	
+	public Participant() {}
+	
 	public Participant(UserProfile user, String paymentURL, boolean paymentDone, String title) {
 		this.user = user;
 		this.paymentURL = paymentURL;

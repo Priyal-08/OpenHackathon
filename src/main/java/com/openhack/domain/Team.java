@@ -20,6 +20,81 @@ import javax.validation.constraints.Min;
 @Entity
 @Table(name = "TEAM")
 public class Team {
+	
+	public Team() {}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public Hackathon getHackathon() {
+		return hackathon;
+	}
+
+	public void setHackathon(Hackathon hackathon) {
+		this.hackathon = hackathon;
+	}
+
+	public UserProfile getTeamLead() {
+		return teamLead;
+	}
+
+	public void setTeamLead(UserProfile teamLead) {
+		this.teamLead = teamLead;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Participant> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<Participant> members) {
+		this.members = members;
+	}
+
+	public boolean getPaymentDone() {
+		return paymentDone;
+	}
+
+	public void setPaymentDone(boolean paymentDone) {
+		this.paymentDone = paymentDone;
+	}
+
+	public long getScore() {
+		return score;
+	}
+
+	public void setScore(long score) {
+		this.score = score;
+	}
+
+	public String getSubmissionURL() {
+		return submissionURL;
+	}
+
+	public void setSubmissionURL(String submissionURL) {
+		this.submissionURL = submissionURL;
+	}
+
+	public UserProfile getJudge() {
+		return judge;
+	}
+
+	public void setJudge(UserProfile judge) {
+		this.judge = judge;
+	}
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "ID")

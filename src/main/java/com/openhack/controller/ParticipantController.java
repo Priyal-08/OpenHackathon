@@ -27,9 +27,23 @@ public class ParticipantController {
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
 	@RequestMapping(value = "/{id}/hackathon", method = RequestMethod.GET)
-	public ResponseEntity<?> getHackathon(
+	public ResponseEntity<?> getHackathonList(
 			@PathVariable("id") long id) {
-		return participantService.getHackathon(id);
+		return participantService.getHackathonList(id);
+	}
+	
+	/**
+	 * Get the hackathon details for given hackathon and user id.
+	 *
+	 * @param userId: the user id
+	 * @param hackathonId: the hackathonId id
+	 * @return ResponseEntity: the hackathon object on success/ error message on error
+	 */
+	@RequestMapping(value = "/{userId}/hackathon/{hackathonId}", method = RequestMethod.GET)
+	public ResponseEntity<?> getHackathonDetails(
+			@PathVariable("userId") long userId,
+			@PathVariable("hackathonId") long hackathonId) {
+		return participantService.getHackathonDetails(userId, hackathonId);
 	}
 
 }
