@@ -39,6 +39,9 @@ public class Participant {
 	@JoinColumn(name = "PAYMENT_ID",referencedColumnName="ID")
 	private Payment payment;
 	
+	@Column(name = "FEES", nullable=true)
+	private float fees;
+	
 	
 	public Participant() {}
 	
@@ -47,6 +50,15 @@ public class Participant {
 		this.paymentURL = paymentURL;
 		this.paymentDone = paymentDone;
 		this.title = title;
+	}
+	
+	public Participant(Team team, UserProfile user, String paymentURL, boolean paymentDone, String title, float fees) {
+		this.team = team;
+		this.user = user;
+		this.paymentURL = paymentURL;
+		this.paymentDone = paymentDone;
+		this.title = title;
+		this.fees = fees;
 	}
 
 
@@ -70,7 +82,7 @@ public class Participant {
 		return paymentURL;
 	}
 
-	public void setpaymentURL(String paymentURL) {
+	public void setPaymentURL(String paymentURL) {
 		this.paymentURL = paymentURL;
 	}
 
@@ -90,5 +102,11 @@ public class Participant {
 		this.title = title;
 	}
 	
+	public float getFees() {
+		return fees;
+	}
 
+	public void setTitle(float fees) {
+		this.fees = fees;
+	}
 }

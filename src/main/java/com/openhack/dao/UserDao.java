@@ -26,6 +26,12 @@ public interface UserDao{
 	 */
 	public UserProfile findByUsername(String username);
 	
+	/*
+	 * Get users by user ids.
+	 *
+	 * @param ids: list of user ids
+	 * @return list of users
+	 */
 	List<UserProfile> findByIds(List<Long> ids);
 	
 	/*

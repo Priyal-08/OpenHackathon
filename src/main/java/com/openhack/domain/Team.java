@@ -21,6 +21,19 @@ import javax.validation.constraints.Min;
 @Table(name = "TEAM")
 public class Team {
 	
+	public Team(Hackathon hackathon, UserProfile teamLead, String name, List<Participant> members, boolean paymentDone,
+			@Min(0) @Max(10) long score, String submissionURL, UserProfile judge) {
+		super();
+		this.hackathon = hackathon;
+		this.teamLead = teamLead;
+		this.name = name;
+		this.members = members;
+		this.paymentDone = paymentDone;
+		this.score = score;
+		this.submissionURL = submissionURL;
+		this.judge = judge;
+	}
+
 	public Team() {}
 	
 	public long getId() {
@@ -128,7 +141,7 @@ public class Team {
 	@Column(name = "SUBMISSION_URL")
 	private String submissionURL;
 	
-	@ManyToOne(targetEntity=UserProfile.class, optional=false)
+	@ManyToOne(targetEntity=UserProfile.class)
 	@JoinColumn(name = "JUDGE_ID",referencedColumnName="ID")
 	private UserProfile judge;
 

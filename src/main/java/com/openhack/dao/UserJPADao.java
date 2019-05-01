@@ -1,15 +1,12 @@
 package com.openhack.dao;
 
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +39,14 @@ public class UserJPADao implements UserDao {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+     * @see com.lab2.dao.UserDao#findByIds(List<Long> ids)
+     */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
 	public List<UserProfile> findByIds(List<Long> ids){
-		TypedQuery<UserProfile> query = entityManager.createQuery("from userprofile where id in :ids", UserProfile.class);
+		Query query = entityManager.createNativeQuery("select * from userprofile where id in :ids", UserProfile.class);
 		query.setParameter("ids", ids);
 		if (query.getResultList().isEmpty()) return null;
 		return query.getResultList();

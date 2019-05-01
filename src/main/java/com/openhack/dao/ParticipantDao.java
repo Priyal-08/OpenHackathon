@@ -3,10 +3,14 @@ package com.openhack.dao;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.openhack.domain.Participant;
 import com.openhack.domain.Team;
 
 public interface ParticipantDao {
 
+	public Team store(Team team);
+	
+	public Participant store(Participant participant);
 	/*
 	 * Get list of hackathon ids by user id.
 	 *

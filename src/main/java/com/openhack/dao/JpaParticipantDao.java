@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.openhack.domain.Participant;
 import com.openhack.domain.Team;
 
 @Repository
@@ -32,6 +33,7 @@ public class JpaParticipantDao implements ParticipantDao{
 		return query.getResultList();
 	}
 
+	@Transactional
 	@Override
 	public Team findTeamByUserIdAndHackathonId(long userId, long hackathonId) {
 		Query query = entityManager.createNativeQuery("SELECT t.* FROM team t, participant p where t.id = p.team_id AND t.hackathon_id = :hackathonId AND p.user_id = :userId", Team.class);
@@ -39,6 +41,18 @@ public class JpaParticipantDao implements ParticipantDao{
 		query.setParameter("hackathonId", hackathonId);
 		if (query.getResultList().isEmpty()) return null;
 		return (Team)query.getResultList().get(0);
+	}
+
+	@Transactional
+	@Override
+	public Team store(Team team) {
+		return entityManager.merge(team);
+	}
+
+	@Transactional
+	@Override
+	public Participant store(Participant participant) {
+		return entityManager.merge(participant);
 	}
 
 }

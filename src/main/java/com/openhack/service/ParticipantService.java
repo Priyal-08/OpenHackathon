@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import com.openhack.dao.HackathonDao;
 import com.openhack.dao.ParticipantDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Hackathon;
+import com.openhack.domain.Participant;
 import com.openhack.domain.Team;
 import com.openhack.domain.UserProfile;
 import com.openhack.exception.NotFoundException;
@@ -118,6 +120,74 @@ public class ParticipantService {
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	/**
+	 * Register team for hackathon
+	 *
+	 * @param userId: the user id
+	 * @param hackathonId: the hackathonId id
+	 * @param members: team members
+	 * @return ResponseEntity: the hackathon details object on success/ error message on error
+	 */
+	@Transactional
+	public ResponseEntity<?> registerTeam(long userId, long hackathonId, String teamName, List<Long> members) {
+		try {
+			// TODO: Team name should be unique so if ateam with given name already exist, return BadRequest.
+			Hackathon hackathon = hackathonDao.findById(hackathonId);
+			if(hackathon==null)
+				throw new NotFoundException("Hackathon", "Id", hackathonId);
+			
+			UserProfile teamLead = userDao.findById(userId);
+			if(teamLead==null)
+				throw new NotFoundException("User", "Id", userId);
+			
+			List<UserProfile> memberList = new ArrayList<UserProfile>();
+			if(members!=null && members.size()>0)
+				memberList = userDao.findByIds(members);
+			System.out.println("memberList: " + memberList.size());
+			
+			List<Participant> participants = new ArrayList<Participant>();
+			final Team team = participantDao.store(new Team(hackathon, teamLead, teamName, participants, false, 0, null, null));
+			
+			MyTeamResponse myTeamResponse = null;
+			if(team!=null) {
+				float discountedAmount = hackathon.getFees()*(100-hackathon.getDiscount());
+				participants = memberList.stream().map(member->participantDao.store(new Participant(
+						team,
+						member,
+						"PAYMENT_URL",
+						false,
+						"TITLE",
+						hackathon.getSponsors().contains(member.getOrganization())?discountedAmount:hackathon.getFees()
+						))).collect(Collectors.toList());
+				
+				team.setMembers(participants);
+				List<ParticipantResponse> participantsResponse = team.getMembers().stream().map(p->new ParticipantResponse(
+						p.getUser().getId(),
+						p.getUser().getName(),
+						p.getTitle(),
+						p.getPaymentDone())).collect(Collectors.toList());
+				myTeamResponse = new MyTeamResponse(
+						hackathon.getId(),
+						hackathon.getEventName(),
+						team.getId(), team.getName(),
+						participantsResponse,
+						team.getPaymentDone(),
+						team.getScore(),
+						team.getSubmissionURL(),
+						team.getTeamLead().getId());
+			}
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
