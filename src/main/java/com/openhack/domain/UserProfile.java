@@ -18,10 +18,10 @@ import javax.validation.constraints.Min;
 @Entity
 @Table(name = "USERPROFILE")
 public class UserProfile{
-	public UserProfile(long id, String name, String email, String title, Address address, String potraitURL,
+	public UserProfile(String firstname,String lastname, String email, String title, Address address, String potraitURL,
 			String aboutMe, String screenName, Organization organization) {
-		this.id = id;
-		this.name = name;
+		this.firstname = firstname;
+		this.lastname = lastname;
 		this.email = email;
 		this.title = title;
 		this.address = address;
@@ -29,6 +29,14 @@ public class UserProfile{
 		this.aboutMe = aboutMe;
 		this.screenName = screenName;
 		this.organization = organization;
+	}
+	
+	public UserProfile(String firstname,String lastname, String email) {
+		super();
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.email = email;
+		
 	}
 
 	/** The id. */
@@ -38,8 +46,12 @@ public class UserProfile{
 	private long id;
 	
 	/** The name. */
-	@Column(name = "NAME")
-	private String name;
+	@Column(name = "FIRSTNAME")
+	private String firstname;
+
+	/** The name. */
+	@Column(name = "LASTNAME")
+	private String lastname;
 	
 	/** The email. */
 	//TODO: add unique constraint
@@ -103,12 +115,20 @@ public class UserProfile{
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstname;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstname) {
+		this.firstname = firstname;
+	}
+	
+	public String getLastName() {
+		return lastname;
+	}
+
+	public void setLastName(String lastname) {
+		this.lastname = lastname;
 	}
 
 	public String getEmail() {
@@ -174,6 +194,5 @@ public class UserProfile{
 	public void setPendingMembership(Organization pendingMembership) {
 		this.pendingMembership = pendingMembership;
 	}
-	
 
 }

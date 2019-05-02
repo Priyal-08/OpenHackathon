@@ -112,7 +112,7 @@ public class ParticipantService {
 			{
 				List<ParticipantResponse> participants = team.getMembers().stream().map(p->new ParticipantResponse(
 						p.getUser().getId(),
-						p.getUser().getName(),
+						p.getUser().getFirstName(),
 						p.getTitle(),
 						p.getPaymentDone())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
@@ -174,7 +174,7 @@ public class ParticipantService {
 				team.setMembers(participants);
 				List<ParticipantResponse> participantsResponse = team.getMembers().stream().map(p->new ParticipantResponse(
 						p.getUser().getId(),
-						p.getUser().getName(),
+						p.getUser().getFirstName(),
 						p.getTitle(),
 						p.getPaymentDone())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(

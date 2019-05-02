@@ -80,5 +80,7 @@ public class UserAccount implements Serializable{
 		this.attempts = attempts;
 		this.status = status;
 	}
+	
+
 
 }

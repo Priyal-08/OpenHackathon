@@ -2,6 +2,7 @@ package com.openhack.dao;
 
 import java.util.List;
 
+import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 
 /**
@@ -17,6 +18,8 @@ public interface UserDao{
 	 * @throws Exception the exception
 	 */
 	public UserProfile store(UserProfile user) throws Exception;
+	
+	public UserAccount store(UserAccount user) throws Exception;
 	
 	/**
 	 * Find by username.
@@ -41,5 +44,7 @@ public interface UserDao{
 	 * @return the user
 	 */
 	public UserProfile findById(long id);
+	
+	public UserProfile findByEmail(String email);
 	
 }

@@ -101,7 +101,7 @@ public class HackathonService {
 					hackathon.getFees(),
 					hackathon.getJudges().stream().map(judge->new Judge(
 							judge.getId(), 
-							judge.getName())).collect(Collectors.toList()),
+							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),
@@ -143,7 +143,7 @@ public class HackathonService {
 					hackathon.getFees(),
 					hackathon.getJudges().stream().map(judge->new Judge(
 							judge.getId(), 
-							judge.getName())).collect(Collectors.toList()),
+							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),
@@ -181,7 +181,7 @@ public class HackathonService {
 					hackathon.getFees(),
 					hackathon.getJudges().stream().map(judge->new Judge(
 							judge.getId(), 
-							judge.getName())).collect(Collectors.toList()),
+							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),
@@ -263,7 +263,7 @@ public class HackathonService {
 					hackathon.getFees(),
 					hackathon.getJudges().stream().map(judge->new Judge(
 							judge.getId(), 
-							judge.getName())).collect(Collectors.toList()),
+							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
 					hackathon.getSponsors(),

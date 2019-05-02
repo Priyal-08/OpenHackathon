@@ -10,6 +10,8 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.openhack.domain.Hackathon;
+import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 
 /**
@@ -27,17 +29,33 @@ public class UserJPADao implements UserDao {
      */
     @Override
 	public UserProfile store(UserProfile user) throws Exception{
-    	
-    	UserProfile u = new UserProfile();
-		u = entityManager.merge(user);
-    	return u;
+		return entityManager.merge(user);
+	}
+    
+    /* (non-Javadoc)
+     * @see com.lab2.dao.EmployeeDao#store(com.lab2.domain.Employee)
+     */
+    @Override
+	public UserAccount store(UserAccount user) throws Exception{
+		return entityManager.merge(user);
 	}
 	
 	@Override
 	public UserProfile findByUsername(String username) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}	
+	
+	@Override
+	@Transactional
+	public UserProfile findByEmail(String email) {
+			Query query = entityManager.createNativeQuery("SELECT * FROM userprofile u WHERE u.email LIKE :email", UserProfile.class);
+			query.setParameter("email", email);
+			if (query.getResultList().isEmpty()) return null;
+			return (UserProfile)query.getResultList().get(0);
+		}
+
+
 	
 	/* (non-Javadoc)
      * @see com.lab2.dao.UserDao#findByIds(List<Long> ids)
