@@ -27,6 +27,9 @@ import com.openhack.exception.NotFoundException;
 @Service
 public class ParticipantService {
 	
+	@Autowired
+	private EmailService emailService;
+	
 	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
@@ -183,6 +186,9 @@ public class ParticipantService {
 						team.getScore(),
 						team.getSubmissionURL(),
 						team.getTeamLead().getId());
+				String subject = String.format("%s Registration Payment", hackathon.getEventName());
+				String text = String.format("Please make a payment using link below to confirm your registration for hackathon. \n %s \n\n\n Team %s", "PAYMENT_URL", hackathon.getEventName());
+				participants.forEach((p) -> emailService.sendSimpleMessage(p.getUser().getEmail(), subject , text));
 			}
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
