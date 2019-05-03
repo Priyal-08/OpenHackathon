@@ -20,6 +20,10 @@ import com.openhack.exception.DuplicateException;
 
 @Service
 public class UserService {
+	
+	@Autowired
+	private EmailService emailService;
+	
 	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
@@ -28,13 +32,18 @@ public class UserService {
 	@Autowired UserResponse response;
 
 	@Transactional
-	public String signinUser(String username, String password) {
-		return "200";
+	public ResponseEntity<?>  signinUser(String email, String password){
+		UserProfile userProfile=null;
+		userProfile = userDao.findByEmail(email);
+		if (userProfile!=null) {
+			response = new UserResponse(email);	
+		}
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 	}
 	
 	@Transactional
 	public ResponseEntity<?>  signupUser(String firstname, String lastname, String email, String password) throws Exception {
-
 		try {
 			UserProfile userProfile=null;
 			UserAccount userAccount=null;
@@ -55,7 +64,10 @@ public class UserService {
 			
 			userAccount = new UserAccount(userProfile,password,0,"Pending Verification");
 			userAccount = userDao.store(userAccount);
-	
+			String subject = String.format("Open Hackathon Account Verification");
+			String text = String.format("Please confirm your registration for hackathon by following the link below. \n %s", 
+					"Dummy link");
+			emailService.sendSimpleMessage(userProfile.getEmail(), subject , text);
 			response = new UserResponse(userProfile.getEmail());					
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
@@ -63,7 +75,6 @@ public class UserService {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
-		
 	}
 		
 		public static boolean isEmailValid(String email) 
