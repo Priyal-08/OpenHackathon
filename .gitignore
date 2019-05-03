@@ -7,3 +7,4 @@ target/surefire-reports/2019-04-20T18-02-25_931-jvmRun1.dumpstream
 target/*
 HELP.md
 .classpath
+/target/
