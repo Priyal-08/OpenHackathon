@@ -32,8 +32,14 @@ public class UserService {
 	@Autowired UserResponse response;
 
 	@Transactional
-	public String signinUser(String username, String password) {
-		return "200";
+	public ResponseEntity<?>  signinUser(String email, String password) throws Exception {
+		UserProfile userProfile=null;
+		userProfile = userDao.findByEmail(email);
+		if (userProfile!=null) {
+			response = new UserResponse(email);	
+		}
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 	}
 	
 	@Transactional

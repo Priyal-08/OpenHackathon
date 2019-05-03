@@ -32,11 +32,12 @@ public class UserController {
 	@Autowired ErrorResponse errorResponse;
 	
 	@RequestMapping(value = "/signin", method = RequestMethod.POST )
-	public String signin(
-			@RequestParam(value = "username") String username,
-            @RequestParam(value = "password") String password) {
+	public ResponseEntity<?> signin( @RequestBody Map<String, Object> payload) throws Exception {
+		 System.out.println(payload);
+		 String email = (String) payload.get("username");
+		 String password = (String) payload.get("password");
 		
-		return userService.signinUser(username, password);
+		return userService.signinUser(email, password);
 	}
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.POST )
