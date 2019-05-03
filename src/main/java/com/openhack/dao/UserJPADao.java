@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.openhack.domain.Hackathon;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
+import com.openhack.domain.UserRole;
 
 /**
  * The Class JpaEmployeeDao.
@@ -37,6 +38,11 @@ public class UserJPADao implements UserDao {
      */
     @Override
 	public UserAccount store(UserAccount user) throws Exception{
+		return entityManager.merge(user);
+	}
+    
+    @Override
+	public UserRole store(UserRole user) throws Exception{
 		return entityManager.merge(user);
 	}
 	

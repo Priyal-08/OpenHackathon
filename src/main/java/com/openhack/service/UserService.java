@@ -1,5 +1,7 @@
 package com.openhack.service;
 
+import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,7 @@ import com.openhack.contract.UserResponse;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
+import com.openhack.domain.UserRole;
 import com.openhack.exception.DuplicateException;
 
 @Service
@@ -47,8 +50,9 @@ public class UserService {
 		try {
 			UserProfile userProfile=null;
 			UserAccount userAccount=null;
+			UserRole userRole= null;
 	
-			if (!isEmailValid(email)) { // if email is invalid 
+			if (!validateEmail(email)) { // if email is invalid 
 				errorResponse = new ErrorResponse("BadRequest", "400", "Invalid e-mail address");
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}		
@@ -61,9 +65,21 @@ public class UserService {
 			userProfile = new UserProfile(firstname, lastname, email);
 			
 			userProfile = userDao.store(userProfile);
-			
-			userAccount = new UserAccount(userProfile,password,0,"Pending Verification");
+			UUID authcode = UUID.randomUUID();
+		
+			userAccount = new UserAccount(userProfile,password,0,"Pending Verification", authcode.toString());
 			userAccount = userDao.store(userAccount);
+			
+			
+		    String emailDomain = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
+		    
+		    if(emailDomain.equals("sjsu.edu"))	// add admin role
+				userRole = new UserRole(userProfile, "Admin");
+			else
+				userRole = new UserRole(userProfile, "Hacker");
+		    
+			userRole = userDao.store(userRole);
+			
 			String subject = String.format("Open Hackathon Account Verification");
 			String text = String.format("Please confirm your registration for hackathon by following the link below. \n %s", 
 					"Dummy link");
@@ -76,14 +92,22 @@ public class UserService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 	}
+	
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
+		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+		public static boolean validateEmail(String emailStr) {
+		        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailStr);
+		        return matcher.find();
+		}
+		
 		
 		public static boolean isEmailValid(String email) 
 	    { 
-	        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
 	                            "[a-zA-Z0-9_+&*-]+)*@" + 
 	                            "(?:[a-zA-Z0-9-]+\\.)+[a-z" + 
 	                            "A-Z]{2,7}$"; 
-	                           
 	        Pattern pat = Pattern.compile(emailRegex); 
 	        if (email == null) 
 	            return false; 

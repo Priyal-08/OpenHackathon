@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
+import com.openhack.domain.UserRole;
 
 /**
  * The Interface EmployeeDao.
@@ -21,6 +22,8 @@ public interface UserDao{
 	
 	public UserAccount store(UserAccount user) throws Exception;
 	
+	public UserRole store(UserRole user) throws Exception;
+
 	/**
 	 * Find by username.
 	 *
