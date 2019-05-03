@@ -28,4 +28,7 @@ public interface ParticipantDao {
 	public Team findTeamByUserIdAndHackathonId(long userId, long hackathonId);
 	
 	
+	public Team findTeamByNameAndHackathon(String teamName, long hackathonId);
+	
+	
 }

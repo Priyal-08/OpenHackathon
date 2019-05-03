@@ -55,4 +55,14 @@ public class JpaParticipantDao implements ParticipantDao{
 		return entityManager.merge(participant);
 	}
 
+	@Transactional
+	@Override
+	public Team findTeamByNameAndHackathon(String teamName, long hackathonId) {
+		Query query = entityManager.createNativeQuery("SELECT t.* FROM team t WHERE t.hackathon_id = :hackathonId AND t.name LIKE :teamName", Team.class);
+		query.setParameter("hackathonId", hackathonId);
+		query.setParameter("teamName", teamName);
+		if (query.getResultList().isEmpty()) return null;
+		return (Team)query.getResultList().get(0);
+	}
+
 }

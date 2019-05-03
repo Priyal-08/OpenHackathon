@@ -1,6 +1,7 @@
 package com.openhack.service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import com.openhack.domain.Hackathon;
 import com.openhack.domain.Participant;
 import com.openhack.domain.Team;
 import com.openhack.domain.UserProfile;
+import com.openhack.exception.DuplicateException;
 import com.openhack.exception.NotFoundException;
 
 @Service
@@ -142,7 +144,6 @@ public class ParticipantService {
 	@Transactional
 	public ResponseEntity<?> registerTeam(long userId, long hackathonId, String teamName, List<Long> members) {
 		try {
-			// TODO: Team name should be unique so if ateam with given name already exist, return BadRequest.
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", hackathonId);
@@ -150,6 +151,10 @@ public class ParticipantService {
 			UserProfile teamLead = userDao.findById(userId);
 			if(teamLead==null)
 				throw new NotFoundException("User", "Id", userId);
+			
+			Team t = participantDao.findTeamByNameAndHackathon(teamName, hackathonId);
+			if(t!=null)
+				throw new DuplicateException("Team", "name", teamName);
 			
 			List<UserProfile> memberList = new ArrayList<UserProfile>();
 			if(members!=null && members.size()>0)
@@ -161,11 +166,12 @@ public class ParticipantService {
 			
 			MyTeamResponse myTeamResponse = null;
 			if(team!=null) {
+				String baseURL = "https://openhackathon.com/pay/";
 				float discountedAmount = hackathon.getFees()*(100-hackathon.getDiscount());
 				participants = memberList.stream().map(member->participantDao.store(new Participant(
 						team,
 						member,
-						"PAYMENT_URL",
+						baseURL + UUID.randomUUID(),
 						false,
 						"TITLE",
 						hackathon.getSponsors().contains(member.getOrganization())?discountedAmount:hackathon.getFees()
@@ -187,8 +193,7 @@ public class ParticipantService {
 						team.getSubmissionURL(),
 						team.getTeamLead().getId());
 				String subject = String.format("%s Registration Payment", hackathon.getEventName());
-				String text = String.format("Please make a payment using link below to confirm your registration for hackathon. \n %s \n\n\n Team %s", "PAYMENT_URL", hackathon.getEventName());
-				participants.forEach((p) -> emailService.sendSimpleMessage(p.getUser().getEmail(), subject , text));
+				participants.forEach((p) -> emailService.sendSimpleMessage(p.getUser().getEmail(), subject , generateMailText(p, hackathon)));
 			}
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
@@ -196,10 +201,18 @@ public class ParticipantService {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
+		catch(DuplicateException e) {
+			errorResponse = new ErrorResponse("Conflict", "409", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
 		catch(Exception e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
+	}
+	
+	private String generateMailText(Participant p, Hackathon hackathon) {
+		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), p.getPaymentURL(), hackathon.getEventName());
 	}
 
 }
