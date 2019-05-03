@@ -1,5 +1,6 @@
 package com.openhack.controller;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.transaction.Transactional;
@@ -7,6 +8,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +22,7 @@ import com.openhack.service.UserService;
 @RestController
 @Transactional
 @RequestMapping("/")
+@CrossOrigin
 
 public class UserController {
 	/** The employee service. */
@@ -36,12 +40,12 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.POST )
-	public ResponseEntity<?> signup(
-			@RequestParam(value = "firstname") String firstname,
-			@RequestParam(value = "lastname") String lastname,
-			@RequestParam(value = "email") String email,
-            @RequestParam(value = "password") String password) {
-		
+	public ResponseEntity<?> signup( @RequestBody Map<String, Object> payload) {
+		  System.out.println(payload);
+		  String firstname = (String) payload.get("firstname");
+		  String lastname = (String) payload.get("lastname");
+		  String email = (String) payload.get("email");
+		  String password = (String) payload.get("password");
 		try {
 			return userService.signupUser(firstname,lastname,email,password);
 		} catch (Exception e) {
