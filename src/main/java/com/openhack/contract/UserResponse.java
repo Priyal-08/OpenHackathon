@@ -7,6 +7,9 @@ public class UserResponse {
 	
 	private String email;
 	
+	private String status;
+
+	
 	public UserResponse() {}
 	
 	public String getEmail() {
@@ -16,10 +19,24 @@ public class UserResponse {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getStatus() {
+		return status;
+	}
 
-	public UserResponse(String email) {
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public UserResponse(String email, String status) {
 		super();
 		this.email = email;
+		this.status = status;
+	}
+	
+	public UserResponse(String status) {
+		super();
+		this.status = status;
 	}
 
 }

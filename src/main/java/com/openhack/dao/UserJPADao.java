@@ -59,9 +59,15 @@ public class UserJPADao implements UserDao {
 			query.setParameter("email", email);
 			if (query.getResultList().isEmpty()) return null;
 			return (UserProfile)query.getResultList().get(0);
-		}
-
-
+	}
+	
+	@Transactional
+	public UserAccount findByAuthCode(String authcode) {
+			Query query = entityManager.createNativeQuery("SELECT * FROM useraccount u WHERE u.authcode LIKE :authcode", UserAccount.class);
+			query.setParameter("authcode", authcode);
+			if (query.getResultList().isEmpty()) return null;
+			return (UserAccount)query.getResultList().get(0);
+	}
 	
 	/* (non-Javadoc)
      * @see com.lab2.dao.UserDao#findByIds(List<Long> ids)

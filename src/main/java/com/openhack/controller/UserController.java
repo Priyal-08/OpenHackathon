@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,6 +55,13 @@ public class UserController {
 			errorResponse = new ErrorResponse("BadRequest", "400", "Invalid e-mail address");
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}			
-	}	
+	}		
+	
+	@RequestMapping(value = "/verify/{authcode}", method = RequestMethod.GET )
+	public ResponseEntity<?> verify(
+			@PathVariable("authcode") String authcode) {
+			return userService.verify(authcode);
+		}	
 }
+
 

@@ -78,13 +78,36 @@ public class UserService {
 			else
 				userRole = new UserRole(userProfile, "Hacker");
 		    
-			userRole = userDao.store(userRole);
+			userRole = userDao.store(userRole);			
 			
+			String baseURL = "http://localhost:5000";
+			String verifyURL = "/verify/" + authcode.toString();
 			String subject = String.format("Open Hackathon Account Verification");
 			String text = String.format("Please confirm your registration for hackathon by following the link below. \n %s", 
-					"Dummy link");
+					baseURL + verifyURL);
 			emailService.sendSimpleMessage(userProfile.getEmail(), subject , text);
 			response = new UserResponse(userProfile.getEmail());					
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	@Transactional
+	public ResponseEntity<?> verify(String authcode) {
+		try {
+			UserAccount userAccount=null;
+			userAccount = userDao.findByAuthCode(authcode);
+			
+			if (userAccount == null) {	// if auth code not found in DB
+				errorResponse = new ErrorResponse("BadRequest", "400", "Invalid authcode");
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}		
+			userAccount.setStatus("Active");
+			
+			response = new UserResponse(userAccount.getStatus());					
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(Exception e) {

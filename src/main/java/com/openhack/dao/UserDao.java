@@ -50,4 +50,7 @@ public interface UserDao{
 	
 	public UserProfile findByEmail(String email);
 	
+	public UserAccount findByAuthCode(String authcode);
+
+	
 }
