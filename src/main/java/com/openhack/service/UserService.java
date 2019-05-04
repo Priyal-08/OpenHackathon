@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.hash.Hashing;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.UserResponse;
 import com.openhack.dao.UserDao;
@@ -41,10 +42,10 @@ public class UserService {
 		try {
 			UserAccount userAccount=null;
 			int attempts = 0;
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-
-			userAccount = userDao.findByUserAndPassword(username,hash.toString());
+			final String hashedPassword = Hashing.sha256()
+			        .hashString(password, StandardCharsets.UTF_8)
+			        .toString();
+			userAccount = userDao.findByUserAndPassword(username,hashedPassword);
 			
 			if (userAccount==null) {
 				errorResponse = new ErrorResponse("BadRequest", "400","Invalid username/password");
@@ -86,10 +87,11 @@ public class UserService {
 			userProfile = userDao.store(userProfile);
 			UUID authcode = UUID.randomUUID();
 			
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-		
-			userAccount = new UserAccount(userProfile,hash.toString(),0,"Pending Verification", authcode.toString());
+			final String hashedPassword = Hashing.sha256()
+			        .hashString(password, StandardCharsets.UTF_8)
+			        .toString();
+
+			userAccount = new UserAccount(userProfile,hashedPassword,0,"Pending Verification", authcode.toString());
 			userAccount = userDao.store(userAccount);
 				
 		    String emailDomain = email.substring(email.lastIndexOf("@") + 1).toLowerCase();

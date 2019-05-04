@@ -71,7 +71,7 @@ public class UserJPADao implements UserDao {
 	
 	@Transactional
 	public UserAccount findByUserAndPassword(String username, String password) {
-			Query query = entityManager.createNativeQuery("SELECT ua.* FROM useraccount ua, userprofile up WHERE ua.userid = up.id and up.email = :username and ua.password = :password");
+			Query query = entityManager.createNativeQuery("SELECT ua.* FROM useraccount ua, userprofile up WHERE ua.userid = up.id and ua.status = 'Active' and up.email LIKE :username and ua.password LIKE :password", UserAccount.class);
 			query.setParameter("username", username);
 			query.setParameter("password", password);			
 			if (query.getResultList().isEmpty()) return null;
