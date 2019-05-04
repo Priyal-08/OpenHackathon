@@ -51,6 +51,9 @@ public interface UserDao{
 	public UserProfile findByEmail(String email);
 	
 	public UserAccount findByAuthCode(String authcode);
+	
+	public UserAccount findByUserAndPassword(String username, String password);
+
 
 	
 }

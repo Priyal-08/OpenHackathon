@@ -69,6 +69,15 @@ public class UserJPADao implements UserDao {
 			return (UserAccount)query.getResultList().get(0);
 	}
 	
+	@Transactional
+	public UserAccount findByUserAndPassword(String username, String password) {
+			Query query = entityManager.createNativeQuery("SELECT ua.* FROM useraccount ua, userprofile up WHERE ua.userid = up.id and up.email = :username and ua.password = :password");
+			query.setParameter("username", username);
+			query.setParameter("password", password);			
+			if (query.getResultList().isEmpty()) return null;
+			return (UserAccount)query.getResultList().get(0);
+	}
+	
 	/* (non-Javadoc)
      * @see com.lab2.dao.UserDao#findByIds(List<Long> ids)
      */
