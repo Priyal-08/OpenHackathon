@@ -61,6 +61,15 @@ public class UserJPADao implements UserDao {
 			return (UserProfile)query.getResultList().get(0);
 	}
 	
+	@Override
+	@Transactional
+	public UserProfile findByScreenname(String screenname) {
+			Query query = entityManager.createNativeQuery("SELECT * FROM userprofile u WHERE u.screenname LIKE :screenname", UserProfile.class);
+			query.setParameter("screenname", screenname);
+			if (query.getResultList().isEmpty()) return null;
+			return (UserProfile)query.getResultList().get(0);
+	}
+	
 	@Transactional
 	public UserAccount findByAuthCode(String authcode) {
 			Query query = entityManager.createNativeQuery("SELECT * FROM useraccount u WHERE u.authcode LIKE :authcode", UserAccount.class);

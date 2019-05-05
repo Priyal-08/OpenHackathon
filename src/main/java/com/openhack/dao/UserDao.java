@@ -54,6 +54,7 @@ public interface UserDao{
 	
 	public UserAccount findByUserAndPassword(String username, String password);
 
+	public UserProfile findByScreenname(String screenname);
 
 	
 }

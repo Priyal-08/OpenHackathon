@@ -77,7 +77,7 @@ public class UserProfile{
 	/** The Screenname */
 	
 	//TODO: add unique constraint
-	@Min(3)
+//	@Min(3)
 	@Column(name = "SCREENNAME")
 	private String screenName;
 	

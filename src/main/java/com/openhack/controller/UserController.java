@@ -62,6 +62,28 @@ public class UserController {
 			@PathVariable("authcode") String authcode) {
 			return userService.verify(authcode);
 		}	
+	
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET )
+	public ResponseEntity<?> getUserProfile(
+			@PathVariable("id") long id) {
+			return userService.getUserProfile(id);
+		}	
+
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.PUT )
+	public ResponseEntity<?> updateUserProfile(
+		   @PathVariable("id") long id,
+		   @RequestBody Map<String, Object> payload) {
+		  System.out.println(payload);
+
+		try {
+			return userService.updateUserProfile(id,payload); // firstname,lastname,city, state, street, zip, email, potrait_url, screenname, title, name, orgid);
+			//return userService.getUserProfile(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			errorResponse = new ErrorResponse("BadRequest", "400", "Invalid e-mail address");
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}			
+	}	
 }
 
 
