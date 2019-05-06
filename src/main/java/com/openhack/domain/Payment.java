@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,8 +23,19 @@ public class Payment {
 	@Column(name = "AMOUNT")
 	private long amount;
 	
-	public Payment(long amount) {
+	@ManyToOne(targetEntity=UserProfile.class)
+	@JoinColumn(name = "USERID",referencedColumnName="ID")
+	private UserProfile user;
+	
+	@ManyToOne(targetEntity=Hackathon.class)
+	@JoinColumn(name = "HACKATHONID",referencedColumnName="ID")
+	private Hackathon hackathon;
+
+	
+	public Payment(long amount, UserProfile user,Hackathon hackathon ) {
 		this.amount = amount;
+		this.user = user;
+		this.hackathon = hackathon;
 	}
 
 	public long getId() {
@@ -41,4 +54,21 @@ public class Payment {
 		this.amount = amount;
 	}
 
+	public UserProfile getUser() {
+		return user;
+	}
+
+	public void setUser(UserProfile user) {
+		this.user = user;
+	}
+
+	public Hackathon getHackathon() {
+		return hackathon;
+	}
+
+	public void setHackathon(Hackathon hackathon) {
+		this.hackathon = hackathon;
+	}
+	
+	
 }

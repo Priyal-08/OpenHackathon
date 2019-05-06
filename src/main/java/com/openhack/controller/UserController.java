@@ -57,11 +57,24 @@ public class UserController {
 		}			
 	}		
 	
-	@RequestMapping(value = "/verify/{authcode}", method = RequestMethod.GET )
-	public ResponseEntity<?> verify(
-			@PathVariable("authcode") String authcode) {
+//	@RequestMapping(value = "/verify/{authcode}", method = RequestMethod.GET )
+//	public ResponseEntity<?> verify(
+//			@PathVariable("authcode") String authcode) {
+//			return userService.verify(authcode);
+//		}	
+	
+	@RequestMapping(value = "/verify", method = RequestMethod.POST )
+	public ResponseEntity<?> verify( @RequestBody Map<String, Object> payload) {
+		  System.out.println(payload);
+		  String authcode = (String) payload.get("authcode");
+		try {
 			return userService.verify(authcode);
-		}	
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			errorResponse = new ErrorResponse("BadRequest", "400", "Invalid token");
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}			
+	}		
 	
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET )
 	public ResponseEntity<?> getUserProfile(
