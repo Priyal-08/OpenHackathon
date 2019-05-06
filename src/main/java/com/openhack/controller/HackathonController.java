@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import com.openhack.service.HackathonService;
 /**
  * The Class HackathonController.
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/hackathon")
 public class HackathonController {
@@ -33,16 +35,17 @@ public class HackathonController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> createHackathon( @RequestBody Map<String, Object> payload) {
+		System.out.println(payload);
 		String eventName = (String) payload.get("eventName");
 		String description = (String) payload.getOrDefault("description",null);
 		String startDate = (String) payload.get("startDate");
 		String endDate = (String) payload.get("endDate");
-		long fees = (long) payload.get("fees");
-		int minTeamSize = (int) payload.get("minTeamSize");
-		int maxTeamSize = (int) payload.get("maxTeamSize");
+		long fees = Long.valueOf((String) payload.get("fees"));
+		int minTeamSize = Integer.valueOf((String) payload.get("minTeamSize"));
+		int maxTeamSize =  Integer.valueOf((String) payload.get("maxTeamSize"));
 		List<Long> judges = (List<Long>)payload.getOrDefault("judges", new ArrayList<Long>());
 		List<Long> sponsors = (List<Long>)payload.getOrDefault("sponsors", new ArrayList<Long>());
-		float discount = (float) payload.getOrDefault("discount", 0);
+		float discount = Float.valueOf((String) payload.getOrDefault("discount", "0"));
 		return hackathonService.createHackathon(eventName, description, startDate, endDate, fees,
 				minTeamSize, maxTeamSize, judges, sponsors, discount);
 	}
@@ -80,16 +83,17 @@ public class HackathonController {
 	public ResponseEntity<?> updateHackathon(
 			@PathVariable("id") long id,
 			@RequestBody Map<String, Object> payload) {
+		System.out.println(payload);
 		String eventName = (String) payload.get("eventName");
 		String description = (String) payload.getOrDefault("description",null);
 		String startDate = (String) payload.get("startDate");
 		String endDate = (String) payload.get("endDate");
-		long fees = (long) payload.get("fees");
-		int minTeamSize = (int) payload.get("minTeamSize");
-		int maxTeamSize = (int) payload.get("maxTeamSize");
+		long fees = Long.valueOf((String) payload.get("fees"));
+		int minTeamSize = Integer.valueOf((String) payload.get("minTeamSize"));
+		int maxTeamSize =  Integer.valueOf((String) payload.get("maxTeamSize"));
 		List<Long> judges = (List<Long>)payload.getOrDefault("judges", new ArrayList<Long>());
 		List<Long> sponsors = (List<Long>)payload.getOrDefault("sponsors", new ArrayList<Long>());
-		float discount = (float) payload.getOrDefault("discount", 0);
+		float discount = Float.valueOf((String) payload.getOrDefault("discount", "0"));
 		return hackathonService.updateHackathon(id, eventName, description, startDate, endDate, fees,
 				minTeamSize, maxTeamSize, judges, sponsors, discount);
 	}

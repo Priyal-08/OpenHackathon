@@ -66,7 +66,7 @@ public class HackathonService {
 		Hackathon hackathon=null;
 		Date today = new Date();
 		try {
-			SimpleDateFormat formatter =new SimpleDateFormat("dd/MM/yyyy"); 
+			SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd"); 
 			Date startDate = formatter.parse(sDate);
 			Date endDate = formatter.parse(eDate);
 			
@@ -223,7 +223,7 @@ public class HackathonService {
 		Hackathon hackathon=null;
 		Date today = new Date();
 		try {
-			SimpleDateFormat formatter =new SimpleDateFormat("dd/MM/yyyy"); 
+			SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd"); 
 			Date startDate = formatter.parse(sDate);
 			Date endDate = formatter.parse(eDate);
 			// If the event name is null, return BadRequest.
