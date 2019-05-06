@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.openhack.contract.ErrorResponse;
+import com.openhack.contract.MemberRequest;
+import com.openhack.contract.UserResponse;
 import com.openhack.service.UserService;
 
 @RestController
@@ -97,6 +99,25 @@ public class UserController {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}			
 	}	
+
+	@RequestMapping(value = "/user/{id}/join/{orgName}", method = RequestMethod.GET )
+	public ResponseEntity<?> joinOrganization(
+			@PathVariable("id") long id,
+			@PathVariable("orgName") String orgName) {
+			return userService.joinOrganization(id, orgName);
+		}	
+
+	@RequestMapping(value = "/user/approve", method = RequestMethod.POST )
+	public ResponseEntity<?> approveOrganization(
+			@RequestBody MemberRequest request) {
+			return userService.approveRequest(request);
+		}	
+
+	@RequestMapping(value = "/user/leave", method = RequestMethod.POST )
+	public ResponseEntity<?> leaveOrganization(
+			@RequestBody UserResponse user) {
+			return userService.leaveOrganization(user);
+		}	
 }
 
 

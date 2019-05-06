@@ -1,10 +1,11 @@
 package com.openhack.domain;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,7 +32,7 @@ public class Organization {
     private String name;
 	
 	/** The organization owner. */
-	@ManyToOne(targetEntity=UserProfile.class, optional=false)
+	@ManyToOne(targetEntity=UserProfile.class, optional=false, fetch=FetchType.LAZY)
 	@JoinColumn(name = "OWNER_ID",referencedColumnName="ID")
 	private UserProfile owner;
 	
@@ -42,17 +43,13 @@ public class Organization {
 	/** The organization address. */
 	@Embedded
     private Address address;
-	
+
 	/** The organization members. */
-	@OneToMany(mappedBy="organization")
+	@OneToMany(mappedBy="organization", fetch = FetchType.LAZY)
 	private List<UserProfile> members;
 	
-	/** The organization pending join requests. */
-	@OneToMany(mappedBy="pendingMembership")
-	private List<UserProfile> pendingMembers;
-	
 	/** The organization owner. */
-	@ManyToMany(mappedBy="sponsors")
+	@ManyToMany(mappedBy="sponsors", fetch = FetchType.LAZY)
 	private List<Hackathon> hackathons;
     
     /**
@@ -62,39 +59,50 @@ public class Organization {
     	// do nothing
     }
     
-    /**
-     * Instantiates a new organization.
-     *
-     * @param name the organization name
-     * @param owner the organization owner
-     * @param description the organization description
-     * @param address the organization address
-     */
-    public Organization(String name, UserProfile owner, String description, Address address ) {
-    	this.name = name;
-    	this.owner = owner;
-    	this.description = description;
-    	this.address = address;
-    	this.members = new ArrayList<UserProfile>();
-    }
     
-    /**
-    /**
-     * Instantiates a new organization.
-     *
-     * @param id the organization id
-     * @param name the organization name
-     * @param owner the organization owner
-     * @param description the organization description
-     * @param address the organization address
-     */
-    public Organization(long id, String name, UserProfile owner, String description, Address address ) {
-    	this.id = id;
-    	this.name = name;
-    	this.owner = owner;
-    	this.description = description;
-    	this.address = address; 	
-    }
+//    
+//    /**
+//     * Instantiates a new organization.
+//     *
+//     * @param name the organization name
+//     * @param owner the organization owner
+//     * @param description the organization description
+//     * @param address the organization address
+//     */
+//    public Organization(String name, UserProfile owner, String description, Address address ) {
+//    	this.name = name;
+//    	this.owner = owner;
+//    	this.description = description;
+//    	this.address = address;
+//    	this.members = new ArrayList<UserProfile>();
+//    }
+//    
+//    /**
+//    /**
+//     * Instantiates a new organization.
+//     *
+//     * @param id the organization id
+//     * @param name the organization name
+//     * @param owner the organization owner
+//     * @param description the organization description
+//     * @param address the organization address
+//     */
+//    public Organization(long id, String name, UserProfile owner, String description, Address address ) {
+//    	this.id = id;
+//    	this.name = name;
+//    	this.owner = owner;
+//    	this.description = description;
+//    	this.address = address; 	
+//    }
+
+	public Organization(String name, UserProfile owner, String description, Address address) {
+		super();
+		this.name = name;
+		this.owner = owner;
+		this.description = description;
+		this.address = address;
+	}
+
 
 	public long getId() {
 		return id;
@@ -151,5 +159,4 @@ public class Organization {
 	public void setMembers(List<UserProfile> members) {
 		this.members = members;
 	}
-
 }

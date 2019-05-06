@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
@@ -19,7 +20,7 @@ import javax.validation.constraints.Min;
 @Table(name = "USERPROFILE")
 public class UserProfile{
 	public UserProfile(String firstname,String lastname, String email, String title, Address address, String potraitURL,
-			String aboutMe, String screenName, Organization organization) {
+			String aboutMe, String screenName, Organization organization, String membershipStatus) {
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.email = email;
@@ -29,8 +30,17 @@ public class UserProfile{
 		this.aboutMe = aboutMe;
 		this.screenName = screenName;
 		this.organization = organization;
+		this.membershipStatus = membershipStatus;
 	}
 	
+	public String getMembershipStatus() {
+		return membershipStatus;
+	}
+
+	public void setMembershipStatus(String membershipStatus) {
+		this.membershipStatus = membershipStatus;
+	}
+
 	public UserProfile(String firstname,String lastname, String email) {
 		super();
 		this.firstname = firstname;
@@ -85,15 +95,42 @@ public class UserProfile{
 	@ManyToOne(targetEntity=Organization.class, optional=true)
 	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID")
 	private Organization organization;
-	
-	/** The organization. */
-	@ManyToOne(targetEntity=Organization.class, optional=true)
-	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID", insertable = false, updatable = false)
-	private Organization pendingMembership;
-	
+
 	@ManyToMany(mappedBy="judges")
 	private List<Hackathon> hackathons;
 	
+	@OneToMany(mappedBy="owner")
+	private List<Organization> ownedOrganizations;
+	
+	/** The Organization membershipStatus */
+	@Column(name = "MEMBERSHIP_STATUS")
+	private String membershipStatus;
+	
+	
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public List<Organization> getOwnedOrganizations() {
+		return ownedOrganizations;
+	}
+
+	public void setOwnedOrganizations(List<Organization> ownedOrganizations) {
+		this.ownedOrganizations = ownedOrganizations;
+	}
+
 	/**
 	 * Instantiates a new employee.
 	 */
@@ -185,14 +222,6 @@ public class UserProfile{
 
 	public void setOrganization(Organization organization) {
 		this.organization = organization;
-	}
-	
-	public Organization getPendingMembership() {
-		return pendingMembership;
-	}
-
-	public void setPendingMembership(Organization pendingMembership) {
-		this.pendingMembership = pendingMembership;
 	}
 
 }

@@ -1,16 +1,12 @@
 package com.openhack.service;
 
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.hash.Hashing;
 import com.openhack.contract.ErrorResponse;
-import com.openhack.contract.HackathonResponse;
-import com.openhack.contract.Judge;
+import com.openhack.contract.MemberRequest;
 import com.openhack.contract.UserResponse;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Address;
@@ -27,6 +22,7 @@ import com.openhack.domain.Organization;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 import com.openhack.domain.UserRole;
+import com.openhack.dao.OrganizationDao;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
 import com.openhack.exception.NotFoundException;
@@ -40,6 +36,9 @@ public class UserService {
 	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private OrganizationDao organizationDao;
 	
 	@Autowired ErrorResponse errorResponse;
 	@Autowired UserResponse response;
@@ -176,6 +175,7 @@ public class UserService {
 			}
 	
 			response = new UserResponse(
+					userProfile.getId(),
 					userProfile.getFirstName(), 
 					userProfile.getLastName(),
 					userProfile.getEmail(),
@@ -187,7 +187,9 @@ public class UserService {
 					userProfile.getPotraitURL(),
 					userProfile.getAboutMe(),
 					userProfile.getScreenName(),
-					orgName);
+					orgName,
+					userProfile.getMembershipStatus()
+					);
 					
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
@@ -260,6 +262,7 @@ public class UserService {
 			}
 
 			response = new UserResponse(
+					userProfile.getId(),
 					userProfile.getFirstName(), 
 					userProfile.getLastName(),
 					userProfile.getEmail(),
@@ -271,7 +274,8 @@ public class UserService {
 					userProfile.getPotraitURL(),
 					userProfile.getAboutMe(),
 					userProfile.getScreenName(),
-					orgName);
+					orgName,
+					userProfile.getMembershipStatus());
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
@@ -306,4 +310,143 @@ public class UserService {
 	            return false; 
 	        return pat.matcher(email).matches(); 
 	    } 	
+		
+		
+		public ResponseEntity<?> joinOrganization(long userId, String organizationName){
+			
+			try {
+				UserProfile user = userDao.findById(userId);
+				
+				if(user == null)
+					throw new NotFoundException("User", "Id", userId);
+				
+				Organization organization = organizationDao.findByOrganizationName(organizationName);
+				if(organization == null)
+					throw new NotFoundException("Orgnization", "Name", organizationName);
+				
+				user.setOrganization(organization);
+				
+				user.setMembershipStatus("requested");
+				
+				response = new UserResponse(
+						user.getId(),
+						user.getFirstName(), 
+						user.getLastName(),
+						user.getEmail(),
+						user.getTitle(),
+						user.getAddress().getCity(),
+						user.getAddress().getState(),
+						user.getAddress().getStreet(),
+						user.getAddress().getZip(),
+						user.getPotraitURL(),
+						user.getAboutMe(),
+						user.getScreenName(),
+						user.getOrganization().getName(),
+						user.getMembershipStatus());
+
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+				
+			}catch(NotFoundException e) {
+				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}catch(Exception e) {
+				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}
+		}
+		
+		public ResponseEntity<?> approveRequest(MemberRequest request){
+			
+			try {
+				
+				if(request.getUser() == null)
+					throw new InvalidArgumentException("User in MemberRequest is Null");
+				
+				UserProfile user = userDao.findById(request.getUser().getUserId());
+				if(user == null)
+					throw new NotFoundException("User", "Id", request.getUser().getUserId());
+				
+				if(request.getOrganization() == null)
+					throw new InvalidArgumentException("Organization in MemberRequest is Null");
+				
+				Organization organization = organizationDao.findByOrganizationName(request.getOrganization().getName());
+				if(organization == null)
+					throw new NotFoundException("Orgnization", "Name", request.getOrganization().getName());
+				
+				user.setOrganization(organization);
+				
+				user.setMembershipStatus("Approved");
+				
+				response = new UserResponse(
+						user.getId(),
+						user.getFirstName(), 
+						user.getLastName(),
+						user.getEmail(),
+						user.getTitle(),
+						user.getAddress().getCity(),
+						user.getAddress().getState(),
+						user.getAddress().getStreet(),
+						user.getAddress().getZip(),
+						user.getPotraitURL(),
+						user.getAboutMe(),
+						user.getScreenName(),
+						user.getOrganization().getName(),
+						user.getMembershipStatus());
+
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+				
+			}catch(NotFoundException e) {
+				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}catch(Exception e) {
+				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}
+		}
+		
+		public ResponseEntity<?> leaveOrganization(UserResponse user){
+			
+			try {
+				UserProfile member = userDao.findById(user.getId());
+				
+				if(member == null)
+					throw new NotFoundException("User", "Id", user.getId());
+				
+				Organization organization = organizationDao.findByOrganizationName(user.getOrganizationName());
+				if(organization == null)
+					throw new NotFoundException("Orgnization", "Name", user.getOrganizationName());
+				
+				member.setOrganization(null);
+				
+				member.setMembershipStatus("NA");
+				String orgName = null;
+				if(member.getOrganization() != null)
+					orgName = member.getOrganization().getName();
+				
+				response = new UserResponse(
+						member.getId(),
+						member.getFirstName(), 
+						member.getLastName(),
+						member.getEmail(),
+						member.getTitle(),
+						member.getAddress().getCity(),
+						member.getAddress().getState(),
+						member.getAddress().getStreet(),
+						member.getAddress().getZip(),
+						member.getPotraitURL(),
+						member.getAboutMe(),
+						member.getScreenName(),
+						orgName, // Ask what is the default value of organization
+						member.getMembershipStatus());
+
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+				
+			}catch(NotFoundException e) {
+				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}catch(Exception e) {
+				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}
+		}
 }

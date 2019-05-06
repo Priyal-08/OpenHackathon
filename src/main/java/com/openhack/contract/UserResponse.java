@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserResponse {
+
+	private long id; 
 	private String firstname;
 	private String lastname;
 	private String email;
@@ -17,13 +19,15 @@ public class UserResponse {
 	private String screenName;
 	private String organizationName;
 	private String status;
+	private String membershipStatus;
 	
 	public UserResponse() {}
 	
-	public UserResponse(String firstname, String lastname, String email, String title,
+	public UserResponse(long id, String firstname, String lastname, String email, String title,
 			String city, String state, String street, String zip, 
-			String potraitURL, String aboutMe, String screenName, String orgName) {
+			String potraitURL, String aboutMe, String screenName, String orgName, String membershipStatus) {
 		super();
+		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.email = email;
@@ -36,8 +40,16 @@ public class UserResponse {
 		this.aboutMe = aboutMe;
 		this.screenName = screenName;
 		this.organizationName = orgName;
+		this.membershipStatus = membershipStatus;
 	}
-	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -45,7 +57,7 @@ public class UserResponse {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+//	
 	public String getStatus() {
 		return status;
 	}
@@ -152,6 +164,14 @@ public class UserResponse {
 
 	public void setScreenName(String screenName) {
 		this.screenName = screenName;
+	}
+
+	public String getMembershipStatus() {
+		return membershipStatus;
+	}
+
+	public void setMembershipStatus(String membershipStatus) {
+		this.membershipStatus = membershipStatus;
 	}
 
 }

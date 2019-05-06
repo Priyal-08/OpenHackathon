@@ -15,4 +15,7 @@ public class NotFoundException extends Exception{
 		super(String.format("%s with given %s- %s does not exist",entity, paramName, paramValue));
 	}
 
+	public NotFoundException(String entity, String paramName, String paramValue) {
+		super(String.format("%s with given %s- %s does not exist",entity, paramName, paramValue));
+	}
 }
