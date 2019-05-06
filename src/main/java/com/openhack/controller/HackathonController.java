@@ -1,10 +1,13 @@
 package com.openhack.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,31 +28,21 @@ public class HackathonController {
 	
 	/**
 	 * Creates the hackathon.
-	 *
-	 * @param eventName: event name
-	 * @param description: event description
-	 * @param startDate: event start date
-	 * @param endDate: event end date
-	 * @param fees: event registration fees
-	 * @param minTeamSize: minimum team size to participate in event
-	 * @param maxTeamSize: maximum team size to participate in event
-	 * @param judges:  event judges
-	 * @param sponsors: event sponsors
-	 * @param discount: event discount
 	 * @return ResponseEntity: newly created hackathon object on success/ error message on error
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> createHackathon(
-			@RequestParam("eventName") String eventName,
-            @RequestParam(value="description", required=false) String description,
-            @RequestParam(value="startDate") String startDate,
-            @RequestParam(value="endDate") String endDate,
-            @RequestParam(value="fees") long fees,
-            @RequestParam(value="minTeamSize") int minTeamSize,
-            @RequestParam(value="maxTeamSize") int maxTeamSize,
-            @RequestParam(value="judges", required=false) List<Long> judges,
-            @RequestParam(value="sponsors", required=false) List<Long> sponsors,
-            @RequestParam(value="discount", required=false) long discount) {
+	public ResponseEntity<?> createHackathon( @RequestBody Map<String, Object> payload) {
+		String eventName = (String) payload.get("eventName");
+		String description = (String) payload.getOrDefault("description",null);
+		String startDate = (String) payload.get("startDate");
+		String endDate = (String) payload.get("endDate");
+		long fees = (long) payload.get("fees");
+		int minTeamSize = (int) payload.get("minTeamSize");
+		int maxTeamSize = (int) payload.get("maxTeamSize");
+		List<Long> judges = (List<Long>)payload.getOrDefault("judges", new ArrayList<Long>());
+		List<Long> sponsors = (List<Long>)payload.getOrDefault("sponsors", new ArrayList<Long>());
+		float discount = (float) payload.getOrDefault("discount", 0);
 		return hackathonService.createHackathon(eventName, description, startDate, endDate, fees,
 				minTeamSize, maxTeamSize, judges, sponsors, discount);
 	}
@@ -80,31 +73,23 @@ public class HackathonController {
 	 * Updates the hackathon.
 	 *
 	 * @param id: the hackathon id
-	 * @param eventName: event name
-	 * @param description: event description
-	 * @param startDate: event start date
-	 * @param endDate: event end date
-	 * @param fees: event registration fees
-	 * @param minTeamSize: minimum team size to participate in event
-	 * @param maxTeamSize: maximum team size to participate in event
-	 * @param judges:  event judges
-	 * @param sponsors: event sponsors
-	 * @param discount: event discount
 	 * @return ResponseEntity: hackathon object on success/ error message on error
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateHackathon(
 			@PathVariable("id") long id,
-			@RequestParam("eventName") String eventName,
-            @RequestParam(value="description", required=false) String description,
-            @RequestParam(value="startDate") String startDate,
-            @RequestParam(value="endDate") String endDate,
-            @RequestParam(value="fees") long fees,
-            @RequestParam(value="minTeamSize") int minTeamSize,
-            @RequestParam(value="maxTeamSize") int maxTeamSize,
-            @RequestParam(value="judges", required=false) List<Long> judges,
-            @RequestParam(value="sponsors", required=false) List<Long> sponsors,
-            @RequestParam(value="discount", required=false) long discount) {
+			@RequestBody Map<String, Object> payload) {
+		String eventName = (String) payload.get("eventName");
+		String description = (String) payload.getOrDefault("description",null);
+		String startDate = (String) payload.get("startDate");
+		String endDate = (String) payload.get("endDate");
+		long fees = (long) payload.get("fees");
+		int minTeamSize = (int) payload.get("minTeamSize");
+		int maxTeamSize = (int) payload.get("maxTeamSize");
+		List<Long> judges = (List<Long>)payload.getOrDefault("judges", new ArrayList<Long>());
+		List<Long> sponsors = (List<Long>)payload.getOrDefault("sponsors", new ArrayList<Long>());
+		float discount = (float) payload.getOrDefault("discount", 0);
 		return hackathonService.updateHackathon(id, eventName, description, startDate, endDate, fees,
 				minTeamSize, maxTeamSize, judges, sponsors, discount);
 	}

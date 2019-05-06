@@ -21,7 +21,7 @@ public class Payment {
     private long id;
 	
 	@Column(name = "AMOUNT")
-	private long amount;
+	private float amount;
 	
 	@ManyToOne(targetEntity=UserProfile.class)
 	@JoinColumn(name = "USERID",referencedColumnName="ID")
@@ -32,7 +32,7 @@ public class Payment {
 	private Hackathon hackathon;
 
 	
-	public Payment(long amount, UserProfile user,Hackathon hackathon ) {
+	public Payment(float amount, UserProfile user,Hackathon hackathon ) {
 		this.amount = amount;
 		this.user = user;
 		this.hackathon = hackathon;
@@ -46,11 +46,11 @@ public class Payment {
 		this.id = id;
 	}
 
-	public long getAmount() {
+	public float getAmount() {
 		return amount;
 	}
 
-	public void setAmount(long amount) {
+	public void setAmount(float amount) {
 		this.amount = amount;
 	}
 

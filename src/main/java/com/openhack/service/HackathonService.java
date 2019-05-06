@@ -62,7 +62,7 @@ public class HackathonService {
 	 */
 	@Transactional
 	public ResponseEntity<?> createHackathon(String eventName, String description, String sDate, String eDate, long fees,
-			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, long discount) {
+			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) {
 		Hackathon hackathon=null;
 		Date today = new Date();
 		try {
@@ -219,7 +219,7 @@ public class HackathonService {
 	 */
 	@Transactional
 	public ResponseEntity<?> updateHackathon(long id, String eventName, String description, String sDate, String eDate, long fees,
-			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, long discount) {
+			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) {
 		Hackathon hackathon=null;
 		Date today = new Date();
 		try {
