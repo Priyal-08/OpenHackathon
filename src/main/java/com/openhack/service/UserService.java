@@ -111,7 +111,7 @@ public class UserService {
 			userRole = userDao.store(userRole);			
 			
 			String baseURL = "http://localhost:5000";
-			String verifyURL = "/verify/" + authcode.toString();
+			String verifyURL = "/registration-confirmation/?token=" + authcode.toString();
 			String subject = String.format("Open Hackathon Account Verification");
 			String text = String.format("Please confirm your registration for hackathon by following the link below. \n %s", 
 					baseURL + verifyURL);
