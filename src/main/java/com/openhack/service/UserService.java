@@ -47,6 +47,7 @@ public class UserService {
 	public ResponseEntity<?>  signinUser(String username, String password) throws Exception {
 		try {
 			UserAccount userAccount=null;
+			String role = null;
 			int attempts = 0;
 			final String hashedPassword = Hashing.sha256()
 			        .hashString(password, StandardCharsets.UTF_8)
@@ -57,11 +58,20 @@ public class UserService {
 				errorResponse = new ErrorResponse("BadRequest", "400","Invalid username/password");
 				//attempts = userAccount.getAttempts();
 				//userAccount.setAttempts(attempts+1);
-				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
-				
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);			
 			}
 			
-			response = new UserResponse(userAccount.getStatus());					
+			UUID authtoken = UUID.randomUUID();
+			userAccount.setAuthToken(authtoken.toString());
+			
+			long id = userAccount.getUser().getId();
+			UserRole userRole = userDao.findRoleById(id);
+			
+			if (userRole != null)
+				role = userRole.getRole();
+			
+			response = new UserResponse(id, role, userAccount.getAuthToken());	
+			response.setRole(role);
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 			
 		} catch (Exception e) {
@@ -97,7 +107,7 @@ public class UserService {
 			        .hashString(password, StandardCharsets.UTF_8)
 			        .toString();
 
-			userAccount = new UserAccount(userProfile,hashedPassword,0,"Pending Verification", authcode.toString());
+			userAccount = new UserAccount(userProfile,hashedPassword,0,"Pending Verification", authcode.toString(), null);
 			userAccount = userDao.store(userAccount);
 				
 		    String emailDomain = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
@@ -160,6 +170,7 @@ public class UserService {
 			String state = null;
 			String zip = null;
 			String street = null;
+			String role = null;
 			
 			if (address != null) {
 				city = address.getCity();
@@ -167,13 +178,13 @@ public class UserService {
 				zip = address.getZip();
 				street = address.getStreet();			
 			}
-			
+
 			Organization org = userProfile.getOrganization();
 			String orgName = null;
 			if (org != null) {
 				orgName = org.getName();
 			}
-	
+			
 			response = new UserResponse(
 					userProfile.getId(),
 					userProfile.getFirstName(), 
@@ -218,6 +229,7 @@ public class UserService {
 			String potraitURL = (String) payload.get("potrait_url");
 			String screenname = (String) payload.get("screenname");
 			String title = (String) payload.get("title");
+			String role = null;
 			
 			userProfile2 = userDao.findByEmail(email);
 			

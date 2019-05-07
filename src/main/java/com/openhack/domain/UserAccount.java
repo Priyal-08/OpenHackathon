@@ -57,6 +57,10 @@ public class UserAccount implements Serializable{
 	/** The authcode for first time registration */
 	@Column(name = "AUTHCODE")
 	private String authcode;
+	
+	/** The status */
+	@Column(name = "AUTHTOKEN")
+	private String authtoken;
 
 	public UserProfile getUser() {
 		return user;
@@ -97,15 +101,24 @@ public class UserAccount implements Serializable{
 	public void setAuthCode(String authcode) {
 		this.authcode = authcode;
 	}
+	
+	public String getAuthToken() {
+		return authtoken;
+	}
+
+	public void setAuthToken(String authtoken) {
+		this.authtoken = authtoken;
+	}
 
 	public UserAccount() {}
-	public UserAccount(UserProfile user, String password, int attempts, String status, String authcode) {
+	public UserAccount(UserProfile user, String password, int attempts, String status, String authcode, String authtoken) {
 		super();
 		this.user = user;
 		this.password = password;
 		this.attempts = attempts;
 		this.status = status;
 		this.authcode = authcode;
+		this.authtoken = authtoken;
 	}
 	
 

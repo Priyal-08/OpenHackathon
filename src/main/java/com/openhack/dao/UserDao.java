@@ -48,6 +48,8 @@ public interface UserDao{
 	 */
 	public UserProfile findById(long id);
 	
+	public UserRole findRoleById(long id);
+	
 	public UserProfile findByEmail(String email);
 	
 	public UserAccount findByAuthCode(String authcode);

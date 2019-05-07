@@ -19,8 +19,10 @@ public class UserResponse {
 	private String screenName;
 	private String organizationName;
 	private String status;
+	private String role;
 	private String membershipStatus;
-	
+	private String authtoken;
+
 	public UserResponse() {}
 	
 	public UserResponse(long id, String firstname, String lastname, String email, String title,
@@ -57,7 +59,7 @@ public class UserResponse {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-//	
+
 	public String getStatus() {
 		return status;
 	}
@@ -66,6 +68,13 @@ public class UserResponse {
 		this.status = status;
 	}
 
+	public UserResponse(long id, String role, String authtoken) {
+		super();
+		this.id = id;
+		this.role = role;
+		this.authtoken = authtoken;
+	}
+	
 	public UserResponse(String email, String status) {
 		super();
 		this.email = email;
@@ -88,7 +97,6 @@ public class UserResponse {
 	public String getTitle() {
 		return title;
 	}
-
 
 	public String getPotraitURL() {
 		return potraitURL;
@@ -172,6 +180,22 @@ public class UserResponse {
 
 	public void setMembershipStatus(String membershipStatus) {
 		this.membershipStatus = membershipStatus;
+	}
+	
+	public String getAuthToken() {
+		return authtoken;
+	}
+
+	public void setAuthToken(String authtoken) {
+		this.authtoken = authtoken;
+	}
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

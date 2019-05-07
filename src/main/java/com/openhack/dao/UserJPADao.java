@@ -108,4 +108,15 @@ public class UserJPADao implements UserDao {
 	public UserProfile findById(long id) {
 		return entityManager.find(UserProfile.class, id);
 	}
+	
+	/* (non-Javadoc)
+     * @see com.lab2.dao.UserDao#findById(long)
+     */
+	@Override
+	@Transactional
+	public UserRole findRoleById(long id) {
+		return entityManager.find(UserRole.class, id);
+	}
+
+
 }
