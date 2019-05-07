@@ -68,11 +68,13 @@ public class UserResponse {
 		this.status = status;
 	}
 
-	public UserResponse(long id, String role, String authtoken) {
+	public UserResponse(long id, String role, String authtoken, String firstname, String lastname) {
 		super();
 		this.id = id;
 		this.role = role;
 		this.authtoken = authtoken;
+		this.firstname = firstname;
+		this.lastname = lastname;
 	}
 	
 	public UserResponse(String email, String status) {

@@ -70,7 +70,7 @@ public class UserService {
 			if (userRole != null)
 				role = userRole.getRole();
 			
-			response = new UserResponse(id, role, userAccount.getAuthToken());	
+			response = new UserResponse(id, role, userAccount.getAuthToken(), userRole.getUser().getFirstName(), userRole.getUser().getLastname());	
 			response.setRole(role);
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 			
