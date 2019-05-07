@@ -67,5 +67,21 @@ public class ParticipantController {
 			@RequestParam(value="members", required=false) List<Long> members) {
 		return participantService.registerTeam(userId, hackathonId, teamName, members);
 	}
+	
+	/**
+	 * Updates the code submission URL .
+	 *
+	 * @param id: the hackathon id
+	 * @param status: hackathon status
+	 * @return ResponseEntity: updated hackathon object on success/ error message on error
+	 */
+	@RequestMapping(value = "/{id}/hackathon/{hackathonId}", method = RequestMethod.PATCH)
+	public ResponseEntity<?> updateSubmissionURL(
+			@PathVariable("id") long id,
+			@PathVariable("hackathonId") long hackathonId,
+			@RequestParam(value="submission_url") String submissionURL) {
+		return participantService.updateSubmissionURL(id, hackathonId, submissionURL);
+	
+	}
 
 }
