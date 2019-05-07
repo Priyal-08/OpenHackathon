@@ -18,9 +18,11 @@ import com.openhack.contract.HackathonResponse;
 import com.openhack.contract.Judge;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
+import com.openhack.dao.ParticipantDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Hackathon;
 import com.openhack.domain.Organization;
+import com.openhack.domain.Team;
 import com.openhack.domain.UserProfile;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
@@ -38,6 +40,10 @@ public class HackathonService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	/** The participant dao. */
+	@Autowired
+	private ParticipantDao participantDao;
 	
 	/** The response. */
 	@Autowired	
@@ -165,13 +171,18 @@ public class HackathonService {
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
 	@Transactional
-	public ResponseEntity<?> getHackathon(long id) {
+	public ResponseEntity<?> getHackathon(long id, long userId) {
 		try {
 			Hackathon hackathon = hackathonDao.findById(id);
 			
 			// If the hackathon with given id does not exist, return NotFound.
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", id);
+			int role=0;
+			if(hackathon.getJudges().contains(userId))
+				role=2;
+			else if(participantDao.findTeamByUserIdAndHackathonId(userId, id) !=null)
+				role=1;
 			response = new HackathonResponse(
 					hackathon.getId(), 
 					hackathon.getEventName(),
@@ -187,6 +198,7 @@ public class HackathonService {
 					hackathon.getSponsors(),
 					hackathon.getDiscount(),
 					hackathon.getStatus());
+			response.setRole(role);
 			
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}

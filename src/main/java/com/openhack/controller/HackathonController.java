@@ -68,8 +68,8 @@ public class HackathonController {
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getHackathon(
-			@PathVariable("id") long id) {
-		return hackathonService.getHackathon(id);
+			@PathVariable("id") long id, @RequestParam("userId") long userId) {
+		return hackathonService.getHackathon(id, userId);
 	}
 	
 	/**

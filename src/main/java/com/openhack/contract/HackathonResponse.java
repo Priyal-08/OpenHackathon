@@ -35,6 +35,16 @@ public class HackathonResponse {
 	
 	private int status;
 	
+	private int role;
+	
+	public int getRole() {
+		return role;
+	}
+
+	public void setRole(int role) {
+		this.role = role;
+	}
+
 	public HackathonResponse() {}
 	
 	public long getId() {
