@@ -115,7 +115,10 @@ public class UserJPADao implements UserDao {
 	@Override
 	@Transactional
 	public UserRole findRoleById(long id) {
-		return entityManager.find(UserRole.class, id);
+		Query query = entityManager.createNativeQuery("select * from userrole where userid = :id", UserRole.class);
+		query.setParameter("id", id);
+		if (query.getResultList().isEmpty()) return null;
+		return (UserRole)query.getResultList().get(0);
 	}
 
 
