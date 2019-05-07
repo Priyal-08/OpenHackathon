@@ -211,6 +211,42 @@ public class ParticipantService {
 		}
 	}
 	
+	/**
+	 * Register team for hackathon
+	 *
+	 * @param id: the participant id
+	 * @param submissionURL: the hackathonId id
+	 * @param members: team members
+	 * @return ResponseEntity: the hackathon details object on success/ error message on error
+	 */
+	@Transactional
+	public ResponseEntity<?> updateSubmissionURL(long id,long hackathonId, String submissionURL) {
+		
+		try {
+			Team team = participantDao.findTeamByUserIdAndHackathonId(id, hackathonId);
+			team.setSubmissionURL(submissionURL);
+			Hackathon hackathon = hackathonDao.findById(hackathonId);
+
+			List<ParticipantResponse> participantsResponse = null;
+			
+			MyTeamResponse myTeamResponse = new MyTeamResponse(
+						hackathon.getId(),
+						hackathon.getEventName(),
+						team.getId(), team.getName(),
+						participantsResponse,
+						team.getPaymentDone(),
+						team.getScore(),
+						team.getSubmissionURL(),
+						team.getTeamLead().getId());
+
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
+		}
+	catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
 	private String generateMailText(Participant p, Hackathon hackathon) {
 		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), p.getPaymentURL(), hackathon.getEventName());
 	}
