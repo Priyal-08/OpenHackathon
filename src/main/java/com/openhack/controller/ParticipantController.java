@@ -1,16 +1,20 @@
 package com.openhack.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openhack.contract.ErrorResponse;
 import com.openhack.service.ParticipantService;
 
 /**
@@ -24,6 +28,7 @@ public class ParticipantController {
 	/** The participantService service. */
 	@Autowired
 	private ParticipantService participantService;
+	@Autowired ErrorResponse errorResponse;
 	
 	/**
 	 * Gets the list of hackathon in which user has registered.
@@ -83,5 +88,18 @@ public class ParticipantController {
 		return participantService.updateSubmissionURL(id, hackathonId, submissionURL);
 	
 	}
+	
+	@RequestMapping(value = "/pay", method = RequestMethod.POST )
+	public ResponseEntity<?> pay( @RequestBody Map<String, Object> payload) {
+		  System.out.println(payload);
+		  String authcode = (String) payload.get("token");
+		try {
+			return participantService.pay(authcode);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			errorResponse = new ErrorResponse("BadRequest", "400", "Invalid token");
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}			
+	}	
 
 }

@@ -30,5 +30,8 @@ public interface ParticipantDao {
 	
 	public Team findTeamByNameAndHackathon(String teamName, long hackathonId);
 	
+	public Participant findParticipantByToken(String token);
+	
+	
 	
 }

@@ -16,12 +16,14 @@ import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.MyHackathonResponse;
 import com.openhack.contract.MyTeamResponse;
 import com.openhack.contract.ParticipantResponse;
+import com.openhack.contract.UserResponse;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.ParticipantDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Hackathon;
 import com.openhack.domain.Participant;
 import com.openhack.domain.Team;
+import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.NotFoundException;
@@ -45,6 +47,7 @@ public class ParticipantService {
 	private HackathonDao hackathonDao;
 	
 	@Autowired ErrorResponse errorResponse;
+	 
 	
 	
 	@Transactional
@@ -247,8 +250,31 @@ public class ParticipantService {
 	}
 	
 	private String generateMailText(Participant p, Hackathon hackathon) {
-		String baseURL = "https://localhost:5000/pay/?token=?";
+		String baseURL = "http://localhost:3000/payment-confirmation/?token=?";
 		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), baseURL + p.getPaymentURL(), hackathon.getEventName());
 	}
+	
+	@Transactional
+	public ResponseEntity<?> pay(String token) {
+		ParticipantResponse response = null;
+		try {
+			Participant participant =null;
+			participant = participantDao.findParticipantByToken(token);
+			
+			if (participant == null) {	// if token code not found in DB
+				errorResponse = new ErrorResponse("BadRequest", "400", "Invalid token");
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}		
+			participant.setPaymentDone(true);;
+			
+			response = new ParticipantResponse(participant.getPaymentDone());					
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
 
 }

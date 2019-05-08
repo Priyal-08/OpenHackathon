@@ -49,4 +49,8 @@ public class ParticipantResponse {
 		this.title = title;
 		this.paymentDone = paymentDone;
 	}
+
+	public ParticipantResponse(boolean paymentDone) {
+		this.paymentDone = paymentDone;
+	}
 }

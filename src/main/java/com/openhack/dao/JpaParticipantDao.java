@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.domain.Participant;
 import com.openhack.domain.Team;
+import com.openhack.domain.UserAccount;
 
 @Repository
 public class JpaParticipantDao implements ParticipantDao{
@@ -63,6 +64,14 @@ public class JpaParticipantDao implements ParticipantDao{
 		query.setParameter("teamName", teamName);
 		if (query.getResultList().isEmpty()) return null;
 		return (Team)query.getResultList().get(0);
+	}
+
+	@Override
+	public Participant findParticipantByToken(String token) {
+		Query query = entityManager.createNativeQuery("SELECT * FROM participant p WHERE p.payment_url LIKE :token", Participant.class);
+		query.setParameter("token", token);
+		if (query.getResultList().isEmpty()) return null;
+		return (Participant)query.getResultList().get(0);
 	}
 
 }
