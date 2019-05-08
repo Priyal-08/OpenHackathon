@@ -166,12 +166,11 @@ public class ParticipantService {
 			
 			MyTeamResponse myTeamResponse = null;
 			if(team!=null) {
-				String baseURL = "https://openhackathon.com/pay/";
 				float discountedAmount = hackathon.getFees()*(100-hackathon.getDiscount());
 				participants = memberList.stream().map(member->participantDao.store(new Participant(
 						team,
 						member,
-						baseURL + UUID.randomUUID(),
+						UUID.randomUUID().toString(),
 						false,
 						"TITLE",
 						hackathon.getSponsors().contains(member.getOrganization())?discountedAmount:hackathon.getFees()
@@ -248,7 +247,8 @@ public class ParticipantService {
 	}
 	
 	private String generateMailText(Participant p, Hackathon hackathon) {
-		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), p.getPaymentURL(), hackathon.getEventName());
+		String baseURL = "https://localhost:5000/pay/?token=?";
+		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), baseURL + p.getPaymentURL(), hackathon.getEventName());
 	}
 
 }
