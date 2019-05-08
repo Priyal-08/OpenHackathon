@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openhack.contract.HackathonRequest;
+import com.openhack.domain.Organization;
 import com.openhack.service.HackathonService;
 
 /**
@@ -34,18 +36,18 @@ public class HackathonController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> createHackathon( @RequestBody Map<String, Object> payload) {
-		System.out.println(payload);
-		String eventName = (String) payload.get("eventName");
-		String description = (String) payload.getOrDefault("description",null);
-		String startDate = (String) payload.get("startDate");
-		String endDate = (String) payload.get("endDate");
-		long fees = Long.valueOf((String) payload.get("fees"));
-		int minTeamSize = Integer.valueOf((String) payload.get("minTeamSize"));
-		int maxTeamSize =  Integer.valueOf((String) payload.get("maxTeamSize"));
-		List<Long> judges = (List<Long>)payload.getOrDefault("judges", new ArrayList<Long>());
-		List<Long> sponsors = (List<Long>)payload.getOrDefault("sponsors", new ArrayList<Long>());
-		float discount = Float.valueOf((String) payload.getOrDefault("discount", "0"));
+	
+	public ResponseEntity<?> createHackathon(@RequestBody HackathonRequest hackathonRequest) {
+		String eventName = hackathonRequest.getEventName();
+		String description = hackathonRequest.getDescription();
+		String startDate = hackathonRequest.getStartDate();
+		String endDate = hackathonRequest.getEndDate();
+		long fees = hackathonRequest.getFees();
+		int minTeamSize = hackathonRequest.getMinTeamSize();
+		int maxTeamSize =  hackathonRequest.getMaxTeamSize();
+		List<Long> judges = hackathonRequest.getJudges();
+		List<Long> sponsors = hackathonRequest.getSponsors();
+		float discount = hackathonRequest.getDiscount();
 		return hackathonService.createHackathon(eventName, description, startDate, endDate, fees,
 				minTeamSize, maxTeamSize, judges, sponsors, discount);
 	}
@@ -82,18 +84,19 @@ public class HackathonController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateHackathon(
 			@PathVariable("id") long id,
-			@RequestBody Map<String, Object> payload) {
-		System.out.println(payload);
-		String eventName = (String) payload.get("eventName");
-		String description = (String) payload.getOrDefault("description",null);
-		String startDate = (String) payload.get("startDate");
-		String endDate = (String) payload.get("endDate");
-		long fees = Long.valueOf((String) payload.get("fees"));
-		int minTeamSize = Integer.valueOf((String) payload.get("minTeamSize"));
-		int maxTeamSize =  Integer.valueOf((String) payload.get("maxTeamSize"));
-		List<Long> judges = (List<Long>)payload.getOrDefault("judges", new ArrayList<Long>());
-		List<Long> sponsors = (List<Long>)payload.getOrDefault("sponsors", new ArrayList<Long>());
-		float discount = Float.valueOf((String) payload.getOrDefault("discount", "0"));
+			@RequestBody HackathonRequest hackathonRequest) {
+
+		String eventName = hackathonRequest.getEventName();
+		String description = hackathonRequest.getDescription();
+		String startDate = hackathonRequest.getStartDate();
+		String endDate = hackathonRequest.getEndDate();
+		long fees = hackathonRequest.getFees();
+		int minTeamSize = hackathonRequest.getMinTeamSize();
+		int maxTeamSize =  hackathonRequest.getMaxTeamSize();
+		List<Long> judges = hackathonRequest.getJudges();
+		List<Long> sponsors = hackathonRequest.getSponsors();
+		float discount = hackathonRequest.getDiscount();
+
 		return hackathonService.updateHackathon(id, eventName, description, startDate, endDate, fees,
 				minTeamSize, maxTeamSize, judges, sponsors, discount);
 	}
