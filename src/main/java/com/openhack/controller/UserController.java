@@ -118,6 +118,17 @@ public class UserController {
 			@RequestBody UserResponse user) {
 			return userService.leaveOrganization(user);
 		}	
+	
+	/**
+	 * Gets all organizations.
+	 *
+	 * @return ResponseEntity: list of organization objects on success/ error message on error
+	 */
+	@RequestMapping(value = "/user/list",method = RequestMethod.GET)
+	public ResponseEntity<?> listHackers(){
+		return userService.listHackers();
+	}
+
 }
 
 

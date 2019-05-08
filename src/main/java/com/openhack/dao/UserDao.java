@@ -2,6 +2,7 @@ package com.openhack.dao;
 
 import java.util.List;
 
+import com.openhack.domain.Organization;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 import com.openhack.domain.UserRole;
@@ -57,6 +58,9 @@ public interface UserDao{
 	public UserAccount findByUserAndPassword(String username, String password);
 
 	public UserProfile findByScreenname(String screenname);
+	
+	public List<UserProfile> listHackers();
+
 
 	
 }

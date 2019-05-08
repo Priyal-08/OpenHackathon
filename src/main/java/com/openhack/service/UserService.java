@@ -1,6 +1,8 @@
 package com.openhack.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -14,10 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.hash.Hashing;
 import com.openhack.contract.ErrorResponse;
+import com.openhack.contract.Judge;
 import com.openhack.contract.MemberRequest;
+import com.openhack.contract.MyHackathonResponse;
+import com.openhack.contract.OrganizationResponse;
 import com.openhack.contract.UserResponse;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Address;
+import com.openhack.domain.Hackathon;
 import com.openhack.domain.Organization;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
@@ -461,4 +467,27 @@ public class UserService {
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}
 		}
+		
+		@Transactional
+		public ResponseEntity<?> listHackers() {
+			try {
+				List<UserResponse> hackersListResponse = new ArrayList();
+				List<UserProfile> hackersList = userDao.listHackers();
+				
+				for(UserProfile hacker : hackersList) {
+					hackersListResponse.add(new UserResponse(
+							hacker.getId(),
+							hacker.getFirstname(),
+							hacker.getLastname()));
+				}
+				
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hackersListResponse);
+			}
+			catch(Exception e) {
+				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}
+		}
+		
+		
 }

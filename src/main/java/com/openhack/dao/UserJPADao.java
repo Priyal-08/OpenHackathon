@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.domain.Hackathon;
+import com.openhack.domain.Organization;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 import com.openhack.domain.UserRole;
@@ -119,6 +120,14 @@ public class UserJPADao implements UserDao {
 		query.setParameter("id", id);
 		if (query.getResultList().isEmpty()) return null;
 		return (UserRole)query.getResultList().get(0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public List<UserProfile> listHackers() {
+		Query query = entityManager.createNativeQuery("SELECT up.* FROM userprofile up, userrole ur where up.id = ur.userid and ur.role = 'Hacker'", UserProfile.class);
+		return query.getResultList();
 	}
 
 

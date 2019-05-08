@@ -83,6 +83,14 @@ public class UserResponse {
 		this.status = status;
 	}
 	
+	public UserResponse(Long id, String firstname, String lastname) {
+		super();
+		this.id = id;
+		this.firstname = firstname;
+		this.lastname = lastname;
+	}
+
+	
 	public UserResponse(String status) {
 		super();
 		this.status = status;
