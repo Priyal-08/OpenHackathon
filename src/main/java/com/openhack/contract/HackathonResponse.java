@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.openhack.domain.Organization;
-
 //Hackathon response class 
 @Component
 public class HackathonResponse {
@@ -29,7 +27,7 @@ public class HackathonResponse {
 	
     private int maxTeamSize;
 	
-	private List<Organization> sponsors;
+	private List<OrganizationResponse> sponsors;
 	
 	private float discount;
 	
@@ -119,11 +117,11 @@ public class HackathonResponse {
 		this.maxTeamSize = maxTeamSize;
 	}
 
-	public List<Organization> getSponsors() {
+	public List<OrganizationResponse> getSponsors() {
 		return sponsors;
 	}
 
-	public void setSponsors(List<Organization> sponsors) {
+	public void setSponsors(List<OrganizationResponse> sponsors) {
 		this.sponsors = sponsors;
 	}
 
@@ -144,7 +142,7 @@ public class HackathonResponse {
 	}
 
 	public HackathonResponse(long id, String eventName, Date startDate, Date endDate, String description, long fees,
-			List<Judge> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount,
+			List<Judge> judges, int minTeamSize, int maxTeamSize, List<OrganizationResponse> sponsors, float discount,
 			int status) {
 		super();
 		this.id = id;

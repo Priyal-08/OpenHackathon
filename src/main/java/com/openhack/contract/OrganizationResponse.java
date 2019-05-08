@@ -1,7 +1,6 @@
 package com.openhack.contract;
 
 import java.util.List;
-import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -88,6 +87,12 @@ public class OrganizationResponse {
 
 	public void setSponsoredHackathons(List<MyHackathonResponse> sponsoredHackathons) {
 		this.sponsoredHackathons = sponsoredHackathons;
+	}
+	
+	public OrganizationResponse(long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
 	}
 
 	public OrganizationResponse(long id, String name, Judge owner, String description, Address address, List<Judge> members, List<MyHackathonResponse> sponsoredHackathons) {

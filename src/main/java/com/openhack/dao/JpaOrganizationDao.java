@@ -21,10 +21,11 @@ public class JpaOrganizationDao implements OrganizationDao{
 	@PersistenceContext
     private EntityManager entityManager;
 
+	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
 	public List<Organization> findByIds(List<Long> ids) {
-		Query query = entityManager.createNativeQuery("SELECT * FROM ORGANIZATION O WHERE O.ID IN :ids", Organization.class);
+		Query query = entityManager.createNativeQuery("SELECT * FROM organization o WHERE o.id IN :ids", Organization.class);
 		query.setParameter("ids", ids);
 		if (query.getResultList().isEmpty()) return null;
 		return query.getResultList();

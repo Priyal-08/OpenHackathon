@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.HackathonResponse;
+import com.openhack.contract.OrganizationResponse;
 import com.openhack.contract.Judge;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
@@ -22,7 +23,6 @@ import com.openhack.dao.ParticipantDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Hackathon;
 import com.openhack.domain.Organization;
-import com.openhack.domain.Team;
 import com.openhack.domain.UserProfile;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
@@ -110,7 +110,7 @@ public class HackathonService {
 							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
-					hackathon.getSponsors(),
+					hackathon.getSponsors().stream().map(sponsor->new OrganizationResponse(sponsor.getId(), sponsor.getName())).collect(Collectors.toList()),
 					hackathon.getDiscount(),
 					hackathon.getStatus());
 			
@@ -152,7 +152,7 @@ public class HackathonService {
 							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
-					hackathon.getSponsors(),
+					hackathon.getSponsors().stream().map(sponsor->new OrganizationResponse(sponsor.getId(), sponsor.getName())).collect(Collectors.toList()),
 					hackathon.getDiscount(),
 					hackathon.getStatus())).collect(Collectors.toList()); 
 			
@@ -179,8 +179,11 @@ public class HackathonService {
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", id);
 			int role=0;
-			if(hackathon.getJudges().contains(userId))
+			
+			// If user is a judge in hackathon
+			if(hackathon.getJudges().stream().map(judge->judge.getId()).collect(Collectors.toList()).contains(userId))
 				role=2;
+			// If user is a participating in hackathon
 			else if(participantDao.findTeamByUserIdAndHackathonId(userId, id) !=null)
 				role=1;
 			response = new HackathonResponse(
@@ -195,7 +198,7 @@ public class HackathonService {
 							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
-					hackathon.getSponsors(),
+					hackathon.getSponsors().stream().map(sponsor->new OrganizationResponse(sponsor.getId(), sponsor.getName())).collect(Collectors.toList()),
 					hackathon.getDiscount(),
 					hackathon.getStatus());
 			response.setRole(role);
@@ -278,7 +281,7 @@ public class HackathonService {
 							judge.getFirstName())).collect(Collectors.toList()),
 					hackathon.getMinTeamSize(),
 					hackathon.getMaxTeamSize(),
-					hackathon.getSponsors(),
+					hackathon.getSponsors().stream().map(sponsor->new OrganizationResponse(sponsor.getId(), sponsor.getName())).collect(Collectors.toList()),
 					hackathon.getDiscount(),
 					hackathon.getStatus());
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
