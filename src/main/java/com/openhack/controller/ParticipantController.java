@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openhack.contract.ErrorResponse;
+import com.openhack.contract.ParticipantDetail;
+import com.openhack.contract.TeamRegistrationRequest;
 import com.openhack.service.ParticipantService;
 
 /**
@@ -68,8 +70,10 @@ public class ParticipantController {
 	public ResponseEntity<?> registerTeam(
 			@PathVariable("userId") long userId,
 			@PathVariable("hackathonId") long hackathonId,
-			@RequestParam(value="teamName") String teamName,
-			@RequestParam(value="members", required=false) List<Long> members) {
+			@RequestBody TeamRegistrationRequest teamRegistrationRequest) {
+		System.out.println("Team Request::" +  teamRegistrationRequest);
+		String teamName = teamRegistrationRequest.getTeamName();
+		List<ParticipantDetail> members = teamRegistrationRequest.getParticipants();
 		return participantService.registerTeam(userId, hackathonId, teamName, members);
 	}
 	

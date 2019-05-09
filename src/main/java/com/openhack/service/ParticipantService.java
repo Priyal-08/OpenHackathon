@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.MyHackathonResponse;
 import com.openhack.contract.MyTeamResponse;
+import com.openhack.contract.ParticipantDetail;
 import com.openhack.contract.ParticipantResponse;
 import com.openhack.contract.UserResponse;
 import com.openhack.dao.HackathonDao;
@@ -145,7 +146,7 @@ public class ParticipantService {
 	 * @return ResponseEntity: the hackathon details object on success/ error message on error
 	 */
 	@Transactional
-	public ResponseEntity<?> registerTeam(long userId, long hackathonId, String teamName, List<Long> members) {
+	public ResponseEntity<?> registerTeam(long userId, long hackathonId, String teamName, List<ParticipantDetail> members) {
 		try {
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 			if(hackathon==null)
@@ -160,8 +161,9 @@ public class ParticipantService {
 				throw new DuplicateException("Team", "name", teamName);
 			
 			List<UserProfile> memberList = new ArrayList<UserProfile>();
+			List<Long> memberIds = members.stream().map(m->m.getId()).collect(Collectors.toList());
 			if(members!=null && members.size()>0)
-				memberList = userDao.findByIds(members);
+				memberList = userDao.findByIds(memberIds);
 			System.out.println("memberList: " + memberList.size());
 			
 			List<Participant> participants = new ArrayList<Participant>();
@@ -175,7 +177,7 @@ public class ParticipantService {
 						member,
 						UUID.randomUUID().toString(),
 						false,
-						"TITLE",
+						getRole(members, member.getId()),
 						hackathon.getSponsors().contains(member.getOrganization())?discountedAmount:hackathon.getFees()
 						))).collect(Collectors.toList());
 				
@@ -252,6 +254,14 @@ public class ParticipantService {
 	private String generateMailText(Participant p, Hackathon hackathon) {
 		String baseURL = "http://localhost:3000/payment-confirmation/?token=?";
 		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), baseURL + p.getPaymentURL(), hackathon.getEventName());
+	}
+	
+	private String getRole(List<ParticipantDetail> members, long userId) {
+		for(ParticipantDetail member: members) {
+			if(member.getId()==userId)
+				return member.getRole();
+		}
+		return "Other";
 	}
 	
 	@Transactional
