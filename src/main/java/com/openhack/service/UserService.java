@@ -90,7 +90,7 @@ public class UserService {
 	@Transactional
 	public ResponseEntity<?>  signupUser(String firstname, String lastname, String email, String password) throws Exception {
 		try {
-			UserProfile userProfile=null;
+			UserProfile userProfile=null, userProfile2 = null;
 			UserAccount userAccount=null;
 			UserRole userRole= null;
 	
@@ -103,7 +103,18 @@ public class UserService {
 			
 			if (userProfile != null)
 				throw new DuplicateException("UserProfile", "email", email);
-	
+			
+			if (lastname != null) {
+				if (lastname.length() < 3)
+					throw new InvalidArgumentException("Screenname cannot be less than 3 characters");	
+				
+				userProfile2 = userDao.findByScreenname(lastname);		
+
+				if (userProfile2 != null)
+					throw new DuplicateException("User", "screenname", lastname);			
+
+			}
+			
 			userProfile = new UserProfile(firstname, lastname, email);
 			
 			userProfile = userDao.store(userProfile);

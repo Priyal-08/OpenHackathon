@@ -45,6 +45,7 @@ public class UserProfile{
 		super();
 		this.firstname = firstname;
 		this.lastname = lastname;
+		this.screenName = lastname;
 		this.email = email;
 		
 	}
