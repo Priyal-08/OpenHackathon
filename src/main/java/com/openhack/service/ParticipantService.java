@@ -301,6 +301,11 @@ public class ParticipantService {
 							team.getHackathon());
 					participantDao.store(payment);									
 				}
+				
+				String subject = String.format("Open Hackathon - Your team payment is complete!");
+				String text = String.format("Congratulations! Your team has made the payment and you are all set! All the best! \n ");
+				System.out.println(team.getTeamLead().getEmail());
+				emailService.sendSimpleMessage(team.getTeamLead().getEmail(), subject , text);
 			}
 			
 			response = new ParticipantResponse(participant.getPaymentDone());					
