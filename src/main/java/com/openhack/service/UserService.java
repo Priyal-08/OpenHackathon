@@ -499,6 +499,5 @@ public class UserService {
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}
 		}
-		
-		
+	
 }

@@ -23,6 +23,7 @@ import com.openhack.dao.ParticipantDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Hackathon;
 import com.openhack.domain.Participant;
+import com.openhack.domain.Payment;
 import com.openhack.domain.Team;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
@@ -267,6 +268,7 @@ public class ParticipantService {
 	@Transactional
 	public ResponseEntity<?> pay(String token) {
 		ParticipantResponse response = null;
+		Payment payment = null;
 		try {
 			Participant participant =null;
 			participant = participantDao.findParticipantByToken(token);
@@ -275,7 +277,31 @@ public class ParticipantService {
 				errorResponse = new ErrorResponse("BadRequest", "400", "Invalid token");
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}		
-			participant.setPaymentDone(true);;
+			participant.setPaymentDone(true);
+			
+			Team team = participant.getTeam();
+			
+			List <Participant> participantList = new ArrayList <Participant>();
+			participantList =  team.getMembers();// (ArrayList<Participant>) team.getMembers();
+			
+			int teamSize = participantList.size();
+			int teamPayedCount = 1;
+			
+			for (Participant teamParticipant : participantList) {
+				if (participant.getId() != teamParticipant.getId())
+					if (teamParticipant.getPaymentDone() == true)
+						teamPayedCount += 1;					
+			}
+			
+			if (teamPayedCount == teamSize) {
+				team.setPaymentDone(true);
+				for (Participant teamParticipant : participantList) {
+					payment = new Payment(teamParticipant.getFees(), 
+							teamParticipant.getUser(),
+							team.getHackathon());
+					participantDao.store(payment);									
+				}
+			}
 			
 			response = new ParticipantResponse(participant.getPaymentDone());					
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);

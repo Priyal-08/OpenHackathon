@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.openhack.domain.Participant;
+import com.openhack.domain.Payment;
 import com.openhack.domain.Team;
 
 public interface ParticipantDao {
@@ -31,6 +32,9 @@ public interface ParticipantDao {
 	public Team findTeamByNameAndHackathon(String teamName, long hackathonId);
 	
 	public Participant findParticipantByToken(String token);
+	
+	public Payment store(Payment payment);
+
 	
 	
 	

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.domain.Participant;
+import com.openhack.domain.Payment;
 import com.openhack.domain.Team;
 import com.openhack.domain.UserAccount;
 
@@ -73,5 +74,13 @@ public class JpaParticipantDao implements ParticipantDao{
 		if (query.getResultList().isEmpty()) return null;
 		return (Participant)query.getResultList().get(0);
 	}
+	
+
+	@Transactional
+	@Override
+	public Payment store(Payment payment) {
+		return entityManager.merge(payment);
+	}
+
 
 }

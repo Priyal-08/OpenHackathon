@@ -109,4 +109,12 @@ public class Participant {
 	public void setTitle(float fees) {
 		this.fees = fees;
 	}
+	
+	public Team getTeam() {
+		return team;
+	}
+	
+	public void setTeam(Team team) {
+		this.team = team;
+	}
 }
