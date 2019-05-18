@@ -223,6 +223,42 @@ public class ParticipantService {
 		}
 	}
 	
+//	/**
+//	 * Register team for hackathon
+//	 *
+//	 * @param id: the participant id
+//	 * @param submissionURL: the hackathonId id
+//	 * @param members: team members
+//	 * @return ResponseEntity: the hackathon details object on success/ error message on error
+//	 */
+//	@Transactional
+//	public ResponseEntity<?> updateSubmissionURL(long id,long hackathonId, String submissionURL) {
+//		
+//		try {
+//			Team team = participantDao.findTeamByUserIdAndHackathonId(id, hackathonId);
+//			team.setSubmissionURL(submissionURL);
+//			Hackathon hackathon = hackathonDao.findById(hackathonId);
+//
+//			List<ParticipantResponse> participantsResponse = null;
+//			
+//			MyTeamResponse myTeamResponse = new MyTeamResponse(
+//						hackathon.getId(),
+//						hackathon.getEventName(),
+//						team.getId(), team.getName(),
+//						participantsResponse,
+//						team.getPaymentDone(),
+//						team.getScore(),
+//						team.getSubmissionURL(),
+//						team.getTeamLead().getId());
+//
+//			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
+//		}
+//	catch(Exception e) {
+//			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+//			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+//		}
+//	}
+//	
 	/**
 	 * Register team for hackathon
 	 *
@@ -232,11 +268,18 @@ public class ParticipantService {
 	 * @return ResponseEntity: the hackathon details object on success/ error message on error
 	 */
 	@Transactional
-	public ResponseEntity<?> updateSubmissionURL(long id,long hackathonId, String submissionURL) {
+	public ResponseEntity<?> updateDetails(long id,long hackathonId, String submissionURL, String score) {
 		
 		try {
 			Team team = participantDao.findTeamByUserIdAndHackathonId(id, hackathonId);
-			team.setSubmissionURL(submissionURL);
+			if(score==null) {
+				team.setSubmissionURL(submissionURL);
+			}
+			else {
+				UserProfile judge = userDao.findById(id);
+				team.setJudge(judge);
+				team.setScore(Long.parseLong(score));
+			}
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 
 			List<ParticipantResponse> participantsResponse = null;
