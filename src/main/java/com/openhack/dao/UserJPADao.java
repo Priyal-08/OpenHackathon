@@ -10,8 +10,6 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.openhack.domain.Hackathon;
-import com.openhack.domain.Organization;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 import com.openhack.domain.UserRole;
@@ -120,6 +118,34 @@ public class UserJPADao implements UserDao {
 		query.setParameter("id", id);
 		if (query.getResultList().isEmpty()) return null;
 		return (UserRole)query.getResultList().get(0);
+	}
+	
+	@Override
+	@Transactional
+	public UserAccount findAccountByuserId(long id) {
+		Query query = entityManager.createNativeQuery("select * from useraccount where userid = :id", UserAccount.class);
+		query.setParameter("id", id);
+		if (query.getResultList().isEmpty()) return null;
+		return (UserAccount)query.getResultList().get(0);
+	}
+	
+	@Override
+	@Transactional
+	public UserAccount findAccountByEmail(String username) {
+		Query query = entityManager.createNativeQuery("SELECT ua.* FROM useraccount ua, userprofile up WHERE ua.userid = up.id and ua.status = 'Active' and up.email LIKE :username", UserAccount.class);
+		query.setParameter("username", username);
+		if (query.getResultList().isEmpty()) return null;
+		return (UserAccount)query.getResultList().get(0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<UserRole> findAllRolesById(long id) {
+		Query query = entityManager.createNativeQuery("select * from userrole where userid = :id", UserRole.class);
+		query.setParameter("id", id);
+		if (query.getResultList().isEmpty()) return null;
+		return query.getResultList();
 	}
 	
 	@SuppressWarnings("unchecked")
