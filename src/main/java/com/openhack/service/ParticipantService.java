@@ -168,6 +168,7 @@ public class ParticipantService {
 			System.out.println("memberList: " + memberList.size());
 			
 			List<Participant> participants = new ArrayList<Participant>();
+
 			final Team team = participantDao.store(new Team(hackathon, teamLead, teamName, participants, false, 0, null, null));
 			
 			MyTeamResponse myTeamResponse = null;
@@ -181,6 +182,8 @@ public class ParticipantService {
 						getRole(members, member.getId()),
 						hackathon.getSponsors().contains(member.getOrganization())?discountedAmount:hackathon.getFees()
 						))).collect(Collectors.toList());
+				
+				final List<Participant> finalParticipants = participants;
 				
 				team.setMembers(participants);
 				List<ParticipantResponse> participantsResponse = team.getMembers().stream().map(p->new ParticipantResponse(
@@ -198,7 +201,11 @@ public class ParticipantService {
 						team.getSubmissionURL(),
 						team.getTeamLead().getId());
 				String subject = String.format("%s Registration Payment", hackathon.getEventName());
-				participants.forEach((p) -> emailService.sendSimpleMessage(p.getUser().getEmail(), subject , generateMailText(p, hackathon)));
+				
+				new Thread(() -> {
+					finalParticipants.forEach(
+							(p) -> emailService.sendSimpleMessage(p.getUser().getEmail(), subject , generateMailText(p, hackathon)));
+				}).start();				
 			}
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
@@ -304,8 +311,12 @@ public class ParticipantService {
 				
 				String subject = String.format("Open Hackathon - Your team payment is complete!");
 				String text = String.format("Congratulations! Your team has made the payment and you are all set! All the best! \n ");
-				System.out.println(team.getTeamLead().getEmail());
-				emailService.sendSimpleMessage(team.getTeamLead().getEmail(), subject , text);
+				String emailId = team.getTeamLead().getEmail();
+				new Thread(() -> {
+					System.out.println("Sending mail to " + emailId );
+					emailService.sendSimpleMessage(emailId, subject , text);
+				}).start();
+
 			}
 			
 			response = new ParticipantResponse(participant.getPaymentDone());					

@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.naming.factory.SendMailFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -136,12 +137,19 @@ public class UserService {
 		    
 			userRole = userDao.store(userRole);			
 			
+			String emailId = userProfile.getEmail();	
 			String baseURL = "http://localhost:3000";
 			String verifyURL = "/registration-confirmation/?token=" + authcode.toString();
 			String subject = String.format("Open Hackathon Account Verification");
 			String text = String.format("Please confirm your registration for hackathon by following the link below. \n %s", 
 					baseURL + verifyURL);
-			emailService.sendSimpleMessage(userProfile.getEmail(), subject , text);
+			
+			new Thread(() -> {
+				System.out.println("Sending mail to " + emailId );
+				emailService.sendSimpleMessage(emailId, subject , text);
+			}).start();
+
+						
 			response = new UserResponse(userProfile.getEmail());					
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
