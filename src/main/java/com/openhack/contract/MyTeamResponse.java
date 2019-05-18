@@ -12,10 +12,12 @@ public class MyTeamResponse {
 	
 	private String teamName;
 	
+	private int status;
+	
 	private List<ParticipantResponse> participants;
 	
 	public MyTeamResponse(long hackathonId, String hackathonName, long teamId, String teamName, List<ParticipantResponse> participants, boolean paymentDone,
-			long score, String submissionURL, long teamLeadId) {
+			long score, String submissionURL, long teamLeadId, int status) {
 		super();
 		this.hackathonId = hackathonId;
 		this.hackathonName = hackathonName;
@@ -26,6 +28,7 @@ public class MyTeamResponse {
 		this.score = score;
 		this.submissionURL = submissionURL;
 		this.teamLeadId = teamLeadId;
+		this.status = status;
 	}
 
 	
@@ -100,6 +103,17 @@ public class MyTeamResponse {
 	public void setTeamLeadId(long teamLeadId) {
 		this.teamLeadId = teamLeadId;
 	}
+
+	
+	public int getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 
 	private boolean paymentDone;
 	

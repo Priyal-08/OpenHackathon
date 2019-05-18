@@ -123,7 +123,7 @@ public class ParticipantService {
 						p.getTitle(),
 						p.getPaymentDone(),p.getFees())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
-			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId());
+			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), hackathon.getStatus());
 			}
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
@@ -199,7 +199,7 @@ public class ParticipantService {
 						team.getPaymentDone(),
 						team.getScore(),
 						team.getSubmissionURL(),
-						team.getTeamLead().getId());
+						team.getTeamLead().getId(), hackathon.getStatus());
 				String subject = String.format("%s Registration Payment", hackathon.getEventName());
 				
 				new Thread(() -> {
@@ -292,7 +292,8 @@ public class ParticipantService {
 						team.getPaymentDone(),
 						team.getScore(),
 						team.getSubmissionURL(),
-						team.getTeamLead().getId());
+						team.getTeamLead().getId(),
+						hackathon.getStatus());
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
