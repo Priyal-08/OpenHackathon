@@ -197,16 +197,30 @@ public class UserService {
 				
 				user.setMembershipStatus("requested");
 				
+				String city = null;
+				String state = null;
+				String zip = null;
+				String street = null;
+				
+				Address address = user.getAddress();
+				
+				if (address != null) {
+					city = address.getCity();
+					state = address.getState();
+					zip = address.getZip();
+					street = address.getStreet();			
+				}
+				
 				response = new UserResponse(
 						user.getId(),
 						user.getFirstName(), 
 						user.getLastName(),
 						user.getEmail(),
 						user.getTitle(),
-						user.getAddress().getCity(),
-						user.getAddress().getState(),
-						user.getAddress().getStreet(),
-						user.getAddress().getZip(),
+						city,
+						state,
+						street,
+						zip,
 						user.getPotraitURL(),
 						user.getAboutMe(),
 						user.getScreenName(),
@@ -245,6 +259,20 @@ public class UserService {
 				user.setOrganization(organization);
 				
 				user.setMembershipStatus("Approved");
+
+				String city = null;
+				String state = null;
+				String zip = null;
+				String street = null;
+				
+				Address address = user.getAddress();
+				
+				if (address != null) {
+					city = address.getCity();
+					state = address.getState();
+					zip = address.getZip();
+					street = address.getStreet();			
+				}
 				
 				response = new UserResponse(
 						user.getId(),
@@ -252,10 +280,10 @@ public class UserService {
 						user.getLastName(),
 						user.getEmail(),
 						user.getTitle(),
-						user.getAddress().getCity(),
-						user.getAddress().getState(),
-						user.getAddress().getStreet(),
-						user.getAddress().getZip(),
+						city,
+						state,
+						street,
+						zip,
 						user.getPotraitURL(),
 						user.getAboutMe(),
 						user.getScreenName(),
@@ -292,16 +320,31 @@ public class UserService {
 				if(member.getOrganization() != null)
 					orgName = member.getOrganization().getName();
 				
+
+				String city = null;
+				String state = null;
+				String zip = null;
+				String street = null;
+				
+				Address address = member.getAddress();
+				
+				if (address != null) {
+					city = address.getCity();
+					state = address.getState();
+					zip = address.getZip();
+					street = address.getStreet();			
+				}
+				
 				response = new UserResponse(
 						member.getId(),
 						member.getFirstName(), 
 						member.getLastName(),
 						member.getEmail(),
 						member.getTitle(),
-						member.getAddress().getCity(),
-						member.getAddress().getState(),
-						member.getAddress().getStreet(),
-						member.getAddress().getZip(),
+						city,
+						state,
+						street,
+						zip,
 						member.getPotraitURL(),
 						member.getAboutMe(),
 						member.getScreenName(),

@@ -10,7 +10,7 @@ import com.openhack.domain.Address;
 @Component
 public class OrganizationResponse {
 
-    private long id;
+    private Long id;
 	
 	/** The organization name. */
     private String name;
@@ -29,11 +29,11 @@ public class OrganizationResponse {
 	
 	private List<MyHackathonResponse> sponsoredHackathons;
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -89,13 +89,13 @@ public class OrganizationResponse {
 		this.sponsoredHackathons = sponsoredHackathons;
 	}
 	
-	public OrganizationResponse(long id, String name) {
+	public OrganizationResponse(Long id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
 
-	public OrganizationResponse(long id, String name, Judge owner, String description, Address address, List<Judge> members, List<MyHackathonResponse> sponsoredHackathons) {
+	public OrganizationResponse(Long id, String name, Judge owner, String description, Address address, List<Judge> members, List<MyHackathonResponse> sponsoredHackathons) {
 		super();
 		this.id = id;
 		this.name = name;

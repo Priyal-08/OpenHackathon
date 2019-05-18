@@ -19,12 +19,16 @@ import javax.persistence.Table;
  * The Class Organization.
  */
 @Entity
+//@Builder
+//@Data
+//@AllArgsCOnstructor
+
 @Table(name = "ORGANIZATION")
 public class Organization {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "ID")
-    private long id;
+    private Long id;
 	
 	/** The organization name. */
 	//TODO: add unique constraint
@@ -87,7 +91,7 @@ public class Organization {
 //     * @param description the organization description
 //     * @param address the organization address
 //     */
-//    public Organization(long id, String name, UserProfile owner, String description, Address address ) {
+//    public Organization(Long id, String name, UserProfile owner, String description, Address address ) {
 //    	this.id = id;
 //    	this.name = name;
 //    	this.owner = owner;
@@ -104,11 +108,11 @@ public class Organization {
 	}
 
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-//	public void setId(long id) {
+//	public void setId(Long id) {
 //		this.id = id;
 //	}
 
