@@ -33,6 +33,14 @@ public class ParticipantResponse {
 	public void setPaymentDone(boolean paymentDone) {
 		this.paymentDone = paymentDone;
 	}
+	
+	public float getFees() {
+		return fees;
+	}
+
+	public void setFees(float fees) {
+		this.fees = fees;
+	}
 
 	private long userId;
 	
@@ -41,13 +49,17 @@ public class ParticipantResponse {
 	private String title;
 	
 	private boolean paymentDone;
+	
+	private float fees;
 
-	public ParticipantResponse(long userId, String name, String title, boolean paymentDone) {
+
+	public ParticipantResponse(long userId, String name, String title, boolean paymentDone, float fees) {
 		super();
 		this.userId = userId;
 		this.name = name;
 		this.title = title;
 		this.paymentDone = paymentDone;
+		this.fees = fees;
 	}
 
 	public ParticipantResponse(boolean paymentDone) {

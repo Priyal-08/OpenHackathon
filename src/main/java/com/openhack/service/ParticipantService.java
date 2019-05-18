@@ -121,7 +121,7 @@ public class ParticipantService {
 						p.getUser().getId(),
 						p.getUser().getFirstName(),
 						p.getTitle(),
-						p.getPaymentDone())).collect(Collectors.toList());
+						p.getPaymentDone(),p.getFees())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
 			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId());
 			}
@@ -190,7 +190,7 @@ public class ParticipantService {
 						p.getUser().getId(),
 						p.getUser().getFirstName(),
 						p.getTitle(),
-						p.getPaymentDone())).collect(Collectors.toList());
+						p.getPaymentDone(), p.getFees())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(
 						hackathon.getId(),
 						hackathon.getEventName(),
