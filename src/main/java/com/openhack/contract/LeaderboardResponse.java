@@ -8,9 +8,9 @@ public class LeaderboardResponse {
 
 	private String teamName;
 	private long teamScore;
-	private List <Participant> teamMembers;
+	private List <String> teamMembers;
 	
-	public LeaderboardResponse(String teamName, long teamScore, List<Participant> teamMembers) {
+	public LeaderboardResponse(String teamName, long teamScore, List<String> teamMembers) {
 		super();
 		this.teamName = teamName;
 		this.teamScore = teamScore;
@@ -36,10 +36,10 @@ public class LeaderboardResponse {
 	public void setTeamScore(long teamScore) {
 		this.teamScore = teamScore;
 	}
-	public List<Participant> getTeamMembers() {
+	public List<String> getTeamMembers() {
 		return teamMembers;
 	}
-	public void setTeamMembers(List<Participant> teamMembers) {
+	public void setTeamMembers(List<String> teamMembers) {
 		this.teamMembers = teamMembers;
 	}
 

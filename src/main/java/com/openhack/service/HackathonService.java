@@ -496,12 +496,13 @@ public class HackathonService {
 				for (int i = 0; i < teams.size(); i++) {
 					Team t = teams.get(i);
 					if (t.getPaymentDone()) {
-//						List <Participant> teamMembers = t.getMembers();
-//						for (int j = 0; j < teamMembers.size(); j++) {
-//							Participant p = teamMembers.get(i);
-//							long pid = p.getId();
-//							
-						LeaderboardResponse lbResp = new LeaderboardResponse(t.getName(), t.getScore());
+						List <String> names = new ArrayList <String>();
+						List <Participant> teamMembers = t.getMembers();
+						for (int j = 0; j < teamMembers.size(); j++) {
+							UserProfile u = teamMembers.get(j).getUser();
+							names.add(u.getFirstname() + "," + u.getLastname());
+						}										
+						LeaderboardResponse lbResp = new LeaderboardResponse(t.getName(), t.getScore(), names);
 						leaderboardResponse.add(lbResp);																
 						}
 					}
