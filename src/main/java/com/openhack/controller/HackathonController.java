@@ -80,6 +80,12 @@ public class HackathonController {
 		return hackathonService.getFinancialReport(id);
 	}
 	
+	@RequestMapping(value = "/{id}/leaderboard", method = RequestMethod.GET)
+	public ResponseEntity<?> getLeaderboard(
+			@PathVariable("id") long id) {
+		return hackathonService.getLeaderboard(id);
+	}
+	
 	/**
 	 * Updates the hackathon.
 	 *

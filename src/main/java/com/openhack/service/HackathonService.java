@@ -2,6 +2,8 @@ package com.openhack.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,12 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.FinanceReportResponse;
 import com.openhack.contract.HackathonResponse;
 import com.openhack.contract.OrganizationResponse;
 import com.openhack.contract.Judge;
+import com.openhack.contract.LeaderboardResponse;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.ParticipantDao;
@@ -426,7 +431,6 @@ public class HackathonService {
 
 			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
 
-
 			if (teams != null) {
 				for (int i = 0; i < teams.size(); i++) {
 					Team t = teams.get(i);
@@ -464,6 +468,70 @@ public class HackathonService {
 		catch(Exception e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	/**
+	 * Gets the hackathon.
+	 *
+	 * @param id: the hackathon id
+	 * @return ResponseEntity: the hackathon object on success/ error message on error
+	 */
+	@Transactional	
+	public ResponseEntity<String> getLeaderboard(long id) {
+		try {
+
+			List<LeaderboardResponse> leaderboardResponse = new ArrayList <LeaderboardResponse>();
+			Hackathon hackathon = hackathonDao.findById(id);
+			// If the hackathon with given id does not exist, return NotFound.
+			if(hackathon==null)
+				throw new NotFoundException("Hackathon", "Id", id);
+			
+			if (hackathon.getStatus() < 2)
+				throw new Exception("Hackathon");
+			
+
+			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
+			if (teams != null) {
+				for (int i = 0; i < teams.size(); i++) {
+					Team t = teams.get(i);
+					if (t.getPaymentDone()) {
+//						List <Participant> teamMembers = t.getMembers();
+//						for (int j = 0; j < teamMembers.size(); j++) {
+//							Participant p = teamMembers.get(i);
+//							long pid = p.getId();
+//							
+						LeaderboardResponse lbResp = new LeaderboardResponse(t.getName(), t.getScore());
+						leaderboardResponse.add(lbResp);																
+						}
+					}
+				}	
+
+		    Collections.sort(leaderboardResponse, new Comparator<LeaderboardResponse>() {
+		        @Override public int compare(LeaderboardResponse p1, LeaderboardResponse p2) {
+		            return (int)p2.getTeamScore() - (int)p1.getTeamScore(); // Descending
+		        }
+
+		    });
+		    
+		    GsonBuilder gsonbuilder = new GsonBuilder();
+		    Gson gson = gsonbuilder.create();
+			String jsonResp = gson.toJson(leaderboardResponse);
+	        System.out.println("json = " + jsonResp);
+
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(jsonResp);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			String jsonResp = new Gson().toJson(errorResponse);
+
+			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(jsonResp);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			String jsonResp = new Gson().toJson(errorResponse);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(jsonResp);
 		}
 	}
 }
