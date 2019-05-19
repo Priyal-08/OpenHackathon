@@ -1,6 +1,7 @@
 package com.openhack.dao;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -156,5 +157,14 @@ public class UserJPADao implements UserDao {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public List<UserProfile> findPendingRequests(long orgId) {
+		
+		Query query = entityManager.createNativeQuery("SELECT up.* FROM userprofile up where up.membership_status = 'requested' ", UserProfile.class);
+		return query.getResultList();
+		
+	}
 
 }

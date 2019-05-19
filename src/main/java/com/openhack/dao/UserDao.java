@@ -1,7 +1,9 @@
 package com.openhack.dao;
 
+import java.util.Collection;
 import java.util.List;
 
+import com.openhack.contract.UserResponse;
 import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 import com.openhack.domain.UserRole;
@@ -66,6 +68,6 @@ public interface UserDao{
 	
 	public UserAccount findAccountByEmail(String username);
 
-
+	public List<UserProfile> findPendingRequests(long orgId);
 	
 }

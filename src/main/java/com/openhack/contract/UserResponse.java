@@ -89,11 +89,15 @@ public class UserResponse {
 		this.firstname = firstname;
 		this.lastname = lastname;
 	}
-
 	
 	public UserResponse(String status) {
 		super();
 		this.status = status;
+	}
+	
+	public UserResponse(long id) {
+		super();
+		this.id = id;
 	}
 
 	public String getFirstname() {

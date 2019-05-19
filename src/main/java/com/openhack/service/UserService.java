@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.MemberRequest;
 import com.openhack.contract.UserResponse;
+import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Address;
 import com.openhack.domain.Organization;
 import com.openhack.domain.UserProfile;
-import com.openhack.dao.OrganizationDao;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
 import com.openhack.exception.NotFoundException;
@@ -238,25 +238,27 @@ public class UserService {
 			}
 		}
 		
-		public ResponseEntity<?> approveRequest(MemberRequest request){
+		public ResponseEntity<?> approveRequest(UserResponse request){
 			
 			try {
 				
-				if(request.getUser() == null)
+				if(request == null)
 					throw new InvalidArgumentException("User in MemberRequest is Null");
 				
-				UserProfile user = userDao.findById(request.getUser().getUserId());
+				UserProfile user = userDao.findById(request.getId());
 				if(user == null)
-					throw new NotFoundException("User", "Id", request.getUser().getUserId());
+					throw new NotFoundException("User", "Id", request.getId());
 				
-				if(request.getOrganization() == null)
-					throw new InvalidArgumentException("Organization in MemberRequest is Null");
+//				if(request.getOrganization() == null)
+//					throw new InvalidArgumentException("Organization in MemberRequest is Null");
 				
-				Organization organization = organizationDao.findByOrganizationName(request.getOrganization().getName());
+//				Organization organization = organizationDao.findByOrganizationName(request.getOrganization().getName());
+//				if(organization == null)
+//					throw new NotFoundException("Orgnization", "Name", request.getOrganization().getName());
+				
+				Organization organization = user.getOrganization();
 				if(organization == null)
-					throw new NotFoundException("Orgnization", "Name", request.getOrganization().getName());
-				
-				user.setOrganization(organization);
+					throw new InvalidArgumentException("Organization is null");
 				
 				user.setMembershipStatus("Approved");
 
@@ -383,4 +385,84 @@ public class UserService {
 			}
 		}
 	
+		
+		@Transactional
+		public ResponseEntity<?> findPendingMembers(long userId){
+			
+			List<UserResponse> listOfUsers = new ArrayList<UserResponse>();
+			System.out.println("User id : "+userId);
+			try {
+				
+				UserProfile user = userDao.findById(userId);
+				
+				if(user == null)
+					throw new NotFoundException("User", "Id", userId);
+				
+				
+				System.out.println("Getting user owned organizations : ");
+				if(user.getOwnedOrganizations().size() != 0) {
+					
+					System.out.println("Total user owned organizations : "+user.getOwnedOrganizations().size());
+					
+					for( Organization organization : user.getOwnedOrganizations()) {
+	 
+						System.out.println("For organization : "+organization.getName()+" org id : "+organization.getId());
+						
+						for(UserProfile hacker : userDao.findPendingRequests(organization.getId())) {
+							
+							System.out.println("organization.getId() : "+organization.getId()+" "+hacker.getOrganization().getId());
+							
+							if(hacker.getOrganization() != null && organization.getId() == hacker.getOrganization().getId())
+							{
+								System.out.println("For user : "+hacker.getFirstName());
+								
+								String city = null;
+								String state = null;
+								String zip = null;
+								String street = null;
+								
+								Address address = hacker.getAddress();
+								
+								if (address != null) {
+									city = address.getCity();
+									state = address.getState();
+									zip = address.getZip();
+									street = address.getStreet();			
+								}
+								
+								String orgName = null;
+								
+								if(hacker.getOrganization() != null)
+								{
+									orgName = hacker.getOrganization().getName();
+								}
+								
+								listOfUsers.add(new UserResponse(
+										hacker.getId(),
+										hacker.getFirstName(), 
+										hacker.getLastName(),
+										hacker.getEmail(),
+										hacker.getTitle(),
+										city,
+										state,
+										street,
+										zip,
+										hacker.getPotraitURL(),
+										hacker.getAboutMe(),
+										hacker.getScreenName(),
+										orgName,
+										hacker.getMembershipStatus()));
+								}
+							}
+						
+					}
+					System.out.println("List of all users with pending requests"+listOfUsers.toArray());
+				}
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listOfUsers);
+			}
+			catch(Exception e){
+				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}
+		}
 }

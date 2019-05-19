@@ -180,7 +180,7 @@ public class ParticipantService {
 						UUID.randomUUID().toString(),
 						false,
 						getRole(members, member.getId()),
-						hackathon.getSponsors().contains(member.getOrganization())?discountedAmount:hackathon.getFees()
+						hackathon.getSponsors().contains(member.getOrganization()) && member.getMembershipStatus().equals("Approved") ?discountedAmount:hackathon.getFees()
 						))).collect(Collectors.toList());
 				
 				final List<Participant> finalParticipants = participants;

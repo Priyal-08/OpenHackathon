@@ -1,6 +1,7 @@
 package com.openhack.controller;
 
 import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.MemberRequest;
 import com.openhack.contract.UserResponse;
+import com.openhack.domain.UserProfile;
 import com.openhack.service.UserService;
 
 @RestController
@@ -60,7 +63,7 @@ public class UserController {
 
 	@RequestMapping(value = "/user/approve", method = RequestMethod.POST )
 	public ResponseEntity<?> approveOrganization(
-			@RequestBody MemberRequest request) {
+			@RequestBody UserResponse request) {
 			return userService.approveRequest(request);
 		}	
 
@@ -79,6 +82,12 @@ public class UserController {
 	public ResponseEntity<?> listHackers(){
 		return userService.listHackers();
 	}
+	
+	@RequestMapping(value = "/user/{id}/pendingrequests", method = RequestMethod.GET )
+	public ResponseEntity<?> findPendingRequests(
+			@PathVariable("id") long id) {
+			return userService.findPendingMembers(id);
+		}
 
 }
 

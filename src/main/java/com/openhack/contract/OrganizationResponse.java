@@ -105,7 +105,4 @@ public class OrganizationResponse {
 		this.members = members;
 		this.sponsoredHackathons = sponsoredHackathons;
 	}
-    
-	
-    
 }
