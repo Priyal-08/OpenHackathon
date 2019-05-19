@@ -161,7 +161,7 @@ public class ParticipantService {
 						p.getUser().getFirstName(),
 						p.getTitle(),
 						p.getPaymentDone(),p.getFees())).collect(Collectors.toList());
-				myTeamResponse = new MyTeamResponse(0, null, team.getId(), team.getName(), participants, team.getPaymentDone(),
+				myTeamResponse = new MyTeamResponse(team.getHackathon().getId(), team.getHackathon().getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
 			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), team.getHackathon().getStatus());
 			}
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
