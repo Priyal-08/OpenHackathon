@@ -3,6 +3,7 @@ package com.openhack.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -72,25 +73,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                        .permitAll()
                     .antMatchers("/auth/**").permitAll()
-                    .antMatchers("/user/**").permitAll()
- //                 .antMatchers("/user/**").hasAnyAuthority("Hacker, Admin")
-                    .antMatchers("/hackathon/**").permitAll()
-                    .antMatchers("/organization/**").permitAll()
-                    .antMatchers("/participant/**").permitAll()
+                    
+                    .antMatchers("/user/**").hasAnyAuthority("Hacker, Admin")
+                    
+                    .antMatchers(HttpMethod.POST, "/hackathon/**").hasAuthority("Admin")
+                    .antMatchers(HttpMethod.PUT, "/hackathon/**").hasAuthority("Admin")
+                    .antMatchers(HttpMethod.PATCH, "/hackathon/**").hasAuthority("Admin")
+                    .antMatchers(HttpMethod.GET, "/hackathon/{\\d+}/financial_report/**").hasAuthority("Admin")
+                    .antMatchers(HttpMethod.GET, "/hackathon/**").hasAuthority("Admin, Hacker")
+                    
+                    
+                    .antMatchers("/organization/**").hasAuthority("Admin, Hacker")
+                    
+                    
+                    .antMatchers(HttpMethod.POST, "/participant/{\\d+}/hackathon/**").hasAnyAuthority("Hacker")
+                    .antMatchers(HttpMethod.PATCH, "/participant/{\\d+}/hackathon/**").hasAnyAuthority("Hacker")
+                    .antMatchers(HttpMethod.POST, "/participant/pay/**").hasAnyAuthority("Hacker")
+                    .antMatchers(HttpMethod.GET, "/participant/**").hasAnyAuthority("Admin, Hacker")
+                    
                     .antMatchers("/dashboard/**").hasAnyAuthority("Admin")
+                    
                     .anyRequest()
-                        .authenticated();
+                    .authenticated();
 
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
