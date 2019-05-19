@@ -66,6 +66,16 @@ public class JpaParticipantDao implements ParticipantDao{
 		if (query.getResultList().isEmpty()) return null;
 		return (Team)query.getResultList().get(0);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public List<Team> findTeamsByHackathonId(long hackathonId) {
+		Query query = entityManager.createNativeQuery("SELECT t.* FROM team t WHERE t.hackathon_id = :hackathonId", Team.class);
+		query.setParameter("hackathonId", hackathonId);
+		if (query.getResultList().isEmpty()) return null;
+		return query.getResultList();
+	}
 
 	@Override
 	public Participant findParticipantByToken(String token) {
@@ -74,6 +84,16 @@ public class JpaParticipantDao implements ParticipantDao{
 		if (query.getResultList().isEmpty()) return null;
 		return (Participant)query.getResultList().get(0);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List <Participant> findParticipantsByTeam(long team_id) {
+		Query query = entityManager.createNativeQuery("SELECT * FROM participant p WHERE p.team_id LIKE :team_id", Participant.class);
+		query.setParameter("team_id", team_id);
+		if (query.getResultList().isEmpty()) return null;
+		return query.getResultList();
+	}
+	
 	
 
 	@Transactional

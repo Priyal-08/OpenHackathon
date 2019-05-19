@@ -74,6 +74,12 @@ public class HackathonController {
 		return hackathonService.getHackathon(id, userId);
 	}
 	
+	@RequestMapping(value = "/{id}/financial_report", method = RequestMethod.GET)
+	public ResponseEntity<?> getFinancialReport(
+			@PathVariable("id") long id) {
+		return hackathonService.getFinancialReport(id);
+	}
+	
 	/**
 	 * Updates the hackathon.
 	 *

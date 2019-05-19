@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
+import com.openhack.contract.FinanceReportResponse;
 import com.openhack.contract.HackathonResponse;
 import com.openhack.contract.OrganizationResponse;
 import com.openhack.contract.Judge;
@@ -23,6 +24,8 @@ import com.openhack.dao.ParticipantDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Hackathon;
 import com.openhack.domain.Organization;
+import com.openhack.domain.Participant;
+import com.openhack.domain.Team;
 import com.openhack.domain.UserProfile;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
@@ -48,6 +51,11 @@ public class HackathonService {
 	/** The response. */
 	@Autowired	
 	private HackathonResponse response;
+	
+//	/** The response. */
+//	@Autowired	
+//	private FinanceReportResponse finReportResponse;
+
 	
 	@Autowired ErrorResponse errorResponse;
 	
@@ -374,6 +382,79 @@ public class HackathonService {
 		catch(InvalidArgumentException e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	/**
+	 * Gets the hackathon.
+	 *
+	 * @param id: the hackathon id
+	 * @return ResponseEntity: the hackathon object on success/ error message on error
+	 */
+	@Transactional
+	public ResponseEntity<?> getFinancialReport(long id) {
+		try {
+
+			FinanceReportResponse finReportResponse;		
+			Hackathon hackathon = hackathonDao.findById(id);
+			// If the hackathon with given id does not exist, return NotFound.
+			if(hackathon==null)
+				throw new NotFoundException("Hackathon", "Id", id);
+
+			int noOfTeams = 0;
+			int noOfSponsors = hackathon.getSponsors().size();
+			float sponsorsAmount = noOfSponsors*1000;
+
+			int noOfParticipants = 0;
+			float feesPaid = 0;
+			float avgFeesPaid = 0;
+			float feesNotPaid = 0;
+
+			float hackathonFees = hackathon.getFees();
+			float revenue = sponsorsAmount;
+			float expenses = 0;
+			float profit = 0;
+
+			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
+
+
+			if (teams != null) {
+				for (int i = 0; i < teams.size(); i++) {
+					Team t = teams.get(i);
+					if (t.getPaymentDone())
+						noOfTeams+=1;
+
+					List <Participant> participants = participantDao.findParticipantsByTeam(t.getId());
+					for (int j = 0 ; j< participants.size(); j++) {
+						Participant p = participants.get(j);
+						if (p.getPaymentDone()) {
+							feesPaid += p.getFees();
+							noOfParticipants += 1;
+						} else {
+							feesNotPaid += p.getFees();
+						}
+					}
+				}
+			}
+
+			revenue += feesPaid;
+			avgFeesPaid = feesPaid/noOfParticipants;
+			profit = revenue - expenses;		
+
+			finReportResponse = new FinanceReportResponse(hackathon.getEventName(), hackathon.getStartDate(), hackathon.getEndDate(), hackathon.getDescription(),
+					noOfTeams,noOfSponsors,noOfParticipants,hackathonFees,feesPaid,feesNotPaid,avgFeesPaid, revenue,
+					expenses, profit);
+
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(finReportResponse);
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());

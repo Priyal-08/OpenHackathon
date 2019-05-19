@@ -28,10 +28,14 @@ public interface ParticipantDao {
 	 */
 	public Team findTeamByUserIdAndHackathonId(long userId, long hackathonId);
 	
+	public List <Team> findTeamsByHackathonId(long hackathonId);
 	
 	public Team findTeamByNameAndHackathon(String teamName, long hackathonId);
 	
 	public Participant findParticipantByToken(String token);
+	
+	public List <Participant> findParticipantsByTeam(long team_id);
+
 	
 	public Payment store(Payment payment);
 
