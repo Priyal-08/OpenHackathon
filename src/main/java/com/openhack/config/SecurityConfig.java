@@ -87,6 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/hackathon/**").permitAll()
                     .antMatchers("/organization/**").permitAll()
                     .antMatchers("/participant/**").permitAll()
+                    .antMatchers("/dashboard/**").hasAnyAuthority("Admin")
                     .anyRequest()
                         .authenticated();
 
