@@ -138,6 +138,45 @@ public class ParticipantService {
 		}
 	}
 	
+	public ResponseEntity<?> getTeamDetails(long userId, long teamId) {
+		try {
+			
+			UserProfile user = userDao.findById(userId);
+			
+			// If the user with given id does not exist, return NotFound.
+			if(user==null)
+				throw new NotFoundException("User", "id", userId);
+			
+			//Hackathon hackathon = hackathonDao.findById(hackathonId);
+			// If the hackathon with given id does not exist, return NotFound.
+//			if(hackathon==null)
+//				throw new NotFoundException("Hackathon", "id", hackathonId);
+			
+			Team team = participantDao.findById(teamId);
+			MyTeamResponse myTeamResponse = null;
+			if(team!=null)
+			{
+				List<ParticipantResponse> participants = team.getMembers().stream().map(p->new ParticipantResponse(
+						p.getUser().getId(),
+						p.getUser().getFirstName(),
+						p.getTitle(),
+						p.getPaymentDone(),p.getFees())).collect(Collectors.toList());
+				myTeamResponse = new MyTeamResponse(0, null, team.getId(), team.getName(), participants, team.getPaymentDone(),
+			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), team.getHackathon().getStatus());
+			}
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
 	/**
 	 * Register team for hackathon
 	 *

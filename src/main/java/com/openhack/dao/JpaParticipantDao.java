@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.openhack.domain.Hackathon;
 import com.openhack.domain.Participant;
 import com.openhack.domain.Payment;
 import com.openhack.domain.Team;
@@ -45,6 +46,12 @@ public class JpaParticipantDao implements ParticipantDao{
 		return (Team)query.getResultList().get(0);
 	}
 
+	@Transactional
+	@Override
+	public Team findById(long id) {
+		return entityManager.find(Team.class, id);
+	}
+	
 	@Transactional
 	@Override
 	public Team store(Team team) {

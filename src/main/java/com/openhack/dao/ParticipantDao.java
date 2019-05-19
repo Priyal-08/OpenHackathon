@@ -39,6 +39,8 @@ public interface ParticipantDao {
 	
 	public Payment store(Payment payment);
 
+	public Team findById(long id);
+
 	
 	
 	
