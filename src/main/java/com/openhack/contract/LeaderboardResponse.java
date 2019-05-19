@@ -6,6 +6,7 @@ import com.openhack.domain.Participant;
 
 public class LeaderboardResponse {
 
+	private long teamId;
 	private String teamName;
 	private long teamScore;
 	private List <String> teamMembers;
@@ -41,6 +42,22 @@ public class LeaderboardResponse {
 	}
 	public void setTeamMembers(List<String> teamMembers) {
 		this.teamMembers = teamMembers;
+	}
+
+	public LeaderboardResponse(long teamId, String teamName, long teamScore, List<String> teamMembers) {
+		super();
+		this.teamId = teamId;
+		this.teamName = teamName;
+		this.teamScore = teamScore;
+		this.teamMembers = teamMembers;
+	}
+
+	public long getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(long teamId) {
+		this.teamId = teamId;
 	}
 
 }

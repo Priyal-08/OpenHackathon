@@ -21,6 +21,7 @@ import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.FinanceReportResponse;
 import com.openhack.contract.HackathonResponse;
 import com.openhack.contract.OrganizationResponse;
+import com.openhack.contract.PaymentReportResponse;
 import com.openhack.contract.Judge;
 import com.openhack.contract.LeaderboardResponse;
 import com.openhack.dao.HackathonDao;
@@ -477,6 +478,81 @@ public class HackathonService {
 	 * @param id: the hackathon id
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
+	@Transactional
+	public ResponseEntity<?> getPaymentReport(long id) {
+		try {
+			PaymentReportResponse paymentReportResponse;		
+			Hackathon hackathon = hackathonDao.findById(id);
+			// If the hackathon with given id does not exist, return NotFound.
+			if(hackathon==null)
+				throw new NotFoundException("Hackathon", "Id", id);
+
+			int noOfTeams = 0;
+			int noOfSponsors = hackathon.getSponsors().size();
+			float sponsorsAmount = noOfSponsors*1000;
+
+			int noOfParticipants = 0;
+			float feesPaid = 0;
+			float avgFeesPaid = 0;
+			float feesNotPaid = 0;
+
+			float hackathonFees = hackathon.getFees();
+			float revenue = sponsorsAmount;
+			float expenses = 0;
+			float profit = 0;
+
+			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
+
+			if (teams != null) {
+				for (int i = 0; i < teams.size(); i++) {
+					Team t = teams.get(i);
+					if (t.getPaymentDone())
+						noOfTeams+=1;
+
+					List <Participant> participants = participantDao.findParticipantsByTeam(t.getId());
+					for (int j = 0 ; j< participants.size(); j++) {
+						Participant p = participants.get(j);
+						if (p.getPaymentDone()) {
+							feesPaid += p.getFees();
+							noOfParticipants += 1;
+						} else {
+							feesNotPaid += p.getFees();
+						}
+					}
+				}
+			}
+
+			revenue += feesPaid;
+			avgFeesPaid = feesPaid/noOfParticipants;
+			profit = revenue - expenses;		
+
+	/*		paymentReportResponse = new (hackathon.getEventName(), hackathon.getStartDate(), hackathon.getEndDate(), hackathon.getDescription(),
+					noOfTeams,noOfSponsors,noOfParticipants,hackathonFees,feesPaid,feesNotPaid,avgFeesPaid, revenue,
+					expenses, profit);
+	*/
+			
+			errorResponse = new ErrorResponse("NotFound", "404", "TEst");
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+//			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(paymentReportResponse);
+
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	/**
+	 * Gets the hackathon.
+	 *
+	 * @param id: the hackathon id
+	 * @return ResponseEntity: the hackathon object on success/ error message on error
+	 */
 	@Transactional	
 	public ResponseEntity<String> getLeaderboard(long id) {
 		try {
@@ -488,8 +564,7 @@ public class HackathonService {
 				throw new NotFoundException("Hackathon", "Id", id);
 			
 			if (hackathon.getStatus() < 2)
-				throw new Exception("Hackathon");
-			
+				throw new Exception("Hackathon");			
 
 			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
 			if (teams != null) {
@@ -501,8 +576,8 @@ public class HackathonService {
 						for (int j = 0; j < teamMembers.size(); j++) {
 							UserProfile u = teamMembers.get(j).getUser();
 							names.add(u.getFirstname() + "," + u.getLastname());
-						}										
-						LeaderboardResponse lbResp = new LeaderboardResponse(t.getName(), t.getScore(), names);
+						}											
+						LeaderboardResponse lbResp = new LeaderboardResponse(t.getId(),t.getName(), t.getScore(), names);
 						leaderboardResponse.add(lbResp);																
 						}
 					}
@@ -512,7 +587,6 @@ public class HackathonService {
 		        @Override public int compare(LeaderboardResponse p1, LeaderboardResponse p2) {
 		            return (int)p2.getTeamScore() - (int)p1.getTeamScore(); // Descending
 		        }
-
 		    });
 		    
 		    GsonBuilder gsonbuilder = new GsonBuilder();
