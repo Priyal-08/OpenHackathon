@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 
 @Entity
@@ -69,6 +71,8 @@ public class Hackathon {
 	 private List<Organization> sponsors;
 	
 	/** The sponsor discount */
+	@Min(0)
+	@Max(50)
 	@Column(name = "DISCOUNT")
     private float discount;
 	

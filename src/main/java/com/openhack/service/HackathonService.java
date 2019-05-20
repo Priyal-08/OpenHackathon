@@ -345,6 +345,15 @@ public class HackathonService {
 			if(hackathon.getStatus()==3)
 				throw new InvalidArgumentException("status");
 			
+			// The hackathon should not be finalised if the grading is not done for all teams
+			if(status==3) {
+				List<Team> teams = participantDao.findTeamsByHackathonId(id);
+				for(Team team: teams) {
+					if(team.getSubmissionURL()!=null && team.getSubmissionURL()!="" && team.getJudge()==null)
+						throw new InvalidArgumentException("status");
+				}
+			}
+			
 			// Update hackathon status
 			hackathon.setStatus(status);
 			response = new HackathonResponse();  // TODO: create hackathon response
