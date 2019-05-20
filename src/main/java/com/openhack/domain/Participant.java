@@ -1,6 +1,7 @@
 package com.openhack.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,11 +19,11 @@ public class Participant {
 	@Column(name = "ID")
     private long id;
 	
-	@ManyToOne(targetEntity=Team.class, optional=false)
+	@ManyToOne(targetEntity=Team.class, optional=false, fetch=FetchType.LAZY)
 	@JoinColumn(name = "TEAM_ID",referencedColumnName="ID")
 	private Team team;
 	
-	@OneToOne(targetEntity=UserProfile.class, optional=true)
+	@OneToOne(targetEntity=UserProfile.class, optional=true, fetch=FetchType.LAZY)
 	@JoinColumn(name = "USER_ID",referencedColumnName="ID")
 	private UserProfile user;
 	
@@ -39,7 +40,7 @@ public class Participant {
 	@Column(name = "TITLE")
 	private String title;
 	
-	@OneToOne(targetEntity=Payment.class, optional=true)
+	@OneToOne(targetEntity=Payment.class, optional=true, fetch=FetchType.LAZY)
 	@JoinColumn(name = "PAYMENT_ID",referencedColumnName="ID")
 	private Payment payment;
 	
