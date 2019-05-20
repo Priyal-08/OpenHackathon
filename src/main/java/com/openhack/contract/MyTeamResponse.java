@@ -2,6 +2,8 @@ package com.openhack.contract;
 
 import java.util.List;
 
+import com.openhack.domain.Participant;
+
 public class MyTeamResponse {
 	
 	private long hackathonId;
@@ -31,7 +33,16 @@ public class MyTeamResponse {
 		this.status = status;
 	}
 
-	
+	public MyTeamResponse(long hackathonId, String hackathonName, long teamId, String teamName, List<ParticipantResponse> participants, boolean paymentDone) {
+		super();
+		this.hackathonId = hackathonId;
+		this.hackathonName = hackathonName;
+		this.teamId = teamId;
+		this.teamName = teamName;
+		this.participants = participants;
+		this.paymentDone = paymentDone;
+	}
+
 	public long getHackathonId() {
 		return hackathonId;
 	}

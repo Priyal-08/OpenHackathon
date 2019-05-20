@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +24,11 @@ import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.FinanceReportResponse;
 import com.openhack.contract.HackathonResponse;
 import com.openhack.contract.OrganizationResponse;
+import com.openhack.contract.ParticipantResponse;
 import com.openhack.contract.PaymentReportResponse;
 import com.openhack.contract.Judge;
 import com.openhack.contract.LeaderboardResponse;
+import com.openhack.contract.MyTeamResponse;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.ParticipantDao;
@@ -481,60 +486,28 @@ public class HackathonService {
 	@Transactional
 	public ResponseEntity<?> getPaymentReport(long id) {
 		try {
-			PaymentReportResponse paymentReportResponse;		
+			PaymentReportResponse paymentReportResponse = null;		
 			Hackathon hackathon = hackathonDao.findById(id);
 			// If the hackathon with given id does not exist, return NotFound.
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", id);
 
-			int noOfTeams = 0;
-			int noOfSponsors = hackathon.getSponsors().size();
-			float sponsorsAmount = noOfSponsors*1000;
-
-			int noOfParticipants = 0;
-			float feesPaid = 0;
-			float avgFeesPaid = 0;
-			float feesNotPaid = 0;
-
-			float hackathonFees = hackathon.getFees();
-			float revenue = sponsorsAmount;
-			float expenses = 0;
-			float profit = 0;
-
-			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
-
+			List <Team> teams = participantDao.findTeamsByHackathonId(id);	
+			List <MyTeamResponse> response = new ArrayList <MyTeamResponse>();
+			
 			if (teams != null) {
 				for (int i = 0; i < teams.size(); i++) {
 					Team t = teams.get(i);
-					if (t.getPaymentDone())
-						noOfTeams+=1;
-
-					List <Participant> participants = participantDao.findParticipantsByTeam(t.getId());
-					for (int j = 0 ; j< participants.size(); j++) {
-						Participant p = participants.get(j);
-						if (p.getPaymentDone()) {
-							feesPaid += p.getFees();
-							noOfParticipants += 1;
-						} else {
-							feesNotPaid += p.getFees();
-						}
-					}
+					List<ParticipantResponse> participantsResponse = t.getMembers().stream().map(p->new ParticipantResponse(
+							p.getUser().getId(),
+							p.getUser().getFirstName(),
+							p.getTitle(),
+							p.getPaymentDone(), p.getFees())).collect(Collectors.toList());
+					MyTeamResponse teamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), t.getId(),t.getName(),participantsResponse, t.getPaymentDone());
+					response.add(teamResponse);
 				}
-			}
-
-			revenue += feesPaid;
-			avgFeesPaid = feesPaid/noOfParticipants;
-			profit = revenue - expenses;		
-
-	/*		paymentReportResponse = new (hackathon.getEventName(), hackathon.getStartDate(), hackathon.getEndDate(), hackathon.getDescription(),
-					noOfTeams,noOfSponsors,noOfParticipants,hackathonFees,feesPaid,feesNotPaid,avgFeesPaid, revenue,
-					expenses, profit);
-	*/
-			
-			errorResponse = new ErrorResponse("NotFound", "404", "TEst");
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
-//			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(paymentReportResponse);
-
+			}			
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
