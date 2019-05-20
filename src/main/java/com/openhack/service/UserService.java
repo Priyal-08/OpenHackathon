@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.contract.ErrorResponse;
-import com.openhack.contract.MemberRequest;
 import com.openhack.contract.UserResponse;
 import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.UserDao;
@@ -50,7 +49,6 @@ public class UserService {
 			String state = null;
 			String zip = null;
 			String street = null;
-			String role = null;
 			
 			if (address != null) {
 				city = address.getCity();
@@ -109,7 +107,6 @@ public class UserService {
 			String potraitURL = (String) payload.get("potrait_url");
 			String screenname = (String) payload.get("screenname");
 			String title = (String) payload.get("title");
-			String role = null;
 			
 			userProfile2 = userDao.findByEmail(email);
 			
@@ -371,7 +368,7 @@ public class UserService {
 				UserProfile user = userDao.findById(requester.getId());
 				
 				if(user == null)
-					throw new NotFoundException("User", "Id", user.getId());
+					throw new NotFoundException("User", "Id", requester.getId());
 				
 				user.setOrganization(null);
 				
@@ -423,7 +420,7 @@ public class UserService {
 		@Transactional
 		public ResponseEntity<?> listHackers() {
 			try {
-				List<UserResponse> hackersListResponse = new ArrayList();
+				List<UserResponse> hackersListResponse = new ArrayList<UserResponse>();
 				List<UserProfile> hackersList = userDao.listHackers();
 				
 				for(UserProfile hacker : hackersList) {

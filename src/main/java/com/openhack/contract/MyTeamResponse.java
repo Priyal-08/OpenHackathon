@@ -2,8 +2,6 @@ package com.openhack.contract;
 
 import java.util.List;
 
-import com.openhack.domain.Participant;
-
 public class MyTeamResponse {
 	
 	private long hackathonId;

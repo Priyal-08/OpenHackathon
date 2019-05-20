@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openhack.contract.ErrorResponse;
-import com.openhack.contract.MemberRequest;
 import com.openhack.contract.UserResponse;
-import com.openhack.domain.UserProfile;
 import com.openhack.service.UserService;
 
 @RestController
@@ -48,7 +46,6 @@ public class UserController {
 			return userService.updateUserProfile(id,payload); // firstname,lastname,city, state, street, zip, email, potrait_url, screenname, title, name, orgid);
 			//return userService.getUserProfile(id);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			errorResponse = new ErrorResponse("BadRequest", "400", "Invalid e-mail address");
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}			

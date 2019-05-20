@@ -1,6 +1,5 @@
 package com.openhack.service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.hash.Hashing;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.AuthResponse;
 import com.openhack.contract.UserResponse;
