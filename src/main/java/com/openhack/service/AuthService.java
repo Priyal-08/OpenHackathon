@@ -62,7 +62,7 @@ public class AuthService {
 				role = userRole.getRole();
 	        String jwt = tokenProvider.generateToken(authentication);
 			
-	        authResponse = new AuthResponse(id, role, userRole.getUser().getFirstName(), userRole.getUser().getLastname(), jwt);	
+	        authResponse = new AuthResponse(id, role, userRole.getUser().getFirstName(), userRole.getUser().getScreenName(), jwt);	
 	        authResponse.setRole(role);
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(authResponse);
 			

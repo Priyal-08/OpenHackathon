@@ -376,7 +376,7 @@ public class ParticipantService {
 			participant.setPaymentDate(LocalDateTime.now().toString());
 			
 			String payeeSubject = String.format("Open Hackathon - Your payment is complete!");
-			String payeeText = String.format("Thank you for making the payment! Your payment details below. \n\n Payment ID: %s\n Payment Date %s \n Payment Amount %s", participant.getPaymentURL(), participant.getPaymentDate(), participant.getFees());
+			String payeeText = String.format("Thank you for making the payment! Your payment details below. \n\n Payment ID: %s\n Payment Date: %s \n Payment Amount: $%s \n\n\n Thank You, \n Team OpenHackathon", participant.getPaymentURL(), participant.getPaymentDate(), participant.getFees());
 			String payeeEmailId = participant.getUser().getEmail();
 			
 			new Thread(() -> {
