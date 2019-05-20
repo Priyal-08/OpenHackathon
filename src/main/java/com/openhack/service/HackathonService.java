@@ -564,7 +564,7 @@ public class HackathonService {
 						List <Participant> teamMembers = t.getMembers();
 						for (int j = 0; j < teamMembers.size(); j++) {
 							UserProfile u = teamMembers.get(j).getUser();
-							names.add(u.getFirstname() + "," + u.getLastname());
+							names.add(u.getFirstname() + " " + u.getLastname());
 						}											
 						LeaderboardResponse lbResp = new LeaderboardResponse(hackathon.getEventName(), t.getId(),t.getName(), t.getScore(), names);
 						leaderboardResponse.add(lbResp);																
