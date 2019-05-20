@@ -18,10 +18,11 @@ public class FinanceReportResponse {
 	private float revenue; 
 	private float expense; 
 	private float profit;
+	private float sponsorAmount;
 	
 	public FinanceReportResponse(String eventName, Date startDate, Date endDate, String description, int noOfTeams,
 			int noOfSponsors, int totalParticipants, float hackathonFees, float totalHackathonFeesPaid,
-			float totalHackathonFeesNotPaid, float avgFeesPaid, float revenue, float expense, float profit) {
+			float totalHackathonFeesNotPaid, float avgFeesPaid, float revenue, float expense, float profit, float sponsorAmount) {
 		super();
 		this.eventName = eventName;
 		this.startDate = startDate;
@@ -37,6 +38,7 @@ public class FinanceReportResponse {
 		this.revenue = revenue;
 		this.expense = expense;
 		this.profit = profit;
+		this.sponsorAmount = sponsorAmount;
 	}
 	
 	public String getEventName() {
@@ -128,6 +130,14 @@ public class FinanceReportResponse {
 
 	public void setAvgFeesPaid(float avgFeesPaid) {
 		this.avgFeesPaid = avgFeesPaid;
+	}
+
+	public float getSponsorAmount() {
+		return sponsorAmount;
+	}
+
+	public void setSponsorAmount(float sponsorAmount) {
+		this.sponsorAmount = sponsorAmount;
 	} 
 
 }

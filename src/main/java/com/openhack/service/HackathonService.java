@@ -478,7 +478,7 @@ public class HackathonService {
 
 			finReportResponse = new FinanceReportResponse(hackathon.getEventName(), hackathon.getStartDate(), hackathon.getEndDate(), hackathon.getDescription(),
 					noOfTeams,noOfSponsors,noOfParticipants,hackathonFees,feesPaid,feesNotPaid,avgFeesPaid, revenue,
-					expenses, profit);
+					expenses, profit, sponsorsAmount);
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(finReportResponse);
 		}
