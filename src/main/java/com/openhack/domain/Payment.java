@@ -2,6 +2,7 @@ package com.openhack.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,11 +27,11 @@ public class Payment {
 	@Column(name = "PAYMENT_DATE")
 	private String paymentDate;
 	
-	@ManyToOne(targetEntity=UserProfile.class)
+	@ManyToOne(targetEntity=UserProfile.class, fetch=FetchType.LAZY)
 	@JoinColumn(name = "USERID",referencedColumnName="ID")
 	private UserProfile user;
 	
-	@ManyToOne(targetEntity=Hackathon.class)
+	@ManyToOne(targetEntity=Hackathon.class, fetch=FetchType.LAZY)
 	@JoinColumn(name = "HACKATHONID",referencedColumnName="ID")
 	private Hackathon hackathon;
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -113,11 +114,11 @@ public class Team {
 	@Column(name = "ID")
     private long id;
 	
-	@ManyToOne(targetEntity=Hackathon.class, optional=false)
+	@ManyToOne(targetEntity=Hackathon.class, optional=false, fetch=FetchType.LAZY)
 	@JoinColumn(name = "HACKATHON_ID",referencedColumnName="ID")
 	private Hackathon hackathon;
 	
-	@ManyToOne(targetEntity=UserProfile.class, optional=false)
+	@ManyToOne(targetEntity=UserProfile.class, optional=false, fetch=FetchType.LAZY)
 	@JoinColumn(name = "TEAMLEAD_ID",referencedColumnName="ID")
 	private UserProfile teamLead;
 	
@@ -144,7 +145,7 @@ public class Team {
 	@Column(name = "SUBMISSION_URL")
 	private String submissionURL;
 	
-	@ManyToOne(targetEntity=UserProfile.class)
+	@ManyToOne(targetEntity=UserProfile.class, fetch=FetchType.LAZY)
 	@JoinColumn(name = "JUDGE_ID",referencedColumnName="ID")
 	private UserProfile judge;
 

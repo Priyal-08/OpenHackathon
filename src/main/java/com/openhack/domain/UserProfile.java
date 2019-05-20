@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -92,14 +93,14 @@ public class UserProfile{
 	private String screenName;
 	
 	/** The organization. */
-	@ManyToOne(targetEntity=Organization.class, optional=true)
+	@ManyToOne(targetEntity=Organization.class, optional=true, fetch=FetchType.LAZY)
 	@JoinColumn(name = "ORGANIZATION_ID",referencedColumnName="ID")
 	private Organization organization;
 
-	@ManyToMany(mappedBy="judges")
+	@ManyToMany(mappedBy="judges", fetch=FetchType.LAZY)
 	private List<Hackathon> hackathons;
 	
-	@OneToMany(mappedBy="owner")
+	@OneToMany(mappedBy="owner", fetch=FetchType.LAZY)
 	private List<Organization> ownedOrganizations;
 	
 	/** The Organization membershipStatus */

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,16 +16,7 @@ import javax.persistence.Table;
 @Table(name = "USERACCOUNT")
 public class UserAccount implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-//	/** The username. */
-//	@Id
-//	@OneToOne(targetEntity=UserProfile.class)
-//	@JoinColumn(name = "USERNAME",referencedColumnName="SCREENNAME")
-//	private UserProfile user;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -38,7 +30,7 @@ public class UserAccount implements Serializable{
 	public void setId(long id) {
 		this.id = id;
 	}
-	@OneToOne(targetEntity=UserProfile.class)
+	@OneToOne(targetEntity=UserProfile.class, fetch=FetchType.LAZY)
 	@JoinColumn(name = "USERID",referencedColumnName="ID")
 	private UserProfile user;
 
