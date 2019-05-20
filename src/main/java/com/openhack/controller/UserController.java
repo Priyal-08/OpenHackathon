@@ -73,6 +73,12 @@ public class UserController {
 			return userService.leaveOrganization(user);
 		}	
 	
+	@RequestMapping(value = "/user/reject", method = RequestMethod.POST )
+	public ResponseEntity<?> rejectRequest(
+			@RequestBody UserResponse user) {
+			return userService.rejectRequest(user);
+		}
+	
 	/**
 	 * Gets all organizations.
 	 *

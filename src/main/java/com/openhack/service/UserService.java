@@ -364,6 +364,62 @@ public class UserService {
 			}
 		}
 		
+		@Transactional	
+		public ResponseEntity<?> rejectRequest(UserResponse requester){
+			
+			try {
+				UserProfile user = userDao.findById(requester.getId());
+				
+				if(user == null)
+					throw new NotFoundException("User", "Id", user.getId());
+				
+				user.setOrganization(null);
+				
+				user.setMembershipStatus("NA");
+				
+				String orgName = null;
+				
+				String city = null;
+				String state = null;
+				String zip = null;
+				String street = null;
+				
+				Address address = user.getAddress();
+				
+				if (address != null) {
+					city = address.getCity();
+					state = address.getState();
+					zip = address.getZip();
+					street = address.getStreet();			
+				}
+				
+				response = new UserResponse(
+						user.getId(),
+						user.getFirstName(), 
+						user.getLastName(),
+						user.getEmail(),
+						user.getTitle(),
+						city,
+						state,
+						street,
+						zip,
+						user.getPotraitURL(),
+						user.getAboutMe(),
+						user.getScreenName(),
+						orgName, 
+						user.getMembershipStatus());
+
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+				
+			}catch(NotFoundException e) {
+				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}catch(Exception e) {
+				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}
+		}
+		
 		@Transactional
 		public ResponseEntity<?> listHackers() {
 			try {
