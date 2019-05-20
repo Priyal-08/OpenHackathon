@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.FinanceReportResponse;
 import com.openhack.contract.HackathonResponse;
 import com.openhack.contract.OrganizationResponse;
 import com.openhack.contract.ParticipantResponse;
-import com.openhack.contract.PaymentReportResponse;
 import com.openhack.contract.Judge;
 import com.openhack.contract.LeaderboardResponse;
 import com.openhack.contract.MyTeamResponse;
