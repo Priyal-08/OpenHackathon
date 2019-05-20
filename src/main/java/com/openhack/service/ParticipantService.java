@@ -371,6 +371,15 @@ public class ParticipantService {
 			participant.setPaymentDone(true);
 			participant.setPaymentDate(LocalDateTime.now().toString());
 			
+			String payeeSubject = String.format("Open Hackathon - Your payment is complete!");
+			String payeeText = String.format("Thank you for making the payment! Your payment details below. \n\n Payment ID: %s\n Payment Date %s \n Payment Amount %s", participant.getPaymentURL(), participant.getPaymentDate(), participant.getFees());
+			String payeeEmailId = participant.getUser().getEmail();
+			
+			new Thread(() -> {
+				System.out.println("Sending mail to " + payeeEmailId );
+				emailService.sendSimpleMessage(payeeEmailId, payeeSubject , payeeText);
+			}).start();
+					
 			Team team = participant.getTeam();
 			
 			List <Participant> participantList = new ArrayList <Participant>();
@@ -394,10 +403,10 @@ public class ParticipantService {
 							team.getHackathon());
 					participantDao.store(payment);									
 				}
-				
 				String subject = String.format("Open Hackathon - Your team payment is complete!");
 				String text = String.format("Congratulations! Your team has made the payment and you are all set! All the best! \n ");
 				String emailId = team.getTeamLead().getEmail();
+				
 				new Thread(() -> {
 					System.out.println("Sending mail to " + emailId );
 					emailService.sendSimpleMessage(emailId, subject , text);
