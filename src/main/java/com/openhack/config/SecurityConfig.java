@@ -81,17 +81,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.PUT, "/hackathon/**").hasAuthority("Admin")
                     .antMatchers(HttpMethod.PATCH, "/hackathon/**").hasAuthority("Admin")
                     .antMatchers(HttpMethod.GET, "/hackathon/{\\d+}/financial_report/**").hasAuthority("Admin")
-                    .antMatchers(HttpMethod.GET, "/hackathon/**").hasAnyAuthority("Admin, Hacker")
+                    .antMatchers(HttpMethod.GET, "/hackathon/**").hasAnyAuthority("Admin", "Hacker")
                     
-                    .antMatchers("/organization/**").hasAuthority("Admin, Hacker")
+                    .antMatchers("/organization/**").hasAnyAuthority("Admin", "Hacker")
                     
                     
-                    .antMatchers(HttpMethod.POST, "/participant/{\\d+}/hackathon/**").hasAnyAuthority("Hacker")
-                    .antMatchers(HttpMethod.PATCH, "/participant/{\\d+}/hackathon/**").hasAnyAuthority("Hacker")
-                    .antMatchers(HttpMethod.POST, "/participant/pay/**").hasAnyAuthority("Hacker")
-                    .antMatchers(HttpMethod.GET, "/participant/**").hasAnyAuthority("Admin, Hacker")
+                    .antMatchers(HttpMethod.POST, "/participant/{\\d+}/hackathon/**").hasAuthority("Hacker")
+                    .antMatchers(HttpMethod.PATCH, "/participant/{\\d+}/hackathon/**").hasAuthority("Hacker")
+                    .antMatchers(HttpMethod.POST, "/participant/pay/**").hasAuthority("Hacker")
+                    .antMatchers(HttpMethod.GET, "/participant/**").hasAnyAuthority("Hacker")
                     
-                    .antMatchers("/dashboard/**").hasAnyAuthority("Admin")
+                    .antMatchers("/dashboard/**").hasAuthority("Admin")
                     
                     .anyRequest()
                     .authenticated();
