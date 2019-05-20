@@ -86,6 +86,17 @@ public class UserController {
 		return userService.listHackers();
 	}
 	
+	/**
+	 * Gets all organizations.
+	 *
+	 * @return ResponseEntity: list of organization objects on success/ error message on error
+	 */
+	@RequestMapping(value = "/{id}/users",method = RequestMethod.GET)
+	public ResponseEntity<?> selectListHackers(
+		@PathVariable("id") long id) {
+		return userService.selectListHackers(id);
+	}
+	
 	@RequestMapping(value = "/user/{id}/pendingrequests", method = RequestMethod.GET )
 	public ResponseEntity<?> findPendingRequests(
 			@PathVariable("id") long id) {

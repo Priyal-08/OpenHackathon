@@ -12,10 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.UserResponse;
+import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
+import com.openhack.dao.ParticipantDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Address;
+import com.openhack.domain.Hackathon;
 import com.openhack.domain.Organization;
+import com.openhack.domain.Participant;
+import com.openhack.domain.Team;
+import com.openhack.domain.UserAccount;
 import com.openhack.domain.UserProfile;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
@@ -30,6 +36,12 @@ public class UserService {
 	
 	@Autowired
 	private OrganizationDao organizationDao;
+	
+	@Autowired
+	private HackathonDao hackathonDao;
+	
+	@Autowired
+	private ParticipantDao participantDao;
 	
 	@Autowired ErrorResponse errorResponse;
 	@Autowired UserResponse response;
@@ -437,7 +449,63 @@ public class UserService {
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}
 		}
-	
+		
+		@Transactional
+		public ResponseEntity<?> selectListHackers(long id) {
+			try {
+				Hackathon hackathon = null;
+				List<UserResponse> hackersListResponse = new ArrayList<UserResponse>();
+				List<UserProfile> hackersList = userDao.listHackers();
+
+				hackathon = hackathonDao.findById(id);
+
+				if(hackathon==null)
+					throw new NotFoundException("Hackathon", "Id", id);
+
+				List <UserProfile> judges = hackathon.getJudges();	
+
+				List <Team> teams = participantDao.findTeamsByHackathonId(id);
+				boolean is_judge = false;
+				boolean is_member = false;
+				for(UserProfile hacker : hackersList) {
+					is_judge = false;
+					for (int j=0; j<judges.size(); j++) {
+						if (hacker.getEmail().equals(judges.get(j).getEmail())) {
+							is_judge = true;
+							break;
+						}
+					}
+					if (!is_judge) {		
+						for (int i = 0; i < teams.size(); i++) {
+							Team t = teams.get(i);
+							List <Participant> members = participantDao.findParticipantsByTeam(t.getId());
+							for (int k = 0; k < members.size(); k++) {
+								is_member = false;
+								Participant p = members.get(k);
+								if (p.getUser().getEmail().equals(hacker.getEmail())) {
+									is_member = true;
+									break;
+								}
+							}
+						}
+						
+						if (!is_member) {								
+							hackersListResponse.add(new UserResponse(
+												hacker.getId(),
+												hacker.getFirstname(),
+												hacker.getLastname()));
+						}
+					}
+				}
+									
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hackersListResponse);
+			}
+			catch(Exception e) {
+				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			}
+		}
+
 		
 		@Transactional
 		public ResponseEntity<?> findPendingMembers(long userId){
