@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,12 @@ public class HackathonService {
 	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private Environment env;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	/** The participant dao. */
 	@Autowired
@@ -345,24 +352,91 @@ public class HackathonService {
 			hackathon = hackathonDao.findById(id);
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", id);
-			
+
 			// If the hackathon is finalised, no further changes are allowed
 			if(hackathon.getStatus()==3)
 				throw new InvalidArgumentException("status");
-			
+
 			// The hackathon should not be finalised if the grading is not done for all teams
 			if(status==3) {
+				String baseURL = env.getProperty("frontendserver.baseurl");
+				String leaderboardURL = "/hackathon/leaderboard/" + hackathon.getId();
+
 				List<Team> teams = participantDao.findTeamsByHackathonId(id);
 				for(Team team: teams) {
 					if(team.getSubmissionURL()!=null && team.getSubmissionURL()!="" && team.getJudge()==null)
 						throw new InvalidArgumentException("status");
 				}
+
+				List <Team> teamList = participantDao.findTeamsByHackathonId(id); 
+				// Update hackathon status
+				hackathon.setStatus(status);
+
+				if (teamList != null) {
+					for (int i = 0; i < teamList.size(); i++) {
+						Team t = teamList.get(i);
+						if (t.getPaymentDone()) {
+							List <Participant> teamMembers = t.getMembers();
+							List <UserProfile> judges = hackathon.getJudges();
+							// notify participants
+							for (int j = 0; j < teamMembers.size(); j++) {								
+								String email = teamMembers.get(j).getUser().getEmail();
+								String subject = String.format("Open Hackathon - Results out for " + hackathon.getEventName());
+								String text = String.format("We are happy to announce the Hackathon results for " + hackathon.getEventName() + ". You can view the results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon", 
+										baseURL + leaderboardURL);
+								new Thread(() -> {
+									System.out.println("Sending mail to " + email );
+									emailService.sendSimpleMessage(email, subject , text);
+								}).start();
+							}
+							// notify judges
+							for (int j = 0; j < judges.size(); j++) {
+								String email = judges.get(j).getEmail();
+								String subject = String.format("Open Hackathon - Results out for " + hackathon.getEventName());
+								String text = String.format("We are happy to announce the Hackathon results for " + hackathon.getEventName() + ". You can view the results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon", 
+										baseURL + leaderboardURL);
+								new Thread(() -> {
+									System.out.println("Sending mail to " + email );
+									emailService.sendSimpleMessage(email, subject , text);
+								}).start();
+							}
+
+//							Collections.sort(leaderboardResponse, new Comparator<LeaderboardResponse>() {
+//								@Override public int compare(LeaderboardResponse p1, LeaderboardResponse p2) {
+//									return (Float.valueOf(p2.getTeamScore())).compareTo(Float.valueOf(p1.getTeamScore())); // Descending
+//								}
+//							});	
+							
+						    Collections.sort(teamList, new Comparator<Team>() {
+						        @Override public int compare(Team p1, Team p2) {
+						        	return (Float.valueOf(p2.getScore())).compareTo(Float.valueOf(p1.getScore())); // Descending
+						        }
+						    });
+						     
+							for (int j = 0; j < teamList.size(); j++) {
+								if (j < 3) {
+									List <Participant> teamMem = teamList.get(j).getMembers();
+									for (int k = 0; k < teamMem.size(); k++) {
+										String email = teamMem.get(k).getUser().getEmail();
+										String subject = String.format("Open Hackathon - You finished in top 3 for " + hackathon.getEventName());
+										String text = String.format("Congratulations! You are one of top 3 finishers of hackathon " + hackathon.getEventName() + ". You can view the detailed results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon", 
+												baseURL + leaderboardURL);
+										new Thread(() -> {
+											System.out.println("Sending mail to " + email );
+											emailService.sendSimpleMessage(email, subject , text);
+										}).start();
+									}
+								}
+							}
+	
+						    
+						}
+					}
+				}
+
 			}
-			
-			// Update hackathon status
-			hackathon.setStatus(status);
-			response = new HackathonResponse();  // TODO: create hackathon response
-			
+
+			response = new HackathonResponse();  // TODO: create hackathon response	
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(InvalidArgumentException e) {
@@ -574,10 +648,10 @@ public class HackathonService {
 
 		    Collections.sort(leaderboardResponse, new Comparator<LeaderboardResponse>() {
 		        @Override public int compare(LeaderboardResponse p1, LeaderboardResponse p2) {
-		            return (int)p2.getTeamScore() - (int)p1.getTeamScore(); // Descending
+		        	return (Float.valueOf(p2.getTeamScore())).compareTo(Float.valueOf(p1.getTeamScore())); // Descending
 		        }
 		    });
-		    
+
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(leaderboardResponse);
 		
 		}

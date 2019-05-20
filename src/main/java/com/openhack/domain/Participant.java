@@ -44,8 +44,7 @@ public class Participant {
 	private Payment payment;
 	
 	@Column(name = "FEES", nullable=true)
-	private float fees;
-	
+	private float fees;	
 	
 	public Participant() {}
 	
