@@ -401,11 +401,6 @@ public class HackathonService {
 								}).start();
 							}
 
-//							Collections.sort(leaderboardResponse, new Comparator<LeaderboardResponse>() {
-//								@Override public int compare(LeaderboardResponse p1, LeaderboardResponse p2) {
-//									return (Float.valueOf(p2.getTeamScore())).compareTo(Float.valueOf(p1.getTeamScore())); // Descending
-//								}
-//							});	
 							
 						    Collections.sort(teamList, new Comparator<Team>() {
 						        @Override public int compare(Team p1, Team p2) {
@@ -597,7 +592,7 @@ public class HackathonService {
 					response.add(teamResponse);
 				}
 			}			
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(response);
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
