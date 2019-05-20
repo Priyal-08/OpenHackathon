@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.FinanceReportResponse;
@@ -27,7 +26,9 @@ import com.openhack.contract.MyTeamResponse;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.ParticipantDao;
+import com.openhack.dao.ExpenseDao;
 import com.openhack.dao.UserDao;
+import com.openhack.domain.Expense;
 import com.openhack.domain.Hackathon;
 import com.openhack.domain.Organization;
 import com.openhack.domain.Participant;
@@ -36,6 +37,7 @@ import com.openhack.domain.UserProfile;
 import com.openhack.exception.DuplicateException;
 import com.openhack.exception.InvalidArgumentException;
 import com.openhack.exception.NotFoundException;
+import com.openhack.exception.OperationNotAllowedException;
 
 @Service
 public class HackathonService {
@@ -44,15 +46,21 @@ public class HackathonService {
 	@Autowired
 	private HackathonDao hackathonDao;
 	
+	/** The organization dao. */
 	@Autowired
 	private OrganizationDao organizationDao;
 	
+	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
 	
 	/** The participant dao. */
 	@Autowired
 	private ParticipantDao participantDao;
+	
+	/** The expense dao */
+	@Autowired
+	private ExpenseDao expenseDao;
 	
 	/** The response. */
 	@Autowired	
@@ -281,7 +289,7 @@ public class HackathonService {
 			if(judges!=null && judges.size()>0)
 				judgesList = userDao.findByIds(judges);
 			hackathon = new Hackathon(id, eventName, startDate, endDate, description, fees,
-					judgesList, minTeamSize, maxTeamSize, sponsorsList, discount);
+					judgesList, minTeamSize, maxTeamSize, sponsorsList, discount, hackathon.getExpenses());
 			hackathonDao.store(hackathon);
 			response = new HackathonResponse(
 					hackathon.getId(), 
@@ -436,9 +444,13 @@ public class HackathonService {
 
 			float hackathonFees = hackathon.getFees();
 			float revenue = sponsorsAmount;
-			float expenses = 0;
 			float profit = 0;
-
+			
+			float expenses = 0;
+			
+			for(Expense expense: hackathon.getExpenses())
+				expenses += expense.getAmount();
+			
 			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
 
 			if (teams != null) {
@@ -562,8 +574,7 @@ public class HackathonService {
 
 		    Collections.sort(leaderboardResponse, new Comparator<LeaderboardResponse>() {
 		        @Override public int compare(LeaderboardResponse p1, LeaderboardResponse p2) {
-		        	return (Float.valueOf(p2.getTeamScore())).compareTo(Float.valueOf(p1.getTeamScore()));
-//		            return (int)p2.getTeamScore() - (int)p1.getTeamScore(); // Descending
+		            return (int)p2.getTeamScore() - (int)p1.getTeamScore(); // Descending
 		        }
 		    });
 		    
@@ -572,6 +583,54 @@ public class HackathonService {
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	 /* Add expense to hackathon
+	 *
+	 * @param id: hackathon id
+	 * @param title: expense title
+	 * @param description: expense description
+	 * @param expenseDate: expense expenseDate
+	 * @param amount: expense amount
+	 * @return ResponseEntity: success/error response
+	 */
+	@Transactional
+	public ResponseEntity<?> addExpense(long id, String title, String description, String expenseDate, float amount) {
+		Hackathon hackathon=null;
+		try {
+			// If the hackathon with given id does not exist, return NotFound.
+			hackathon = hackathonDao.findById(id);
+			if(hackathon==null)
+				throw new NotFoundException("Hackathon", "Id", id);
+			
+			// If the hackathon is finalised, then expenses can not be added
+			if(hackathon.getStatus()==3)
+				throw new OperationNotAllowedException(String.format("Hackathon - %s is finalised.",hackathon.getEventName()));
+			
+			// Create expense
+			SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd"); 
+			Date formattedExpenseDate = formatter.parse(expenseDate);
+			Expense expense = new Expense(amount, title, description, formattedExpenseDate, hackathon);
+			expenseDao.store(expense);
+			
+			// Add expense to hackathon
+			hackathon.getExpenses().add(expense);
+			
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new EmptyResponse());
+		}
+		catch(OperationNotAllowedException e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {

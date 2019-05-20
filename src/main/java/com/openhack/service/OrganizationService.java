@@ -118,7 +118,7 @@ public class OrganizationService {
 	@Transactional
 	public ResponseEntity<?> listOrganizations() {
 		try {
-			List<OrganizationResponse> organizationResponse = new ArrayList();
+			List<OrganizationResponse> organizationResponse = new ArrayList<>();
 			
 			List<Organization> organizationList = organizationDao.listOrganizations();
 			for(Organization organization : organizationList) {

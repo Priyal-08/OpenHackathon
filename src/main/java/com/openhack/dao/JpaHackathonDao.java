@@ -38,10 +38,8 @@ public class JpaHackathonDao implements HackathonDao {
 	@Transactional
 	@Override
 	public List<Hackathon> findAll() {
-		 //TypedQuery<Hackathon> query =
 		Query query =
 				 entityManager.createNativeQuery("SELECT * FROM hackathon", Hackathon.class);
-		 //if (query.getResultList().isEmpty()) return null;
 		 return query.getResultList();
 	}
 	

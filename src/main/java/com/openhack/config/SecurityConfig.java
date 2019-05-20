@@ -80,7 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, "/hackathon/**").hasAuthority("Admin")
                     .antMatchers(HttpMethod.PUT, "/hackathon/**").hasAuthority("Admin")
                     .antMatchers(HttpMethod.PATCH, "/hackathon/**").hasAuthority("Admin")
-                    .antMatchers(HttpMethod.GET, "/hackathon/{\\d+}/financial_report/**").hasAuthority("Admin")
+                    .antMatchers(HttpMethod.GET, "/hackathon/{\\d+}/earningreport/**").hasAuthority("Admin")
+                    .antMatchers(HttpMethod.POST, "/hackathon/{\\d+}/expense").hasAuthority("Admin")
                     .antMatchers(HttpMethod.GET, "/hackathon/**").hasAnyAuthority("Admin", "Hacker")
                     
                     .antMatchers("/organization/**").hasAnyAuthority("Admin", "Hacker")

@@ -1,8 +1,7 @@
 package com.openhack.controller;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openhack.contract.ExpenseRequest;
 import com.openhack.contract.HackathonRequest;
-import com.openhack.domain.Organization;
 import com.openhack.service.HackathonService;
 
 /**
@@ -34,7 +33,6 @@ public class HackathonController {
 	 * Creates the hackathon.
 	 * @return ResponseEntity: newly created hackathon object on success/ error message on error
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.POST)
 	
 	public ResponseEntity<?> createHackathon(@RequestBody HackathonRequest hackathonRequest) {
@@ -74,7 +72,7 @@ public class HackathonController {
 		return hackathonService.getHackathon(id, userId);
 	}
 	
-	@RequestMapping(value = "/{id}/financial_report", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/earningreport", method = RequestMethod.GET)
 	public ResponseEntity<?> getFinancialReport(
 			@PathVariable("id") long id) {
 		return hackathonService.getFinancialReport(id);
@@ -98,7 +96,6 @@ public class HackathonController {
 	 * @param id: the hackathon id
 	 * @return ResponseEntity: hackathon object on success/ error message on error
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateHackathon(
 			@PathVariable("id") long id,
@@ -143,5 +140,20 @@ public class HackathonController {
 	public ResponseEntity<?> deleteHackathon(
 			@PathVariable("id") long id) {
 		return hackathonService.deleteHackathon(id);
+	}
+	
+	/**
+	 * Add new expense to hackathon.
+	 * @return ResponseEntity: success/error response
+	 */
+	@RequestMapping(value="{id}/expense", method = RequestMethod.POST)
+	
+	public ResponseEntity<?> AddExpense(@PathVariable("id") long id,
+			@RequestBody ExpenseRequest expenseRequest) {
+		String title = expenseRequest.getTitle();
+		String description = expenseRequest.getDescription();
+		String expenseDate = expenseRequest.getExpenseDate();
+		float amount = expenseRequest.getAmount();
+		return hackathonService.addExpense(id, title, description, expenseDate, amount);
 	}
 }

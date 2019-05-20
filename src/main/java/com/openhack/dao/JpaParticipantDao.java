@@ -10,11 +10,9 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.openhack.domain.Hackathon;
 import com.openhack.domain.Participant;
 import com.openhack.domain.Payment;
 import com.openhack.domain.Team;
-import com.openhack.domain.UserAccount;
 
 @Repository
 public class JpaParticipantDao implements ParticipantDao{

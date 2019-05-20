@@ -2,15 +2,18 @@ package com.openhack.domain;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -47,7 +50,7 @@ public class Hackathon {
     private long fees;
 	
 	/** The list of hackathon judges. */
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.LAZY)
 	 @JoinTable(
 			   name="HACKATHON_JUDGES",
 			   joinColumns=@JoinColumn(name="HACKATHON_ID", referencedColumnName="ID"),
@@ -63,7 +66,7 @@ public class Hackathon {
     private int maxTeamSize;
 	
 	/** The list of hackathon sponsors */	
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.LAZY)
 	 @JoinTable(
 	   name="HACKATHON_SPONSORS",
 	   joinColumns=@JoinColumn(name="HACKATHON_ID", referencedColumnName="ID"),
@@ -76,6 +79,9 @@ public class Hackathon {
 	@Column(name = "DISCOUNT")
     private float discount;
 	
+	@OneToMany(mappedBy="hackathon", fetch=FetchType.LAZY)
+	private List<Expense> expenses;
+
 	/* The hackathon status 
 	 * 1 - Open
 	 * 2 - Closed
@@ -102,7 +108,7 @@ public class Hackathon {
 	 * @param discount - the hackathon sponsor discount
 	 */
 	public Hackathon(long id, String eventName, Date startDate, Date endDate, String description, long fees,
-			List<UserProfile> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount) {
+			List<UserProfile> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount, List<Expense> expenses) {
 		super();
 		this.id = id;
 		this.eventName = eventName;
@@ -116,6 +122,7 @@ public class Hackathon {
 		this.sponsors = sponsors;
 		this.discount = discount;
 		this.status = 1;
+		this.expenses = expenses;
 	}
 	
 	public Hackathon(String eventName, Date startDate, Date endDate, String description, long fees,
@@ -132,6 +139,7 @@ public class Hackathon {
 		this.sponsors = sponsors;
 		this.discount = discount;
 		this.status = 1;
+		this.expenses = new ArrayList<Expense>();
 	}
 
 	public long getId() {
@@ -228,5 +236,13 @@ public class Hackathon {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public List<Expense> getExpenses() {
+		return expenses;
+	}
+
+	public void setExpenses(List<Expense> expenses) {
+		this.expenses = expenses;
 	}
 }

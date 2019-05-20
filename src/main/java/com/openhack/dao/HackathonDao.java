@@ -13,7 +13,7 @@ public interface HackathonDao {
 	 * Create/ Update hackathon entity.
 	 *
 	 * @param hackathon: the hackathon
-	 * @return the employer
+	 * @return the hackathon
 	 */
 	public Hackathon store(Hackathon hackathon);
 	
