@@ -23,6 +23,8 @@ import com.openhack.contract.ParticipantResponse;
 import com.openhack.contract.Judge;
 import com.openhack.contract.LeaderboardResponse;
 import com.openhack.contract.MyTeamResponse;
+import com.openhack.contract.ExpenseResponse;
+import com.openhack.contract.HackathonExpenseResponse;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.ParticipantDao;
@@ -484,7 +486,6 @@ public class HackathonService {
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
-			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
@@ -526,7 +527,6 @@ public class HackathonService {
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
-			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
@@ -630,7 +630,39 @@ public class HackathonService {
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
-			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+	
+	/* Get expenses for hackathon.
+	 *
+	 * @param id: hackathon id
+	 * @return ResponseEntity: expense list on success/ error message on error
+	 */
+	@Transactional(readOnly=true)
+	public ResponseEntity<?> getExpenseList(long id) {
+		Hackathon hackathon=null;
+		try {
+			// If the hackathon with given id does not exist, return NotFound.
+			hackathon = hackathonDao.findById(id);
+			if(hackathon==null)
+				throw new NotFoundException("Hackathon", "Id", id);
+			
+			List<Expense> expenses = expenseDao.findByHackathonId(id);
+			
+			List<ExpenseResponse> expenseList = expenses.stream().map(e-> new ExpenseResponse(
+					e.getId(), e.getTitle(), e.getDescription(), e.getDate(), e.getAmount())).collect(Collectors.toList());
+			
+			HackathonExpenseResponse hackExpenseResp = new HackathonExpenseResponse(hackathon.getId(), hackathon.getEventName(), expenseList);
+			
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hackExpenseResp);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {

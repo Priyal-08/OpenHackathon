@@ -156,4 +156,14 @@ public class HackathonController {
 		float amount = expenseRequest.getAmount();
 		return hackathonService.addExpense(id, title, description, expenseDate, amount);
 	}
+	
+	/**
+	 * Get expenses for hackathon.
+	 * @return ResponseEntity: expense list on success/ error message on error
+	 */
+	@RequestMapping(value="{id}/expense", method = RequestMethod.GET)
+	
+	public ResponseEntity<?> getExpenseList(@PathVariable("id") long id) {
+		return hackathonService.getExpenseList(id);
+	}
 }
