@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,9 @@ public class AuthService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private Environment env;
 	
 	/** The user dao. */
 	@Autowired
@@ -119,7 +123,10 @@ public class AuthService {
 			userRole = userDao.store(userRole);			
 			
 			String emailId = userProfile.getEmail();	
-			String baseURL = "http://localhost:3000";
+			
+		    String baseURL = env.getProperty("frontendserver.baseurl");
+		    System.out.println("Frontend URL is " + baseURL);
+
 			String verifyURL = "/registration-confirmation/?token=" + authcode.toString();
 			String subject = String.format("Open Hackathon Account Verification");
 			String text = String.format("Please confirm your registration for hackathon by following the link below. \n %s", 

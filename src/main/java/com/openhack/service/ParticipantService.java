@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,9 @@ public class ParticipantService {
 	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private Environment env;
 	
 	/** The participant dao. */
 	@Autowired
@@ -318,7 +322,7 @@ public class ParticipantService {
 			else {
 				UserProfile judge = userDao.findById(id);
 				team.setJudge(judge);
-				team.setScore(Long.parseLong(score));
+				team.setScore(Float.valueOf(score));
 			}
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 
@@ -344,7 +348,9 @@ public class ParticipantService {
 	}
 	
 	private String generateMailText(Participant p, Hackathon hackathon) {
-		String baseURL = "http://localhost:3000/payment-confirmation/?token=";
+	    String baseURL = env.getProperty("frontendserver.baseurl");
+
+	    baseURL = baseURL + "/payment-confirmation/?token=";
 		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), baseURL + p.getPaymentURL(), hackathon.getEventName());
 	}
 	

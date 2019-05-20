@@ -84,11 +84,11 @@ public class Team {
 		this.paymentDone = paymentDone;
 	}
 
-	public long getScore() {
+	public float getScore() {
 		return score;
 	}
 
-	public void setScore(long score) {
+	public void setScore(float score) {
 		this.score = score;
 	}
 
@@ -139,7 +139,7 @@ public class Team {
 	@Min(0)
 	@Max(10)
 	@Column(name = "SCORE")
-	private long score;
+	private float score;
 	
 	@Column(name = "SUBMISSION_URL")
 	private String submissionURL;

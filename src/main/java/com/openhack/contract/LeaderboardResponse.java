@@ -2,24 +2,22 @@ package com.openhack.contract;
 
 import java.util.List;
 
-import com.openhack.domain.Participant;
-
 public class LeaderboardResponse {
 
 	private long teamId;
 	private String teamName;
 	private String hackathonName;
-	private long teamScore;
+	private float teamScore;
 	private List <String> teamMembers;
 	
-	public LeaderboardResponse(String teamName, long teamScore, List<String> teamMembers) {
+	public LeaderboardResponse(String teamName, float teamScore, List<String> teamMembers) {
 		super();
 		this.teamName = teamName;
 		this.teamScore = teamScore;
 		this.teamMembers = teamMembers;
 	}
 	
-	public LeaderboardResponse(String teamName, long teamScore) {
+	public LeaderboardResponse(String teamName, float teamScore) {
 		super();
 		this.teamName = teamName;
 		this.teamScore = teamScore;
@@ -31,10 +29,10 @@ public class LeaderboardResponse {
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
 	}
-	public long getTeamScore() {
+	public float getTeamScore() {
 		return teamScore;
 	}
-	public void setTeamScore(long teamScore) {
+	public void setTeamScore(float teamScore) {
 		this.teamScore = teamScore;
 	}
 	public List<String> getTeamMembers() {
@@ -44,7 +42,7 @@ public class LeaderboardResponse {
 		this.teamMembers = teamMembers;
 	}
 
-	public LeaderboardResponse(String hackathonName, long teamId, String teamName, long teamScore, List<String> teamMembers) {
+	public LeaderboardResponse(String hackathonName, long teamId, String teamName, float teamScore, List<String> teamMembers) {
 		super();
 		this.hackathonName = hackathonName;
 		this.teamId = teamId;

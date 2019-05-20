@@ -567,7 +567,8 @@ public class HackathonService {
 
 		    Collections.sort(leaderboardResponse, new Comparator<LeaderboardResponse>() {
 		        @Override public int compare(LeaderboardResponse p1, LeaderboardResponse p2) {
-		            return (int)p2.getTeamScore() - (int)p1.getTeamScore(); // Descending
+		        	return (Float.valueOf(p2.getTeamScore())).compareTo(Float.valueOf(p1.getTeamScore()));
+//		            return (int)p2.getTeamScore() - (int)p1.getTeamScore(); // Descending
 		        }
 		    });
 		    
