@@ -468,32 +468,35 @@ public class UserService {
 				boolean is_judge = false;
 				boolean is_member = false;
 				for(UserProfile hacker : hackersList) {
-					is_judge = false;
-					for (int j=0; j<judges.size(); j++) {
-						if (hacker.getEmail().equals(judges.get(j).getEmail())) {
-							is_judge = true;
-							break;
-						}
-					}
-					if (!is_judge) {		
-						for (int i = 0; i < teams.size(); i++) {
-							Team t = teams.get(i);
-							List <Participant> members = participantDao.findParticipantsByTeam(t.getId());
-							for (int k = 0; k < members.size(); k++) {
-								is_member = false;
-								Participant p = members.get(k);
-								if (p.getUser().getEmail().equals(hacker.getEmail())) {
-									is_member = true;
-									break;
+					is_judge = false;				
+					if (judges != null)
+						for (int j=0; j<judges.size(); j++) {
+							if (hacker.getEmail().equals(judges.get(j).getEmail())) {
+								is_judge = true;
+								break;
+							}
+						}		
+					if (!is_judge) {	
+						if (teams != null) {
+							for (int i = 0; i < teams.size(); i++) {
+								Team t = teams.get(i);
+								List <Participant> members = participantDao.findParticipantsByTeam(t.getId());
+								for (int k = 0; k < members.size(); k++) {
+									is_member = false;
+									Participant p = members.get(k);
+									if (p.getUser().getEmail().equals(hacker.getEmail())) {
+										is_member = true;
+										break;
+									}
 								}
 							}
-						}
+						}						
 						
 						if (!is_member) {								
-							hackersListResponse.add(new UserResponse(
-												hacker.getId(),
-												hacker.getFirstname(),
-												hacker.getLastname()));
+								hackersListResponse.add(new UserResponse(
+													hacker.getId(),
+													hacker.getFirstname(),
+													hacker.getLastname()));
 						}
 					}
 				}
