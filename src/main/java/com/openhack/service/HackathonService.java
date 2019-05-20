@@ -536,7 +536,7 @@ public class HackathonService {
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
 	@Transactional	
-	public ResponseEntity<String> getLeaderboard(long id) {
+	public ResponseEntity<?> getLeaderboard(long id) {
 		try {
 
 			List<LeaderboardResponse> leaderboardResponse = new ArrayList <LeaderboardResponse>();
@@ -560,7 +560,7 @@ public class HackathonService {
 							UserProfile u = teamMembers.get(j).getUser();
 							names.add(u.getFirstname() + "," + u.getLastname());
 						}											
-						LeaderboardResponse lbResp = new LeaderboardResponse(t.getId(),t.getName(), t.getScore(), names);
+						LeaderboardResponse lbResp = new LeaderboardResponse(hackathon.getEventName(), t.getId(),t.getName(), t.getScore(), names);
 						leaderboardResponse.add(lbResp);																
 						}
 					}
@@ -572,24 +572,16 @@ public class HackathonService {
 		        }
 		    });
 		    
-		    GsonBuilder gsonbuilder = new GsonBuilder();
-		    Gson gson = gsonbuilder.create();
-			String jsonResp = gson.toJson(leaderboardResponse);
-	        System.out.println("json = " + jsonResp);
-
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(jsonResp);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(leaderboardResponse);
+		
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
-			String jsonResp = new Gson().toJson(errorResponse);
-
-			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(jsonResp);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			String jsonResp = new Gson().toJson(errorResponse);
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(jsonResp);
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 	}
 }

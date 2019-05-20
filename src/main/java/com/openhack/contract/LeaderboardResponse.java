@@ -8,6 +8,7 @@ public class LeaderboardResponse {
 
 	private long teamId;
 	private String teamName;
+	private String hackathonName;
 	private long teamScore;
 	private List <String> teamMembers;
 	
@@ -23,7 +24,6 @@ public class LeaderboardResponse {
 		this.teamName = teamName;
 		this.teamScore = teamScore;
 	}
-
 	
 	public String getTeamName() {
 		return teamName;
@@ -44,8 +44,9 @@ public class LeaderboardResponse {
 		this.teamMembers = teamMembers;
 	}
 
-	public LeaderboardResponse(long teamId, String teamName, long teamScore, List<String> teamMembers) {
+	public LeaderboardResponse(String hackathonName, long teamId, String teamName, long teamScore, List<String> teamMembers) {
 		super();
+		this.hackathonName = hackathonName;
 		this.teamId = teamId;
 		this.teamName = teamName;
 		this.teamScore = teamScore;
@@ -58,6 +59,14 @@ public class LeaderboardResponse {
 
 	public void setTeamId(long teamId) {
 		this.teamId = teamId;
+	}
+
+	public String getHackathonName() {
+		return hackathonName;
+	}
+
+	public void setHackathonName(String hackathonName) {
+		this.hackathonName = hackathonName;
 	}
 
 }
