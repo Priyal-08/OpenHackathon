@@ -23,6 +23,9 @@ public class Payment {
 	@Column(name = "AMOUNT")
 	private float amount;
 	
+	@Column(name = "PAYMENT_DATE")
+	private String paymentDate;
+	
 	@ManyToOne(targetEntity=UserProfile.class)
 	@JoinColumn(name = "USERID",referencedColumnName="ID")
 	private UserProfile user;

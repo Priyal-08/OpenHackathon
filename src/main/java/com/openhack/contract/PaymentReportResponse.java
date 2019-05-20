@@ -14,6 +14,7 @@ public class PaymentReportResponse {
 	private Map <String, String> unpaidTeams;
 	private Map <String, String> paidParticipants;
 	private Map <String, String> unpaidParticipants;
+	
 	public String getEventName() {
 		return eventName;
 	}

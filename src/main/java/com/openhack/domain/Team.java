@@ -133,6 +133,9 @@ public class Team {
 	@Column(name = "PAYMENT_DONE")
 	private boolean paymentDone;
 	
+	@Column(name = "PAYMENT_DATE")
+	private String paymentDate;
+	
 	@Min(0)
 	@Max(10)
 	@Column(name = "SCORE")
@@ -144,5 +147,13 @@ public class Team {
 	@ManyToOne(targetEntity=UserProfile.class)
 	@JoinColumn(name = "JUDGE_ID",referencedColumnName="ID")
 	private UserProfile judge;
+
+	public String getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(String paymentDate) {
+		this.paymentDate = paymentDate;
+	}
 
 }

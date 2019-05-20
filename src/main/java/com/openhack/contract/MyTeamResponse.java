@@ -16,6 +16,8 @@ public class MyTeamResponse {
 	
 	private int status;
 	
+	private String paymentDate;
+	
 	private List<ParticipantResponse> participants;
 	
 	public MyTeamResponse(long hackathonId, String hackathonName, long teamId, String teamName, List<ParticipantResponse> participants, boolean paymentDone,
@@ -33,7 +35,7 @@ public class MyTeamResponse {
 		this.status = status;
 	}
 
-	public MyTeamResponse(long hackathonId, String hackathonName, long teamId, String teamName, List<ParticipantResponse> participants, boolean paymentDone) {
+	public MyTeamResponse(long hackathonId, String hackathonName, long teamId, String teamName, List<ParticipantResponse> participants, boolean paymentDone, String paymentDate) {
 		super();
 		this.hackathonId = hackathonId;
 		this.hackathonName = hackathonName;
@@ -41,6 +43,7 @@ public class MyTeamResponse {
 		this.teamName = teamName;
 		this.participants = participants;
 		this.paymentDone = paymentDone;
+		this.paymentDate = paymentDate;
 	}
 
 	public long getHackathonId() {
@@ -133,5 +136,18 @@ public class MyTeamResponse {
 	private String submissionURL;
 	
 	private long teamLeadId;
+
+	public MyTeamResponse(String paymentDate) {
+		super();
+		this.paymentDate = paymentDate;
+	}
+
+	public String getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(String paymentDate) {
+		this.paymentDate = paymentDate;
+	}
 	
 }

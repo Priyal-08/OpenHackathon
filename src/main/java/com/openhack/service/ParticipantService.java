@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,7 +122,7 @@ public class ParticipantService {
 						p.getUser().getId(),
 						p.getUser().getFirstName(),
 						p.getTitle(),
-						p.getPaymentDone(),p.getFees())).collect(Collectors.toList());
+						p.getPaymentDone(),p.getFees(), p.getPaymentDate())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
 			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), hackathon.getStatus());
 			}
@@ -160,7 +161,7 @@ public class ParticipantService {
 						p.getUser().getId(),
 						p.getUser().getFirstName(),
 						p.getTitle(),
-						p.getPaymentDone(),p.getFees())).collect(Collectors.toList());
+						p.getPaymentDone(),p.getFees(),p.getPaymentDate())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(team.getHackathon().getId(), team.getHackathon().getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
 			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), team.getHackathon().getStatus());
 			}
@@ -229,7 +230,7 @@ public class ParticipantService {
 						p.getUser().getId(),
 						p.getUser().getFirstName(),
 						p.getTitle(),
-						p.getPaymentDone(), p.getFees())).collect(Collectors.toList());
+						p.getPaymentDone(), p.getFees(), p.getPaymentDate())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(
 						hackathon.getId(),
 						hackathon.getEventName(),
@@ -368,6 +369,7 @@ public class ParticipantService {
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}		
 			participant.setPaymentDone(true);
+			participant.setPaymentDate(LocalDateTime.now().toString());
 			
 			Team team = participant.getTeam();
 			
@@ -381,10 +383,11 @@ public class ParticipantService {
 				if (participant.getId() != teamParticipant.getId())
 					if (teamParticipant.getPaymentDone() == true)
 						teamPayedCount += 1;					
-			}
+			}	
 			
 			if (teamPayedCount == teamSize) {
 				team.setPaymentDone(true);
+				team.setPaymentDate(LocalDateTime.now().toString());
 				for (Participant teamParticipant : participantList) {
 					payment = new Payment(teamParticipant.getFees(), 
 							teamParticipant.getUser(),

@@ -29,6 +29,10 @@ public class Participant {
 	@Column(name = "PAYMENT_URL")
 	private String paymentURL;
 	
+	@Column(name = "PAYMENT_DATE")
+	private String paymentDate;
+
+	
 	@Column(name = "PAYMENT_DONE")
 	private boolean paymentDone;
 	
@@ -116,5 +120,13 @@ public class Participant {
 	
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+
+	public String getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(String paymentDate) {
+		this.paymentDate = paymentDate;
 	}
 }

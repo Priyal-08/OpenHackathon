@@ -51,18 +51,29 @@ public class ParticipantResponse {
 	private boolean paymentDone;
 	
 	private float fees;
+	
+	private String paymentDate;
 
 
-	public ParticipantResponse(long userId, String name, String title, boolean paymentDone, float fees) {
+	public ParticipantResponse(long userId, String name, String title, boolean paymentDone, float fees, String paymentDate) {
 		super();
 		this.userId = userId;
 		this.name = name;
 		this.title = title;
 		this.paymentDone = paymentDone;
 		this.fees = fees;
+		this.paymentDate = paymentDate;
 	}
 
 	public ParticipantResponse(boolean paymentDone) {
 		this.paymentDone = paymentDone;
+	}
+
+	public String getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(String paymentDate) {
+		this.paymentDate = paymentDate;
 	}
 }

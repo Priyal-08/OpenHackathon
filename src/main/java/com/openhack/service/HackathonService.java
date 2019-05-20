@@ -495,7 +495,6 @@ public class HackathonService {
 	@Transactional
 	public ResponseEntity<?> getPaymentReport(long id) {
 		try {
-			PaymentReportResponse paymentReportResponse = null;		
 			Hackathon hackathon = hackathonDao.findById(id);
 			// If the hackathon with given id does not exist, return NotFound.
 			if(hackathon==null)
@@ -511,8 +510,8 @@ public class HackathonService {
 							p.getUser().getId(),
 							p.getUser().getFirstName(),
 							p.getTitle(),
-							p.getPaymentDone(), p.getFees())).collect(Collectors.toList());
-					MyTeamResponse teamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), t.getId(),t.getName(),participantsResponse, t.getPaymentDone());
+							p.getPaymentDone(), p.getFees(), p.getPaymentDate())).collect(Collectors.toList());
+					MyTeamResponse teamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), t.getId(),t.getName(),participantsResponse, t.getPaymentDone(), t.getPaymentDate());
 					response.add(teamResponse);
 				}
 			}			
