@@ -22,7 +22,7 @@ import com.openhack.security.JwtAuthenticationFilter;
 
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true,

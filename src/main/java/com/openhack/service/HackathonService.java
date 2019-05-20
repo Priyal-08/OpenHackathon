@@ -540,6 +540,7 @@ public class HackathonService {
 				throw new Exception("Hackathon");			
 
 			List <Team> teams = participantDao.findTeamsByHackathonId(id); 
+			System.out.println("jsonteam = " + teams);
 			if (teams != null) {
 				for (int i = 0; i < teams.size(); i++) {
 					Team t = teams.get(i);
