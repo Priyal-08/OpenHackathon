@@ -260,24 +260,32 @@ public class ParticipantService {
 	}
 
 	/**
-	 * Register team for hackathon
+	 * Update team details
 	 *
-	 * @param id: the participant id
-	 * @param submissionURL: the hackathonId id
-	 * @param members: team members
+	 * @param id: the user id
+	 * @param hackathonId: the hackathon Id
+	 * @param submissionURL: the code URL
+	 * @param score: team's score
+	 * @param teamId: team Id
 	 * @return ResponseEntity: the hackathon details object on success/ error message on error
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public ResponseEntity<?> updateDetails(long id,long hackathonId, String submissionURL, String score) throws Exception {	
+	public ResponseEntity<?> updateDetails(long id,long hackathonId, String submissionURL, float score, long teamId) throws Exception {	
 		try {
-			Team team = participantDao.findTeamByUserIdAndHackathonId(id, hackathonId);
-			if(score==null) {
+			Team team = null;
+			if(submissionURL!=null && submissionURL!="") {
+				team = participantDao.findTeamByUserIdAndHackathonId(id, hackathonId);
+				if(team==null)
+					throw new NotFoundException("Team could not be found");
 				team.setSubmissionURL(submissionURL);
 			}
 			else {
+				team = participantDao.findById(teamId);
+				if(team==null)
+					throw new NotFoundException("Team", "Id", teamId);
 				UserProfile judge = userDao.findById(id);
 				team.setJudge(judge);
-				team.setScore(Float.valueOf(score));
+				team.setScore(score);
 			}
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 
@@ -295,6 +303,10 @@ public class ParticipantService {
 					hackathon.getStatus());
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
+		}
+		catch(NotFoundException e) {
+			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
 			throw e;

@@ -109,10 +109,11 @@ public class ParticipantController {
 	@RequestMapping(value = "/{id}/hackathon/{hackathonId}", method = RequestMethod.PATCH)
 	public ResponseEntity<?> updateDetails(@PathVariable("id") long id, @PathVariable("hackathonId") long hackathonId,
 			@RequestParam(value = "submission_url", required = false) String submissionURL,
-			@RequestParam(value = "judgeScore", required = false) String score) {
+			@RequestParam(value = "judgeScore", required = false) float score,
+			@RequestParam(value = "teamId", required = false) long teamId) {
 
 		try {
-			return participantService.updateDetails(id, hackathonId, submissionURL, score);
+			return participantService.updateDetails(id, hackathonId, submissionURL, score, teamId);
 		}
 		catch(Exception e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
