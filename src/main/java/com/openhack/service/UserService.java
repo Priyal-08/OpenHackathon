@@ -128,13 +128,16 @@ public class UserService {
 
 			if (screenname != null) {
 				if (screenname.length() < 3)
-					throw new InvalidArgumentException("Screenname cannot be less than 3 characters");	
+					throw new InvalidArgumentException("Screenname cannot be less than 3 characters");
 
 				userProfile2 = userDao.findByScreenname(screenname);		
 
-				if (userProfile2 != null)
+				if (userProfile2 != userProfile)
 					throw new DuplicateException("User", "screenname", screenname);			
-			}	
+			} else {
+				throw new InvalidArgumentException("Screenname cannot be null");
+
+			}
 			userProfile.setFirstName(firstname);
 			userProfile.setLastName(lastname);
 			
