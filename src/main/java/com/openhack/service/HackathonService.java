@@ -17,19 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.openhack.contract.EmptyResponse;
 import com.openhack.contract.ErrorResponse;
+import com.openhack.contract.ExpenseResponse;
 import com.openhack.contract.FinanceReportResponse;
+import com.openhack.contract.HackathonExpenseResponse;
 import com.openhack.contract.HackathonResponse;
-import com.openhack.contract.OrganizationResponse;
-import com.openhack.contract.ParticipantResponse;
 import com.openhack.contract.Judge;
 import com.openhack.contract.LeaderboardResponse;
 import com.openhack.contract.MyTeamResponse;
-import com.openhack.contract.ExpenseResponse;
-import com.openhack.contract.HackathonExpenseResponse;
+import com.openhack.contract.OrganizationResponse;
+import com.openhack.contract.ParticipantResponse;
+import com.openhack.dao.ExpenseDao;
 import com.openhack.dao.HackathonDao;
 import com.openhack.dao.OrganizationDao;
 import com.openhack.dao.ParticipantDao;
-import com.openhack.dao.ExpenseDao;
 import com.openhack.dao.UserDao;
 import com.openhack.domain.Expense;
 import com.openhack.domain.Hackathon;
@@ -182,6 +182,7 @@ public class HackathonService {
 					hackathon.getSponsors().stream().map(sponsor->new OrganizationResponse(sponsor.getId(), sponsor.getName())).collect(Collectors.toList()),
 					hackathon.getDiscount(),
 					hackathon.getStatus())).collect(Collectors.toList()); 
+			
 			
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hackathonResponse);
 		}
@@ -354,6 +355,8 @@ public class HackathonService {
 			if(hackathon.getStatus()==3)
 				throw new InvalidArgumentException("status");
 
+			
+			
 			// The hackathon should not be finalised if the grading is not done for all teams
 			if(status==3) {
 				String baseURL = env.getProperty("frontendserver.baseurl");
@@ -422,6 +425,16 @@ public class HackathonService {
 					}
 				}
 
+			}
+			
+			if(status == 1) {
+				if(hackathon.getStatus()==0)
+				{
+					if( hackathon.getStartDate().compareTo(new Date()) > 0)
+						hackathon.setStartDate(new Date());
+				}
+				else
+					throw new InvalidArgumentException("status");
 			}
 			
 			// Update hackathon status

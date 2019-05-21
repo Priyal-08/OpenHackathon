@@ -121,7 +121,7 @@ public class Hackathon {
 		this.maxTeamSize = maxTeamSize;
 		this.sponsors = sponsors;
 		this.discount = discount;
-		this.status = 1;
+		this.status = 0;
 		this.expenses = expenses;
 	}
 	
@@ -138,7 +138,7 @@ public class Hackathon {
 		this.maxTeamSize = maxTeamSize;
 		this.sponsors = sponsors;
 		this.discount = discount;
-		this.status = 1;
+		this.status = 0;
 		this.expenses = new ArrayList<Expense>();
 	}
 
