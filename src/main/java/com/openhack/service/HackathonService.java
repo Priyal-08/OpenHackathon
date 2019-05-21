@@ -377,9 +377,8 @@ public class HackathonService {
 							// notify participants
 							for (int j = 0; j < teamMembers.size(); j++) {								
 								String email = teamMembers.get(j).getUser().getEmail();
-								String subject = String.format("OpenHackathon - Results out for " + hackathon.getEventName());
-								String text = String.format("Hi %s, \n\n We are happy to announce the Hackathon results for " + teamMembers.get(j).getUser().getFirstname() + hackathon.getEventName() + ".You can view the results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon", 
-										baseURL + leaderboardURL);
+								String subject = String.format("OpenHackathon - Results out for %s",hackathon.getEventName());
+								String text = String.format("Hi %s, \n\n We are happy to announce the Hackathon results for %s. You can view the results at \n %s \n\n\n. Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon", teamMembers.get(j).getUser().getFirstname(), hackathon.getEventName() ,baseURL + leaderboardURL);
 								new Thread(() -> {
 									System.out.println("Sending mail to " + email );
 									emailService.sendSimpleMessage(email, subject , text);
@@ -388,9 +387,8 @@ public class HackathonService {
 							// notify judges
 							for (int j = 0; j < judges.size(); j++) {
 								String email = judges.get(j).getEmail();
-								String subject = String.format("OpenHackathon - Results out for " + hackathon.getEventName());
-								String text = String.format("Hi %s, \\n\\n We are happy to announce the Hackathon results for " + judges.get(j).getFirstname() + hackathon.getEventName() + ".You can view the results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon", 
-										baseURL + leaderboardURL);
+								String subject = String.format("OpenHackathon - Results out for %s",hackathon.getEventName());
+								String text = String.format("Hi %s, \n\n We are happy to announce the Hackathon results for %s. You can view the results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon",  judges.get(j).getFirstname(),hackathon.getEventName() ,baseURL + leaderboardURL);
 								new Thread(() -> {
 									System.out.println("Sending mail to " + email );
 									emailService.sendSimpleMessage(email, subject , text);
@@ -409,9 +407,8 @@ public class HackathonService {
 									List <Participant> teamMem = teamList.get(j).getMembers();
 									for (int k = 0; k < teamMem.size(); k++) {
 										String email = teamMem.get(k).getUser().getEmail();
-										String subject = String.format("OpenHackathon - Congratulations, you finished in top 3 for " + hackathon.getEventName());
-										String text = String.format("Hi %s, \n\n Congratulations! You are one of top 3 finishers of hackathon - " + teamMem.get(k).getUser().getFirstname() + hackathon.getEventName() + ".You can view the detailed results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon", 
-												baseURL + leaderboardURL);
+										String subject = String.format("OpenHackathon - Congratulations, you finished in top 3 for %s",hackathon.getEventName());
+										String text = String.format("Hi %s, \n\n Congratulations! You are one of top 3 finishers of hackathon - %s. You can view the detailed results at \n %s \n\n\n Thanks again for participating!\n\n\n Regards, \n Team OpenHackathon" ,teamMem.get(k).getUser().getFirstname() , hackathon.getEventName() , baseURL + leaderboardURL);
 										new Thread(() -> {
 											System.out.println("Sending mail to " + email );
 											emailService.sendSimpleMessage(email, subject , text);
