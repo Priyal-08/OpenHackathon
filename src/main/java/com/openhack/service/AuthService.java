@@ -127,8 +127,8 @@ public class AuthService {
 
 			String verifyURL = "/registration-confirmation/?token=" + authcode.toString();
 			String subject = String.format("Open Hackathon Account Verification");
-			String text = String.format("Please confirm your registration for hackathon by following the link below. \n %s", 
-					baseURL + verifyURL);
+			String text = String.format("Hi %s, \n\nPlease confirm your registration for OpenHackathon by clicking the link below. \n %s\n\n\n Thank you, \n Team OpenHackathon", 
+					userProfile.getFirstname(), baseURL + verifyURL);
 			
 			new Thread(() -> {
 				System.out.println("Sending mail to " + emailId );
