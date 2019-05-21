@@ -3,7 +3,7 @@ package com.openhack.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -115,7 +115,7 @@ public class OrganizationService {
 		}
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> listOrganizations() {
 		try {
 			List<OrganizationResponse> organizationResponse = new ArrayList<>();
@@ -173,7 +173,7 @@ public class OrganizationService {
 		}
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> findById(long id) {
 		
 		try {

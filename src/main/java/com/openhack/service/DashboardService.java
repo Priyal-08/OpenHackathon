@@ -22,7 +22,7 @@ public class DashboardService {
 	
 	@Autowired ErrorResponse errorResponse;
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getHackathonWiseRevenue() {
 		
 		try {

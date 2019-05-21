@@ -166,7 +166,7 @@ public class HackathonService {
 	 *
 	 * @return ResponseEntity: list of hackathon objects on success/ error message on error
 	 */
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getHackathons() {
 		try {
 			List<Hackathon> hackathons = hackathonDao.findAll();
@@ -201,7 +201,7 @@ public class HackathonService {
 	 * @param id: the hackathon id
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getHackathon(long id, long userId) {
 		try {
 			Hackathon hackathon = hackathonDao.findById(id);
@@ -491,7 +491,7 @@ public class HackathonService {
 	 * @param id: the hackathon id
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getFinancialReport(long id) {
 		try {
 
@@ -566,7 +566,7 @@ public class HackathonService {
 	 * @param id: the hackathon id
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getPaymentReport(long id) {
 		try {
 			Hackathon hackathon = hackathonDao.findById(id);
@@ -607,7 +607,7 @@ public class HackathonService {
 	 * @param id: the hackathon id
 	 * @return ResponseEntity: the hackathon object on success/ error message on error
 	 */
-	@Transactional	
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getLeaderboard(long id) {
 		try {
 

@@ -46,7 +46,7 @@ public class UserService {
 	@Autowired ErrorResponse errorResponse;
 	@Autowired UserResponse response;
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getUserProfile(long id) {
 		try {
 			UserProfile userProfile=null;
@@ -429,7 +429,7 @@ public class UserService {
 			}
 		}
 		
-		@Transactional
+		@Transactional(readOnly=true)
 		public ResponseEntity<?> listHackers() {
 			try {
 				List<UserResponse> hackersListResponse = new ArrayList<UserResponse>();
@@ -450,7 +450,7 @@ public class UserService {
 			}
 		}
 		
-		@Transactional
+		@Transactional(readOnly=true)
 		public ResponseEntity<?> selectListHackers(long id) {
 			try {
 				Hackathon hackathon = null;
@@ -510,7 +510,7 @@ public class UserService {
 		}
 
 		
-		@Transactional
+		@Transactional(readOnly=true)
 		public ResponseEntity<?> findPendingMembers(long userId){
 			
 			List<UserResponse> listOfUsers = new ArrayList<UserResponse>();

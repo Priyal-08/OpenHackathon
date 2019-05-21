@@ -53,9 +53,7 @@ public class ParticipantService {
 	
 	@Autowired ErrorResponse errorResponse;
 	 
-	
-	
-	@Transactional
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getHackathonList(long id) {
 		try {
 			
@@ -102,6 +100,7 @@ public class ParticipantService {
 		}
 	}
 
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getHackathonDetails(long userId, long hackathonId) {
 		try {
 			
@@ -141,6 +140,7 @@ public class ParticipantService {
 		}
 	}
 	
+	@Transactional(readOnly=true)
 	public ResponseEntity<?> getTeamDetails(long userId, long teamId) {
 		try {
 			
@@ -149,11 +149,6 @@ public class ParticipantService {
 			// If the user with given id does not exist, return NotFound.
 			if(user==null)
 				throw new NotFoundException("User", "id", userId);
-			
-			//Hackathon hackathon = hackathonDao.findById(hackathonId);
-			// If the hackathon with given id does not exist, return NotFound.
-//			if(hackathon==null)
-//				throw new NotFoundException("Hackathon", "id", hackathonId);
 			
 			Team team = participantDao.findById(teamId);
 			MyTeamResponse myTeamResponse = null;
