@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.http.MediaType;
+import com.openhack.contract.ErrorResponse;
 import com.openhack.contract.ExpenseRequest;
 import com.openhack.contract.HackathonRequest;
 import com.openhack.service.HackathonService;
@@ -28,6 +30,9 @@ public class HackathonController {
 	/** The hackathon service. */
 	@Autowired
 	private HackathonService hackathonService;
+	
+	/** Error response */
+	@Autowired ErrorResponse errorResponse;
 	
 	/**
 	 * Creates the hackathon.
@@ -127,7 +132,14 @@ public class HackathonController {
 	public ResponseEntity<?> updateHackathonStatus(
 			@PathVariable("id") long id,
 			@RequestParam("status") int status) {
-		return hackathonService.updateHackathonStatus(id, status);
+		try {
+			ResponseEntity<?> resp =  hackathonService.updateHackathonStatus(id, status);
+			return resp;
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
 	}
 	
 	/**
