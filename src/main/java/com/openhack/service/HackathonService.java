@@ -358,16 +358,32 @@ public class HackathonService {
 			
 			
 			// The hackathon should not be finalised if the grading is not done for all teams
+			List <Team> teamList = null;
 			if(status==3) {
-				String baseURL = env.getProperty("frontendserver.baseurl");
-				String leaderboardURL = "/hackathon/leaderboard/" + hackathon.getId();
-
-				List <Team> teamList = participantDao.findTeamsByHackathonId(id);
+				teamList = participantDao.findTeamsByHackathonId(id);
 				for(Team team: teamList) {
 					if(team.getSubmissionURL()!=null && team.getSubmissionURL()!="" && team.getJudge()==null)
 						throw new OperationNotAllowedException("Hackathon can not be finalised as grading is not complete.");
 				}
-
+			}
+			
+			if(status == 1) {
+				if(hackathon.getStatus()==0)
+				{
+					if( hackathon.getStartDate().compareTo(new Date()) > 0)
+						hackathon.setStartDate(new Date());
+				}
+				else
+					throw new InvalidArgumentException("status");
+			}
+			
+			// Update hackathon status
+			hackathon.setStatus(status);
+			
+			if(status==3) {
+				
+				String baseURL = env.getProperty("frontendserver.baseurl");
+				String leaderboardURL = "/hackathon/leaderboard/" + hackathon.getId();
 				if (teamList != null) {
 					for (int i = 0; i < teamList.size(); i++) {
 						Team t = teamList.get(i);
@@ -421,21 +437,8 @@ public class HackathonService {
 						}
 					}
 				}
-
+				
 			}
-			
-			if(status == 1) {
-				if(hackathon.getStatus()==0)
-				{
-					if( hackathon.getStartDate().compareTo(new Date()) > 0)
-						hackathon.setStartDate(new Date());
-				}
-				else
-					throw new InvalidArgumentException("status");
-			}
-			
-			// Update hackathon status
-			hackathon.setStatus(status);
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new EmptyResponse());
 		}
