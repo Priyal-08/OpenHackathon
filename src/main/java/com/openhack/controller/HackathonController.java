@@ -183,12 +183,19 @@ public class HackathonController {
 	
 	public ResponseEntity<?> AddExpense(@PathVariable("id") long id,
 			@RequestBody ExpenseRequest expenseRequest) {
+		try {
 		String title = expenseRequest.getTitle();
 		String description = expenseRequest.getDescription();
 		String expenseDate = expenseRequest.getExpenseDate();
 		float amount = expenseRequest.getAmount();
 		return hackathonService.addExpense(id, title, description, expenseDate, amount);
+		}		
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
 	}
+
 	
 	/**
 	 * Get expenses for hackathon.

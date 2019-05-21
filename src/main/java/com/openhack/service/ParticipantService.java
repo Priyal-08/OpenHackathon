@@ -32,37 +32,37 @@ import com.openhack.exception.NotFoundException;
 
 @Service
 public class ParticipantService {
-	
+
 	@Autowired
 	private EmailService emailService;
-	
+
 	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
-	
+
 	@Autowired
 	private Environment env;
-	
+
 	/** The participant dao. */
 	@Autowired
 	private ParticipantDao participantDao;
-	
+
 	/** The hackathon dao. */
 	@Autowired
 	private HackathonDao hackathonDao;
-	
+
 	@Autowired ErrorResponse errorResponse;
-	 
+
 	@Transactional(readOnly=true)
 	public ResponseEntity<?> getHackathonList(long id) {
 		try {
-			
+
 			UserProfile user = userDao.findById(id);
-			
+
 			// If the user with given id does not exist, return NotFound.
 			if(user==null)
 				throw new NotFoundException("User", "Id", id);
-			
+
 			List<MyHackathonResponse> hackathonResponse = new ArrayList<MyHackathonResponse>();
 			// Get all hackathons judged by user.
 			hackathonResponse.addAll(user.getHackathons().stream().map(hackathon->new MyHackathonResponse(
@@ -72,9 +72,9 @@ public class ParticipantService {
 					hackathon.getEndDate(),
 					hackathon.getDescription(),
 					2)).collect(Collectors.toList())); // Role: 2 = Judge
-			
+
 			List<BigInteger> hackathonIdsList = participantDao.findHackathonByUserId(id);
-			
+
 			// If the user is registered in hackathons as hacker, add them in result list.
 			if(hackathonIdsList!=null) {
 				List<Hackathon> hackathons = hackathonIdsList.stream().map(hackathonId->hackathonDao.findById(hackathonId.longValue())).collect(Collectors.toList());
@@ -86,7 +86,7 @@ public class ParticipantService {
 						hackathon.getDescription(),
 						1)).collect(Collectors.toList())); // Role: 1 = hacker
 			}
-			
+
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hackathonResponse);
 		}
 		catch(NotFoundException e) {
@@ -103,18 +103,18 @@ public class ParticipantService {
 	@Transactional(readOnly=true)
 	public ResponseEntity<?> getHackathonDetails(long userId, long hackathonId) {
 		try {
-			
+
 			UserProfile user = userDao.findById(userId);
-			
+
 			// If the user with given id does not exist, return NotFound.
 			if(user==null)
 				throw new NotFoundException("User", "id", userId);
-			
+
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 			// If the hackathon with given id does not exist, return NotFound.
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "id", hackathonId);
-			
+
 			Team team = participantDao.findTeamByUserIdAndHackathonId(userId, hackathonId);
 			MyTeamResponse myTeamResponse = null;
 			if(team!=null)
@@ -125,7 +125,7 @@ public class ParticipantService {
 						p.getTitle(),
 						p.getPaymentDone(),p.getFees(), p.getPaymentDate())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(hackathon.getId(), hackathon.getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
-			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), hackathon.getStatus());
+						team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), hackathon.getStatus());
 			}
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
@@ -139,17 +139,17 @@ public class ParticipantService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 	}
-	
+
 	@Transactional(readOnly=true)
 	public ResponseEntity<?> getTeamDetails(long userId, long teamId) {
 		try {
-			
+
 			UserProfile user = userDao.findById(userId);
-			
+
 			// If the user with given id does not exist, return NotFound.
 			if(user==null)
 				throw new NotFoundException("User", "id", userId);
-			
+
 			Team team = participantDao.findById(teamId);
 			MyTeamResponse myTeamResponse = null;
 			if(team!=null)
@@ -160,7 +160,7 @@ public class ParticipantService {
 						p.getTitle(),
 						p.getPaymentDone(),p.getFees(),p.getPaymentDate())).collect(Collectors.toList());
 				myTeamResponse = new MyTeamResponse(team.getHackathon().getId(), team.getHackathon().getEventName(), team.getId(), team.getName(), participants, team.getPaymentDone(),
-			team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), team.getHackathon().getStatus());
+						team.getScore(), team.getSubmissionURL(), team.getTeamLead().getId(), team.getHackathon().getStatus());
 			}
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
@@ -174,7 +174,7 @@ public class ParticipantService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 	}
-	
+
 	/**
 	 * Register team for hackathon
 	 *
@@ -183,31 +183,31 @@ public class ParticipantService {
 	 * @param members: team members
 	 * @return ResponseEntity: the hackathon details object on success/ error message on error
 	 */
-	@Transactional
-	public ResponseEntity<?> registerTeam(long userId, long hackathonId, String teamName, List<ParticipantDetail> members) {
+	@Transactional(rollbackFor=Exception.class)
+	public ResponseEntity<?> registerTeam(long userId, long hackathonId, String teamName, List<ParticipantDetail> members) throws Exception {
 		try {
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", hackathonId);
-			
+
 			UserProfile teamLead = userDao.findById(userId);
 			if(teamLead==null)
 				throw new NotFoundException("User", "Id", userId);
-			
+
 			Team t = participantDao.findTeamByNameAndHackathon(teamName, hackathonId);
 			if(t!=null)
 				throw new DuplicateException("Team", "name", teamName);
-			
+
 			List<UserProfile> memberList = new ArrayList<UserProfile>();
 			List<Long> memberIds = members.stream().map(m->m.getId()).collect(Collectors.toList());
 			if(members!=null && members.size()>0)
 				memberList = userDao.findByIds(memberIds);
 			System.out.println("memberList: " + memberList.size());
-			
+
 			List<Participant> participants = new ArrayList<Participant>();
 
 			final Team team = participantDao.store(new Team(hackathon, teamLead, teamName, participants, false, 0, null, null));
-			
+
 			MyTeamResponse myTeamResponse = null;
 			if(team!=null) {
 				float discountedAmount = hackathon.getFees()*(100-hackathon.getDiscount());
@@ -219,9 +219,9 @@ public class ParticipantService {
 						getRole(members, member.getId()),
 						hackathon.getSponsors().contains(member.getOrganization()) && member.getMembershipStatus().equals("Approved") ?discountedAmount:hackathon.getFees()
 						))).collect(Collectors.toList());
-				
+
 				final List<Participant> finalParticipants = participants;
-				
+
 				team.setMembers(participants);
 				List<ParticipantResponse> participantsResponse = team.getMembers().stream().map(p->new ParticipantResponse(
 						p.getUser().getId(),
@@ -238,7 +238,7 @@ public class ParticipantService {
 						team.getSubmissionURL(),
 						team.getTeamLead().getId(), hackathon.getStatus());
 				String subject = String.format("%s Registration Payment", hackathon.getEventName());
-				
+
 				new Thread(() -> {
 					finalParticipants.forEach(
 							(p) -> emailService.sendSimpleMessage(p.getUser().getEmail(), subject , generateMailText(p, hackathon)));
@@ -255,11 +255,9 @@ public class ParticipantService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
-	
 
 	/**
 	 * Register team for hackathon
@@ -269,9 +267,8 @@ public class ParticipantService {
 	 * @param members: team members
 	 * @return ResponseEntity: the hackathon details object on success/ error message on error
 	 */
-	@Transactional
-	public ResponseEntity<?> updateDetails(long id,long hackathonId, String submissionURL, String score) {
-		
+	@Transactional(rollbackFor=Exception.class)
+	public ResponseEntity<?> updateDetails(long id,long hackathonId, String submissionURL, String score) throws Exception {	
 		try {
 			Team team = participantDao.findTeamByUserIdAndHackathonId(id, hackathonId);
 			if(score==null) {
@@ -285,33 +282,32 @@ public class ParticipantService {
 			Hackathon hackathon = hackathonDao.findById(hackathonId);
 
 			List<ParticipantResponse> participantsResponse = null;
-			
+
 			MyTeamResponse myTeamResponse = new MyTeamResponse(
-						hackathon.getId(),
-						hackathon.getEventName(),
-						team.getId(), team.getName(),
-						participantsResponse,
-						team.getPaymentDone(),
-						team.getScore(),
-						team.getSubmissionURL(),
-						team.getTeamLead().getId(),
-						hackathon.getStatus());
+					hackathon.getId(),
+					hackathon.getEventName(),
+					team.getId(), team.getName(),
+					participantsResponse,
+					team.getPaymentDone(),
+					team.getScore(),
+					team.getSubmissionURL(),
+					team.getTeamLead().getId(),
+					hackathon.getStatus());
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(myTeamResponse);
 		}
-	catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		catch(Exception e) {
+			throw e;
 		}
 	}
-	
-	private String generateMailText(Participant p, Hackathon hackathon) {
-	    String baseURL = env.getProperty("frontendserver.baseurl");
 
-	    baseURL = baseURL + "/payment-confirmation/?token=";
+	private String generateMailText(Participant p, Hackathon hackathon) {
+		String baseURL = env.getProperty("frontendserver.baseurl");
+
+		baseURL = baseURL + "/payment-confirmation/?token=";
 		return String.format("Hello %s, \n\nPlease make a payment using link below to confirm your registration for hackathon. \n %s \n\n\nTeam %s", p.getUser().getFirstName(), baseURL + p.getPaymentURL(), hackathon.getEventName());
 	}
-	
+
 	private String getRole(List<ParticipantDetail> members, long userId) {
 		for(ParticipantDetail member: members) {
 			if(member.getId()==userId)
@@ -319,45 +315,45 @@ public class ParticipantService {
 		}
 		return "Other";
 	}
-	
-	@Transactional
-	public ResponseEntity<?> pay(String token) {
+
+	@Transactional(rollbackFor=Exception.class)
+	public ResponseEntity<?> pay(String token) throws Exception {
 		ParticipantResponse response = null;
 		Payment payment = null;
 		try {
 			Participant participant =null;
 			participant = participantDao.findParticipantByToken(token);
-			
+
 			if (participant == null) {	// if token code not found in DB
 				errorResponse = new ErrorResponse("BadRequest", "400", "Invalid token");
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}		
 			participant.setPaymentDone(true);
 			participant.setPaymentDate(LocalDateTime.now().toString());
-			
+
 			String payeeSubject = String.format("OpenHackathon - Thank you for your payment!");
 			String payeeText = String.format("Hi %s, \n\n Thank you for making the payment! Your payment details below. \n\n Payment ID: %s\n Payment Date: %s \n Payment Amount: $%s \n\n\n Thank You, \n Team OpenHackathon", participant.getUser().getFirstname(), participant.getPaymentURL(), participant.getPaymentDate(), participant.getFees());
 			String payeeEmailId = participant.getUser().getEmail();
-			
+
 			new Thread(() -> {
 				System.out.println("Sending mail to " + payeeEmailId );
 				emailService.sendSimpleMessage(payeeEmailId, payeeSubject , payeeText);
 			}).start();
-					
+
 			Team team = participant.getTeam();
-			
+
 			List <Participant> participantList = new ArrayList <Participant>();
 			participantList =  team.getMembers();// (ArrayList<Participant>) team.getMembers();
-			
+
 			int teamSize = participantList.size();
 			int teamPayedCount = 1;
-			
+
 			for (Participant teamParticipant : participantList) {
 				if (participant.getId() != teamParticipant.getId())
 					if (teamParticipant.getPaymentDone() == true)
 						teamPayedCount += 1;					
 			}	
-			
+
 			if (teamPayedCount == teamSize) {
 				team.setPaymentDone(true);
 				team.setPaymentDate(LocalDateTime.now().toString());
@@ -370,22 +366,18 @@ public class ParticipantService {
 				String subject = String.format("OpenHackathon - Congratulations, your team is all paid up!");
 				String text = String.format("Hi %s, \n\n Congratulations! Your team has made the payment and you are all set! All the best! \n\n Thank You, \n Team OpenHackathon", team.getTeamLead().getFirstname() );
 				String emailId = team.getTeamLead().getEmail();
-				
+
 				new Thread(() -> {
 					System.out.println("Sending mail to " + emailId );
 					emailService.sendSimpleMessage(emailId, subject , text);
 				}).start();
 
-			}
-			
+			}	
 			response = new ParticipantResponse(participant.getPaymentDone());					
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
-	
-
 }

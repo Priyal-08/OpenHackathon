@@ -85,10 +85,17 @@ public class ParticipantController {
 	public ResponseEntity<?> registerTeam(@PathVariable("userId") long userId,
 			@PathVariable("hackathonId") long hackathonId,
 			@RequestBody TeamRegistrationRequest teamRegistrationRequest) {
-		System.out.println("Team Request::" + teamRegistrationRequest);
-		String teamName = teamRegistrationRequest.getTeamName();
-		List<ParticipantDetail> members = teamRegistrationRequest.getParticipants();
-		return participantService.registerTeam(userId, hackathonId, teamName, members);
+		try {
+			System.out.println("Team Request::" + teamRegistrationRequest);
+			String teamName = teamRegistrationRequest.getTeamName();
+			List<ParticipantDetail> members = teamRegistrationRequest.getParticipants();
+			return participantService.registerTeam(userId, hackathonId, teamName, members);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+
 	}
 
 	/**
@@ -103,7 +110,15 @@ public class ParticipantController {
 	public ResponseEntity<?> updateDetails(@PathVariable("id") long id, @PathVariable("hackathonId") long hackathonId,
 			@RequestParam(value = "submission_url", required = false) String submissionURL,
 			@RequestParam(value = "judgeScore", required = false) String score) {
-		return participantService.updateDetails(id, hackathonId, submissionURL, score);
+
+		try {
+			return participantService.updateDetails(id, hackathonId, submissionURL, score);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+
 
 	}
 
@@ -114,7 +129,6 @@ public class ParticipantController {
 		try {
 			return participantService.pay(authcode);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			errorResponse = new ErrorResponse("BadRequest", "400", "Invalid token");
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}

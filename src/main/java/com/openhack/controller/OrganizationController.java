@@ -1,6 +1,7 @@
 package com.openhack.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openhack.contract.ErrorResponse;
 import com.openhack.domain.Organization;
 import com.openhack.service.OrganizationService;
 
@@ -21,12 +23,22 @@ public class OrganizationController {
 	@Autowired
 	OrganizationService organizationService;
 	
+	/** Error response */
+	@Autowired ErrorResponse errorResponse;
+
+	
 	@PostMapping("/create")
 	public ResponseEntity<?> store(@RequestBody Organization organization)
 	{
-		System.out.println("====================Create orgnization====================");
-		System.out.println(organization.getName());
-		return organizationService.store(organization);
+		try {
+			System.out.println("====================Create orgnization====================");
+			System.out.println(organization.getName());
+			return organizationService.store(organization);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
 	}
 	
 	/**
@@ -50,9 +62,4 @@ public class OrganizationController {
 		return organizationService.findById(id);
 	}
 	
-//	@PostMapping("/join/{id}")
-//	public ResponseEntity<?> join(@RequestBody Organization organization)
-//	{
-//		return organizationService.store(organization);
-//	}
 }
