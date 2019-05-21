@@ -100,7 +100,7 @@ public class UserService {
 		}
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	public ResponseEntity<?> updateUserProfile(long id, Map<String, Object> payload) {
 		try {
 			UserProfile userProfile=null, userProfile2=null;
@@ -195,6 +195,8 @@ public class UserService {
 		}
 
 	}
+		
+		@Transactional(rollbackFor=Exception.class)
 		public ResponseEntity<?> joinOrganization(long userId, String organizationName){
 			
 			try {
@@ -247,12 +249,12 @@ public class UserService {
 				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}catch(Exception e) {
-				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+				throw e;
 			}
 		}
 		
-		public ResponseEntity<?> approveRequest(UserResponse request){
+		@Transactional(rollbackFor=Exception.class)
+		public ResponseEntity<?> approveRequest(UserResponse request) throws Exception{
 			
 			try {
 				
@@ -312,12 +314,11 @@ public class UserService {
 				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}catch(Exception e) {
-				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+				throw e;
 			}
 		}
-		
-		public ResponseEntity<?> leaveOrganization(UserResponse user){
+		@Transactional(rollbackFor=Exception.class)
+		public ResponseEntity<?> leaveOrganization(UserResponse user) throws Exception {
 			
 			try {
 				UserProfile member = userDao.findById(user.getId());
@@ -373,13 +374,12 @@ public class UserService {
 				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}catch(Exception e) {
-				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+				throw e;
 			}
 		}
 		
-		@Transactional	
-		public ResponseEntity<?> rejectRequest(UserResponse requester){
+		@Transactional(rollbackFor=Exception.class)
+		public ResponseEntity<?> rejectRequest(UserResponse requester) throws Exception {
 			
 			try {
 				UserProfile user = userDao.findById(requester.getId());
@@ -429,8 +429,7 @@ public class UserService {
 				errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
 				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			}catch(Exception e) {
-				errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-				return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+				throw e;
 			}
 		}
 		

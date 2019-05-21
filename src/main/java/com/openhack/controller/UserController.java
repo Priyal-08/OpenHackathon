@@ -61,20 +61,39 @@ public class UserController {
 	@RequestMapping(value = "/user/approve", method = RequestMethod.POST )
 	public ResponseEntity<?> approveOrganization(
 			@RequestBody UserResponse request) {
+		try {
 			return userService.approveRequest(request);
 		}	
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
+
 
 	@RequestMapping(value = "/user/leave", method = RequestMethod.POST )
 	public ResponseEntity<?> leaveOrganization(
 			@RequestBody UserResponse user) {
+		try {
 			return userService.leaveOrganization(user);
 		}	
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
 	
 	@RequestMapping(value = "/user/reject", method = RequestMethod.POST )
 	public ResponseEntity<?> rejectRequest(
 			@RequestBody UserResponse user) {
+		try {
 			return userService.rejectRequest(user);
 		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+	}
 	
 	/**
 	 * Gets all organizations.
