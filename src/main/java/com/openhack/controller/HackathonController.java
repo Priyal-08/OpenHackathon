@@ -41,18 +41,25 @@ public class HackathonController {
 	@RequestMapping(method = RequestMethod.POST)
 	
 	public ResponseEntity<?> createHackathon(@RequestBody HackathonRequest hackathonRequest) {
-		String eventName = hackathonRequest.getEventName();
-		String description = hackathonRequest.getDescription();
-		String startDate = hackathonRequest.getStartDate();
-		String endDate = hackathonRequest.getEndDate();
-		long fees = hackathonRequest.getFees();
-		int minTeamSize = hackathonRequest.getMinTeamSize();
-		int maxTeamSize =  hackathonRequest.getMaxTeamSize();
-		List<Long> judges = hackathonRequest.getJudges();
-		List<Long> sponsors = hackathonRequest.getSponsors();
-		float discount = hackathonRequest.getDiscount();
-		return hackathonService.createHackathon(eventName, description, startDate, endDate, fees,
-				minTeamSize, maxTeamSize, judges, sponsors, discount);
+		try {
+			String eventName = hackathonRequest.getEventName();
+			String description = hackathonRequest.getDescription();
+			String startDate = hackathonRequest.getStartDate();
+			String endDate = hackathonRequest.getEndDate();
+			long fees = hackathonRequest.getFees();
+			int minTeamSize = hackathonRequest.getMinTeamSize();
+			int maxTeamSize =  hackathonRequest.getMaxTeamSize();
+			List<Long> judges = hackathonRequest.getJudges();
+			List<Long> sponsors = hackathonRequest.getSponsors();
+			float discount = hackathonRequest.getDiscount();
+			return hackathonService.createHackathon(eventName, description, startDate, endDate, fees,
+					minTeamSize, maxTeamSize, judges, sponsors, discount);
+		
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
 	}
 	
 	/**
@@ -106,21 +113,27 @@ public class HackathonController {
 			@PathVariable("id") long id,
 			@RequestBody HackathonRequest hackathonRequest) {
 
-		String eventName = hackathonRequest.getEventName();
-		String description = hackathonRequest.getDescription();
-		String startDate = hackathonRequest.getStartDate();
-		String endDate = hackathonRequest.getEndDate();
-		long fees = hackathonRequest.getFees();
-		int minTeamSize = hackathonRequest.getMinTeamSize();
-		int maxTeamSize =  hackathonRequest.getMaxTeamSize();
-		List<Long> judges = hackathonRequest.getJudges();
-		List<Long> sponsors = hackathonRequest.getSponsors();
-		float discount = hackathonRequest.getDiscount();
+		try {
+			String eventName = hackathonRequest.getEventName();
+			String description = hackathonRequest.getDescription();
+			String startDate = hackathonRequest.getStartDate();
+			String endDate = hackathonRequest.getEndDate();
+			long fees = hackathonRequest.getFees();
+			int minTeamSize = hackathonRequest.getMinTeamSize();
+			int maxTeamSize =  hackathonRequest.getMaxTeamSize();
+			List<Long> judges = hackathonRequest.getJudges();
+			List<Long> sponsors = hackathonRequest.getSponsors();
+			float discount = hackathonRequest.getDiscount();
 
-		return hackathonService.updateHackathon(id, eventName, description, startDate, endDate, fees,
-				minTeamSize, maxTeamSize, judges, sponsors, discount);
+			return hackathonService.updateHackathon(id, eventName, description, startDate, endDate, fees,
+					minTeamSize, maxTeamSize, judges, sponsors, discount);
+		}
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
 	}
-	
+
 	/**
 	 * Updates the hackathon status.
 	 *
@@ -151,7 +164,15 @@ public class HackathonController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteHackathon(
 			@PathVariable("id") long id) {
-		return hackathonService.deleteHackathon(id);
+		
+		try {
+			return hackathonService.deleteHackathon(id);
+		} 
+		catch(Exception e) {
+			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
+			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+		}
+
 	}
 	
 	/**

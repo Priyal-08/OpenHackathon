@@ -93,9 +93,9 @@ public class HackathonService {
 	 * @param discount: event discount
 	 * @return ResponseEntity: newly created event object on success/ error message on error
 	 */
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	public ResponseEntity<?> createHackathon(String eventName, String description, String sDate, String eDate, long fees,
-			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) {
+			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) throws Exception {
 		Hackathon hackathon=null;
 		Date today = new Date();
 		try {
@@ -152,8 +152,7 @@ public class HackathonService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
 	
@@ -260,9 +259,9 @@ public class HackathonService {
 	 * @param discount: event discount
 	 * @return ResponseEntity: hackathon object on success/ error message on error
 	 */
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	public ResponseEntity<?> updateHackathon(long id, String eventName, String description, String sDate, String eDate, long fees,
-			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) {
+			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) throws Exception {
 		Hackathon hackathon=null;
 		try {
 			SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd"); 
@@ -330,8 +329,7 @@ public class HackathonService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
 	
@@ -463,8 +461,9 @@ public class HackathonService {
 	 * @param id: hackathon id
 	 * @return ResponseEntity: deleted hackathon object on success/ error message on error
 	 */
-	@Transactional
-	public ResponseEntity<?> deleteHackathon(long id) {
+	@Transactional(rollbackFor=Exception.class)
+
+	public ResponseEntity<?> deleteHackathon(long id) throws Exception {
 		Hackathon hackathon=null;
 		try {
 			// If the hackathon with given id does not exist, return NotFound.
@@ -490,8 +489,7 @@ public class HackathonService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
 	
@@ -676,8 +674,8 @@ public class HackathonService {
 	 * @param amount: expense amount
 	 * @return ResponseEntity: success/error response
 	 */
-	@Transactional
-	public ResponseEntity<?> addExpense(long id, String title, String description, String expenseDate, float amount) {
+	@Transactional(rollbackFor=Exception.class)
+	public ResponseEntity<?> addExpense(long id, String title, String description, String expenseDate, float amount) throws Exception {
 		Hackathon hackathon=null;
 		try {
 			// If the hackathon with given id does not exist, return NotFound.
@@ -709,8 +707,7 @@ public class HackathonService {
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
 	

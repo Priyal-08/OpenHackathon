@@ -49,7 +49,7 @@ public class AuthService {
 	@Autowired 
 	UserResponse response;
 	
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	public ResponseEntity<?>  signinUser(String username, String password, Authentication authentication) throws Exception {
 		try {
 			UserAccount userAccount=null;
@@ -67,13 +67,11 @@ public class AuthService {
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(authResponse);
 			
 		} catch (Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
-			
+			throw e;
 		}
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	public ResponseEntity<?>  signupUser(String firstname, String lastname, String email, String password) throws Exception {
 		try {
 			UserProfile userProfile=null, userProfile2 = null;
@@ -106,8 +104,6 @@ public class AuthService {
 			userProfile = userDao.store(userProfile);
 			UUID authcode = UUID.randomUUID();
 			
-			
-
 			userAccount = new UserAccount(userProfile,password,0,"Pending Verification", authcode.toString(), null);
 			userAccount = userDao.store(userAccount);
 				
@@ -126,7 +122,7 @@ public class AuthService {
 		    System.out.println("Frontend URL is " + baseURL);
 
 			String verifyURL = "/registration-confirmation/?token=" + authcode.toString();
-			String subject = String.format("Open Hackathon Account Verification");
+			String subject = String.format("OpenHackathon - Your account verification required");
 			String text = String.format("Hi %s, \n\nPlease confirm your registration for OpenHackathon by clicking the link below. \n %s\n\n\n Thank you, \n Team OpenHackathon", 
 					userProfile.getFirstname(), baseURL + verifyURL);
 			
@@ -140,13 +136,12 @@ public class AuthService {
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;		
 		}
 	}
 	
-	@Transactional
-	public ResponseEntity<?> verify(String authcode) {
+	@Transactional(rollbackFor=Exception.class)
+	public ResponseEntity<?> verify(String authcode)  throws Exception {
 		try {
 			UserAccount userAccount=null;
 			userAccount = userDao.findByAuthCode(authcode);
@@ -161,8 +156,7 @@ public class AuthService {
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
 	
