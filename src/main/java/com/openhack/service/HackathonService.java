@@ -264,20 +264,22 @@ public class HackathonService {
 	public ResponseEntity<?> updateHackathon(long id, String eventName, String description, String sDate, String eDate, long fees,
 			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) {
 		Hackathon hackathon=null;
-		Date today = new Date();
 		try {
 			SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd"); 
 			Date startDate = formatter.parse(sDate);
 			Date endDate = formatter.parse(eDate);
 			// If the event name is null, return BadRequest.
-			if(eventName == null || today.compareTo(startDate) >0 || startDate.compareTo(endDate)>0) {
-				throw new InvalidArgumentException("eventName/startDate/endDate");
+			if(eventName == null || startDate.compareTo(endDate)>0) {
+				throw new InvalidArgumentException("eventName/endDate");
 			} 
 			
 			// If the hackathon with given id does not exist, return NotFound.
 			hackathon = hackathonDao.findById(id);
 			if(hackathon==null)
 				throw new NotFoundException("Hackathon", "Id", id);
+			
+			if(hackathon.getStatus()!=0 && hackathon.getStartDate().compareTo(startDate)!=0)
+				throw new OperationNotAllowedException("Hackathon already started, so start date can not be changed.");
 			
 			// If the hackathon is finalised, no further changes are allowed
 			if(hackathon.getStatus()==3)
