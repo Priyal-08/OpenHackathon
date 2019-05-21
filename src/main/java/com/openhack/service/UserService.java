@@ -119,7 +119,8 @@ public class UserService {
 			String potraitURL = (String) payload.get("potrait_url");
 			String screenname = (String) payload.get("screenname");
 			String title = (String) payload.get("title");
-			
+			String aboutMe = (String) payload.get("aboutMe");
+
 			userProfile2 = userDao.findByEmail(email);
 			
 			if (userProfile2 != null)
@@ -158,6 +159,7 @@ public class UserService {
 			userProfile.setPotraitURL(potraitURL);
 			userProfile.setScreenName(screenname);
 			userProfile.setTitle(title);
+			userProfile.setAboutMe(aboutMe);
 			
 			Organization org = userProfile.getOrganization();
 			String orgName = null;
