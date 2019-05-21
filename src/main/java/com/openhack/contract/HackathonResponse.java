@@ -19,7 +19,7 @@ public class HackathonResponse {
 	
 	private String description;
 	
-	private long fees;
+	private float fees;
 	
 	private List<Judge> judges;
 	
@@ -85,11 +85,11 @@ public class HackathonResponse {
 		this.description = description;
 	}
 
-	public long getFees() {
+	public float getFees() {
 		return fees;
 	}
 
-	public void setFees(long fees) {
+	public void setFees(float fees) {
 		this.fees = fees;
 	}
 
@@ -141,7 +141,7 @@ public class HackathonResponse {
 		this.status = status;
 	}
 
-	public HackathonResponse(long id, String eventName, Date startDate, Date endDate, String description, long fees,
+	public HackathonResponse(long id, String eventName, Date startDate, Date endDate, String description, float fees,
 			List<Judge> judges, int minTeamSize, int maxTeamSize, List<OrganizationResponse> sponsors, float discount,
 			int status) {
 		super();

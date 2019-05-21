@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HackathonRequest {
 	
-	public HackathonRequest(String eventName, String startDate, String endDate, String description, long fees,
+	public HackathonRequest(String eventName, String startDate, String endDate, String description, float fees,
 			List<Long> judges, int minTeamSize, int maxTeamSize, List<Long> sponsors, float discount, int status) {
 		super();
 		this.eventName = eventName;
@@ -27,7 +27,7 @@ public class HackathonRequest {
 	private String startDate;
 	private String endDate;
 	private String description;
-	private long fees;
+	private float fees;
 	private List<Long> judges;
 	private int minTeamSize;
 	private int maxTeamSize;
@@ -53,11 +53,11 @@ public class HackathonRequest {
 		this.description = description;
 	}
 
-	public long getFees() {
+	public float getFees() {
 		return fees;
 	}
 
-	public void setFees(long fees) {
+	public void setFees(float fees) {
 		this.fees = fees;
 	}
 

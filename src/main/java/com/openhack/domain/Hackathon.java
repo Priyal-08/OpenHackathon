@@ -47,7 +47,7 @@ public class Hackathon {
 	
 	/** The hackathon fees. */
 	@Column(name = "FEES")
-    private long fees;
+    private float fees;
 	
 	/** The list of hackathon judges. */
 	@ManyToMany(fetch=FetchType.LAZY)
@@ -107,7 +107,7 @@ public class Hackathon {
 	 * @param sponsors - the hackathon sponsors
 	 * @param discount - the hackathon sponsor discount
 	 */
-	public Hackathon(long id, String eventName, Date startDate, Date endDate, String description, long fees,
+	public Hackathon(long id, String eventName, Date startDate, Date endDate, String description, float fees,
 			List<UserProfile> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount, List<Expense> expenses) {
 		super();
 		this.id = id;
@@ -125,7 +125,7 @@ public class Hackathon {
 		this.expenses = expenses;
 	}
 	
-	public Hackathon(String eventName, Date startDate, Date endDate, String description, long fees,
+	public Hackathon(String eventName, Date startDate, Date endDate, String description, float fees,
 			List<UserProfile> judges, int minTeamSize, int maxTeamSize, List<Organization> sponsors, float discount) {
 		super();
 		this.eventName = eventName;
@@ -182,11 +182,11 @@ public class Hackathon {
 		this.description = description;
 	}
 
-	public long getFees() {
+	public float getFees() {
 		return fees;
 	}
 
-	public void setFees(long fees) {
+	public void setFees(float fees) {
 		this.fees = fees;
 	}
 

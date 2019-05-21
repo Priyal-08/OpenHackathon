@@ -23,7 +23,7 @@ import javax.validation.constraints.Min;
 public class Team {
 	
 	public Team(Hackathon hackathon, UserProfile teamLead, String name, List<Participant> members, boolean paymentDone,
-			@Min(0) @Max(10) long score, String submissionURL, UserProfile judge) {
+			@Min(0) @Max(10) float score, String submissionURL, UserProfile judge) {
 		super();
 		this.hackathon = hackathon;
 		this.teamLead = teamLead;

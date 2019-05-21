@@ -94,7 +94,7 @@ public class HackathonService {
 	 * @return ResponseEntity: newly created event object on success/ error message on error
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public ResponseEntity<?> createHackathon(String eventName, String description, String sDate, String eDate, long fees,
+	public ResponseEntity<?> createHackathon(String eventName, String description, String sDate, String eDate, float fees,
 			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) throws Exception {
 		Hackathon hackathon=null;
 		Date today = new Date();
@@ -260,7 +260,7 @@ public class HackathonService {
 	 * @return ResponseEntity: hackathon object on success/ error message on error
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public ResponseEntity<?> updateHackathon(long id, String eventName, String description, String sDate, String eDate, long fees,
+	public ResponseEntity<?> updateHackathon(long id, String eventName, String description, String sDate, String eDate, float fees,
 			int minTeamSize, int maxTeamSize, List<Long> judges, List<Long> sponsors, float discount) throws Exception {
 		Hackathon hackathon=null;
 		try {

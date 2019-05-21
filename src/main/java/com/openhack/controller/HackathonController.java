@@ -46,7 +46,7 @@ public class HackathonController {
 			String description = hackathonRequest.getDescription();
 			String startDate = hackathonRequest.getStartDate();
 			String endDate = hackathonRequest.getEndDate();
-			long fees = hackathonRequest.getFees();
+			float fees = hackathonRequest.getFees();
 			int minTeamSize = hackathonRequest.getMinTeamSize();
 			int maxTeamSize =  hackathonRequest.getMaxTeamSize();
 			List<Long> judges = hackathonRequest.getJudges();
@@ -118,7 +118,7 @@ public class HackathonController {
 			String description = hackathonRequest.getDescription();
 			String startDate = hackathonRequest.getStartDate();
 			String endDate = hackathonRequest.getEndDate();
-			long fees = hackathonRequest.getFees();
+			float fees = hackathonRequest.getFees();
 			int minTeamSize = hackathonRequest.getMinTeamSize();
 			int maxTeamSize =  hackathonRequest.getMaxTeamSize();
 			List<Long> judges = hackathonRequest.getJudges();
