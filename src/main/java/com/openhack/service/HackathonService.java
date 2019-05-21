@@ -74,10 +74,6 @@ public class HackathonService {
 	/** The response. */
 	@Autowired	
 	private HackathonResponse response;
-	
-//	/** The response. */
-//	@Autowired	
-//	private FinanceReportResponse finReportResponse;
 
 	
 	@Autowired ErrorResponse errorResponse;
@@ -343,9 +339,10 @@ public class HackathonService {
 	 * @param id: hackathon id
 	 * @param status: hackathon status
 	 * @return ResponseEntity: hackathon object on success/ error message on error
+	 * @throws Exception 
 	 */
-	@Transactional
-	public ResponseEntity<?> updateHackathonStatus(long id, int status) {
+	@Transactional(rollbackFor=Exception.class)
+	public ResponseEntity<?> updateHackathonStatus(long id, int status) throws Exception {
 		Hackathon hackathon=null;
 		try {
 			// If the hackathon with given id does not exist, return NotFound.
@@ -367,9 +364,6 @@ public class HackathonService {
 					if(team.getSubmissionURL()!=null && team.getSubmissionURL()!="" && team.getJudge()==null)
 						throw new OperationNotAllowedException("Hackathon can not be finalised as grading is not complete.");
 				}
-				
-				// Update hackathon status
-				hackathon.setStatus(status);
 
 				if (teamList != null) {
 					for (int i = 0; i < teamList.size(); i++) {
@@ -429,6 +423,9 @@ public class HackathonService {
 				}
 
 			}
+			
+			// Update hackathon status
+			hackathon.setStatus(status);
 
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new EmptyResponse());
 		}
@@ -438,12 +435,10 @@ public class HackathonService {
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
-			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
-			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
-			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
+			throw e;
 		}
 	}
 	
