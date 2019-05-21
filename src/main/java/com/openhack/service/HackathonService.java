@@ -362,13 +362,12 @@ public class HackathonService {
 				String baseURL = env.getProperty("frontendserver.baseurl");
 				String leaderboardURL = "/hackathon/leaderboard/" + hackathon.getId();
 
-				List<Team> teams = participantDao.findTeamsByHackathonId(id);
-				for(Team team: teams) {
+				List <Team> teamList = participantDao.findTeamsByHackathonId(id);
+				for(Team team: teamList) {
 					if(team.getSubmissionURL()!=null && team.getSubmissionURL()!="" && team.getJudge()==null)
-						throw new InvalidArgumentException("status");
+						throw new OperationNotAllowedException("Hackathon can not be finalised as grading is not complete.");
 				}
-
-				List <Team> teamList = participantDao.findTeamsByHackathonId(id); 
+				
 				// Update hackathon status
 				hackathon.setStatus(status);
 
@@ -431,10 +430,9 @@ public class HackathonService {
 
 			}
 
-			response = new HackathonResponse();  // TODO: create hackathon response	
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new EmptyResponse());
 		}
-		catch(InvalidArgumentException e) {
+		catch(OperationNotAllowedException | InvalidArgumentException e) {
 			errorResponse = new ErrorResponse("BadRequest", "400", e.getMessage());
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
@@ -479,7 +477,6 @@ public class HackathonService {
 		}
 		catch(NotFoundException e) {
 			errorResponse = new ErrorResponse("NotFound", "404", e.getMessage());
-			//return ResponseEntity.notFound().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 			return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(errorResponse);
 		}
 		catch(Exception e) {
