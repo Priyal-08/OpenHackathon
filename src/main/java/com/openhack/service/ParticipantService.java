@@ -210,7 +210,7 @@ public class ParticipantService {
 
 			MyTeamResponse myTeamResponse = null;
 			if(team!=null) {
-				float discountedAmount = hackathon.getFees()*(100-hackathon.getDiscount());
+				float discountedAmount = hackathon.getFees()*(float)(100-hackathon.getDiscount())/100;
 				participants = memberList.stream().map(member->participantDao.store(new Participant(
 						team,
 						member,
