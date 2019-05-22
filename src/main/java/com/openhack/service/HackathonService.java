@@ -403,8 +403,8 @@ public class HackathonService {
 					if( hackathon.getStartDate().compareTo(new Date()) > 0)
 						hackathon.setStartDate(new Date());
 				}
-//				else
-//					throw new InvalidArgumentException("status");
+				else
+					throw new InvalidArgumentException("status");
 			}
 			
 			if(status == 2 || status == 3) {
@@ -413,8 +413,6 @@ public class HackathonService {
 					if( hackathon.getEndDate().compareTo(new Date()) > 0)
 						hackathon.setEndDate(new Date());
 				}
-				else
-					throw new InvalidArgumentException("status");
 			}
 			
 			// Update hackathon status
