@@ -377,6 +377,16 @@ public class HackathonService {
 					throw new InvalidArgumentException("status");
 			}
 			
+			if(status == 2 || status == 3) {
+				if(hackathon.getStatus() == 1)
+				{
+					if( hackathon.getEndDate().compareTo(new Date()) > 0)
+						hackathon.setEndDate(new Date());
+				}
+				else
+					throw new InvalidArgumentException("status");
+			}
+			
 			// Update hackathon status
 			hackathon.setStatus(status);
 			
