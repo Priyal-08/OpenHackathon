@@ -2,6 +2,7 @@ package com.openhack.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -103,8 +104,33 @@ public class HackathonService {
 			Date startDate = formatter.parse(sDate);
 			Date endDate = formatter.parse(eDate);
 			
+			Calendar calendar1 = Calendar.getInstance();
+			Calendar calendar2 = Calendar.getInstance();
+			Calendar calendar3 = Calendar.getInstance();
+
+			calendar1.setTime( startDate );
+		    calendar1.set(Calendar.HOUR_OF_DAY, 0);
+		    calendar1.set(Calendar.MINUTE, 0);
+		    calendar1.set(Calendar.SECOND, 0);
+		    calendar1.set(Calendar.MILLISECOND, 0);
+		    startDate = calendar1.getTime();
+		    
+		    calendar2.setTime( endDate );
+		    calendar2.set(Calendar.HOUR_OF_DAY, 0);
+		    calendar2.set(Calendar.MINUTE, 0);
+		    calendar2.set(Calendar.SECOND, 0);
+		    calendar2.set(Calendar.MILLISECOND, 0);
+		    endDate = calendar2.getTime();
+		    
+		    calendar3.setTime( today );
+		    calendar3.set(Calendar.HOUR_OF_DAY, 0);
+		    calendar3.set(Calendar.MINUTE, 0);
+		    calendar3.set(Calendar.SECOND, 0);
+		    calendar3.set(Calendar.MILLISECOND, 0);
+		    today = calendar3.getTime();
+			
 			// If the event name is null, return BadRequest.
-			if(eventName == null || today.compareTo(startDate) >0 || startDate.compareTo(endDate)>0) {
+			if(eventName == null || today.compareTo(startDate) >=0 || startDate.compareTo(endDate)>0) {
 				throw new InvalidArgumentException("eventName/startDate/endDate");
 			}
 			
@@ -268,6 +294,10 @@ public class HackathonService {
 			Date startDate = formatter.parse(sDate);
 			Date endDate = formatter.parse(eDate);
 			// If the event name is null, return BadRequest.
+			
+		    
+//		    return calendar.getTime();
+		    
 			if(eventName == null || startDate.compareTo(endDate)>0) {
 				throw new InvalidArgumentException("eventName/endDate");
 			} 
@@ -373,8 +403,8 @@ public class HackathonService {
 					if( hackathon.getStartDate().compareTo(new Date()) > 0)
 						hackathon.setStartDate(new Date());
 				}
-				else
-					throw new InvalidArgumentException("status");
+//				else
+//					throw new InvalidArgumentException("status");
 			}
 			
 			if(status == 2 || status == 3) {
