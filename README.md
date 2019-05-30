@@ -13,3 +13,22 @@ This repository contains server side (Backend) code for OpenHackathon. The clien
 1. Download client repo from https://github.com/Priyal-08/OpenHackathon_Client.
 2. Run npm install
 3. Run npm start
+
+## Application Screenshots
+1. Login View
+![](./screenshots/LoginView.png)
+
+2. Admin Action Panel
+![](./screenshots/AdminActions.png)
+
+3. All hackathons View
+![](./screenshots/All%20Hackathons.png)
+
+4. Hackathon Details View
+![](./screenshots/Hackathon%20Details.png)
+
+5. Team Information View
+![](./screenshots/Team%20Details.png)
+
+6. Organization Management View
+![](./screenshots/Organization%20Mgmt.png)
